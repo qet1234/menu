@@ -121,17 +121,19 @@
                             <a href="https://www.gmarket.co.kr" target="_blank" class="q-link">🛒 G마켓</a>
                             <a href="https://www.ssg.com" target="_blank" class="q-link">🏢 SSG 닷컴</a>
                             <a href="https://www.cofm.co.kr/" target="_blank" class="q-link">☕ 커피몰</a>
+                            <a href="https://www.officedepot.co.kr" target="_blank" class="q-link">🖇️ 오피스디포</a>
+                            <a href="https://www.alpha.co.kr" target="_blank" class="q-link">✏️ 알파몰</a>
                         </div>
                     </div>
                     <div class="card" style="border-top: 4px solid var(--gw-main);">
-                        <div class="card-header">📢 슬랙 구매 요청 (Admin)</div>
+                        <div class="card-header">📢 슬랙 구매 요청</div>
                         <div class="card-body">
                             <label style="font-size:12px;">비품 구매처 선택</label>
                             <select id="reqShop" class="input-box">
                                 <option value="쿠팡">📦 쿠팡</option>
                                 <option value="G마켓">🛒 G마켓</option>
                                 <option value="SSG 닷컴">🏢 SSG 닷컴</option>
-                                <option value="커피몰">☕ 커피몰 (원두/차)</option>
+                                <option value="커피몰">☕ 커피몰</option>
                             </select>
                             <button class="btn-primary" onclick="sendSlackMessage()">구매 요청 보내기</button>
                             <p style="font-size:11px; color:var(--text-sub); margin-top:10px;">* 상세 품목은 슬랙 채널에서 담당자에게 추가 전달 바랍니다.</p>
@@ -243,27 +245,22 @@
 
         const SLACK_WEBHOOK_URL = "https://hooks.slack.com/services/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"; 
 
-        // --- 실시간 시간 업데이트 함수 (분/초 단위 적용) ---
+        // --- 실시간 시간 업데이트 함수 ---
         function updateDateTime() {
             const now = new Date();
-            // 날짜 표시
             document.getElementById('dateDisplay').textContent = now.toLocaleDateString('ko-KR', { 
                 year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' 
             });
-            // 시간 표시 (시:분:초 형식, 24시간제)
             document.getElementById('timeDisplay').textContent = now.toLocaleTimeString('ko-KR', { 
                 hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' 
             });
         }
-        
-        // 1초마다 업데이트 실행
         setInterval(updateDateTime, 1000);
 
         function checkPassword() {
             if (document.getElementById('pwInput').value === ACCESS_PASSWORD) {
                 document.getElementById('loginOverlay').style.display = 'none';
                 document.getElementById('mainContent').classList.add('auth-success');
-                // 로그인 직후 시간 즉시 표시
                 updateDateTime();
                 init(); 
             } else alert("비밀번호 오류");
@@ -292,35 +289,30 @@
             renderSchedules(); renderFavorites();
         }
 
+        // --- [수정 핵심] 슬랙 전송 최적화 함수 ---
         async function sendSlackMessage() {
             const shop = document.getElementById('reqShop').value; 
             const user = document.getElementById('displayUserName').textContent;
             const now = new Date().toLocaleString('ko-KR');
 
+            // 브라우저 차단을 피하기 위해 단순 텍스트 구조로 변경
             const payload = {
-                text: `📦 *비품 구매 요청 알림 (테스트)*`,
-                attachments: [{
-                    color: "#2563eb",
-                    fields: [
-                        { title: "요청자", value: user, short: true },
-                        { title: "구매처", value: shop, short: true },
-                        { title: "요청시간", value: now, short: false }
-                    ]
-                }]
+                text: `📦 *비품 구매 요청*\n• 요청자: ${user}\n• 구매처: ${shop}\n• 요청시간: ${now}`
             };
 
             try {
+                // no-cors 모드는 응답을 읽지는 못하지만 전송 성공률이 가장 높습니다.
                 await fetch(SLACK_WEBHOOK_URL, {
                     method: 'POST',
                     mode: 'no-cors',
                     cache: 'no-cache',
-                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-                alert(`✅ [${shop}] 구매 요청이 슬랙으로 전송되었습니다!\n슬랙 '나와의 채팅' 채널을 확인해 보세요.`);
+                // 전송 명령이 성공적으로 실행되면 알림 출력
+                alert(`✅ [${shop}] 구매 요청이 슬랙으로 전송되었습니다!`);
             } catch (error) {
                 console.error("Slack Error:", error);
-                alert("📢 전송 중 오류가 발생했습니다.");
+                alert("📢 전송 중 네트워크 오류가 발생했습니다.");
             }
         }
 
