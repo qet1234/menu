@@ -3,380 +3,366 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>HR업무 종합 포탈</title>
-    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
-    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <title>NATRIS HR Integrated Portal</title>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore-compat.js"></script>
+    
+    <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
     <style>
         :root {
-            --hr-primary: #0043ce; 
-            --hr-primary-hover: #002d9c;
-            --hr-bg-main: #f0f2f6; 
-            --hr-card-bg: #ffffff;
-            --hr-border: #dde1e6;
-            --text-main: #161616;
-            --text-sub: #525252;
-            --text-mute: #8d8d8d;
-            --accent: #ff832b; /* 추천 맛집 강조 컬러 */
+            --gw-main: #2563eb; --gw-sidebar: #1e293b; --gw-bg: #f8fafc;
+            --gw-border: #e2e8f0; --text-strong: #0f172a; --text-body: #334155;
+            --text-sub: #64748b; --white: #ffffff; --point-orange: #f59e0b; --naver-green: #03c75a;
         }
+        * { box-sizing: border-box; transition: all 0.2s ease-out; }
+        body { margin: 0; font-family: "Pretendard Variable", sans-serif; color: var(--text-body); background-color: var(--gw-bg); display: flex; min-height: 100vh; overflow: hidden; }
 
-        body { 
-            margin: 0; 
-            font-family: "Pretendard Variable", Pretendard, -apple-system, sans-serif; 
-            color: var(--text-main); 
-            -webkit-font-smoothing: antialiased;
-            background-color: var(--hr-bg-main);
-            background-image: 
-                linear-gradient(to bottom, #002d9c 0%, #0043ce 300px, transparent 300px),
-                radial-gradient(#c1c7cd 1px, transparent 1px);
-            background-size: 100% 100%, 20px 20px;
-            background-attachment: fixed;
-        }
+        /* --- 로그인 오버레이 --- */
+        #loginOverlay { position: fixed; top:0; left:0; width:100%; height:100%; background: var(--gw-sidebar); z-index: 1000; display: flex; align-items: center; justify-content: center; }
+        .login-box { background: white; padding: 40px; border-radius: 16px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); width: 350px; }
 
-        .wrap { max-width: 1400px; margin: 0 auto; padding: 30px 20px; }
+        /* --- 사이드바 --- */
+        nav { width: 250px; background: var(--gw-sidebar); color: white; display: flex; flex-direction: column; flex-shrink: 0; }
+        .nav-header { padding: 30px 24px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .nav-menu { padding: 20px 0; flex: 1; overflow-y: auto; }
+        .menu-cat { padding: 15px 24px 5px; font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; }
+        .menu-item { padding: 13px 24px; display: block; color: #cbd5e1; text-decoration: none; font-size: 14px; cursor: pointer; border-left: 4px solid transparent; }
+        .menu-item:hover { background: rgba(255,255,255,0.05); color: white; padding-left: 32px; }
+        .menu-item.active { background: rgba(37, 99, 235, 0.15); color: #60a5fa; font-weight: 700; border-left: 4px solid var(--gw-main); }
+        .logo-text { font-size: 25pt; font-weight: 900; color: #000; background: #fff; display: block; padding: 10px 0; border-radius: 4px; margin: 20px; text-align: center; }
+
+        /* --- 메인 컨테이너 --- */
+        #mainContent { display: none; width: 100%; height: 100vh; }
+        #mainContent.auth-success { display: flex; }
+        .container { flex: 1; display: flex; flex-direction: column; overflow-y: auto; }
+        header { height: 64px; background: var(--white); border-bottom: 1px solid var(--gw-border); display: flex; align-items: center; justify-content: space-between; padding: 0 30px; position: sticky; top: 0; z-index: 10; }
         
-        header { 
-            display: flex; justify-content: space-between; align-items: center; 
-            margin-bottom: 30px; padding: 20px 30px;
-            background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(5px);
-            border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.2);
-        }
+        main { padding: 30px; display: none; max-width: 1400px; animation: fadeIn 0.4s ease-out; }
+        main.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .logo-area { display: flex; align-items: center; gap: 15px; }
-        .logo-box { 
-            width: 44px; height: 44px; background: #ffffff; color: var(--hr-primary); 
-            display: flex; align-items: center; justify-content: center; 
-            border-radius: 8px; font-weight: 900; font-size: 20px; 
-        }
-        .logo-text h1 { margin: 0; font-size: 22px; font-weight: 800; color: #ffffff; }
-        .logo-text p { margin: 2px 0 0; font-size: 11px; color: rgba(255,255,255,0.8); text-transform: uppercase; }
-        
-        .header-info { text-align: right; color: #ffffff; }
-        #liveClock { font-weight: 800; font-family: 'JetBrains Mono', monospace; font-size: 18px; display: block; }
-
-        .grid-main { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 20px; }
-
-        .card { 
-            background: var(--hr-card-bg); border-radius: 10px; padding: 24px; 
-            border: 1px solid var(--hr-border); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-            transition: all 0.2s ease;
-        }
-        .card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1); }
-
-        .card-title { 
-            display: flex; align-items: center; gap: 8px; 
-            font-weight: 700; font-size: 16px; margin-bottom: 18px; 
-            color: #161616; padding-left: 10px; border-left: 4px solid var(--hr-primary);
-        }
-        
-        .link-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
-        .link-item { 
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 12px 15px; background: #f4f7fb; border-radius: 6px; 
-            text-decoration: none; color: #393939; font-size: 14px; transition: 0.2s;
-        }
-        .link-item:hover { background: var(--hr-primary); color: white; }
-
-        .search-form { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .full-col { grid-column: span 2; }
-        .form-group label { font-size: 11px; font-weight: 700; color: var(--text-mute); margin-bottom: 4px; display: block; }
-        
-        .input-box { 
-            width: 100%; box-sizing: border-box; padding: 10px; 
-            border: 1px solid #ced4da; border-radius: 6px; font-size: 13px; outline: none;
-        }
-        .input-box:focus { border-color: var(--hr-primary); }
-
-        .btn-search { 
-            grid-column: span 2; background: var(--hr-primary); color: white; border: none; padding: 12px; 
-            border-radius: 6px; cursor: pointer; font-weight: 700; font-size: 14px; margin-top: 10px;
-        }
-        .btn-search:hover { background: var(--hr-primary-hover); }
-
-        /* 맛집 DB 섹션 스타일 */
-        .db-section { grid-column: span 3; }
-        .db-wrapper { display: flex; gap: 20px; }
-        .db-form-side { width: 300px; padding: 15px; background: #f8f9fa; border-radius: 8px; border: 1px solid #eee; }
-        .db-list-side { flex: 1; }
-        .btn-add-db { width: 100%; background: var(--accent); color: white; border: none; padding: 10px; border-radius: 6px; font-weight: 700; cursor: pointer; margin-top: 10px; }
-        
-        .fav-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-        .fav-table th { background: #e8eef9; padding: 12px; text-align: left; border-bottom: 2px solid var(--hr-border); }
-        .fav-table td { padding: 10px 12px; border-bottom: 1px solid #edf2f7; }
-        
-        .btn-mini { padding: 5px 10px; border-radius: 4px; border: none; cursor: pointer; font-size: 11px; font-weight: 600; }
-        .btn-go { background: var(--hr-primary); color: white; margin-right: 5px; }
-        .btn-del { background: #fa4d56; color: white; }
-
-        .asset-section { grid-column: span 3; }
-        .file-upload-zone { 
-            border: 2px dashed #cbd5e1; padding: 20px; border-radius: 10px; 
-            display: flex; align-items: center; justify-content: center; gap: 15px; background: #f8f9fa;
-        }
-        
-        #assetTable table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 13px; }
-        #assetTable th { background: #e8eef9; color: var(--hr-primary); padding: 12px; border-bottom: 2px solid var(--hr-border); text-align: left; }
-        #assetTable td { padding: 10px 12px; border-bottom: 1px solid #edf2f7; }
+        /* --- UI 요소 --- */
+        .card { background: var(--white); border-radius: 12px; border: 1px solid var(--gw-border); overflow: hidden; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .card-header { padding: 18px 24px; border-bottom: 1px solid var(--gw-border); background: #fafafa; font-weight: 700; }
+        .card-body { padding: 20px 24px; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+        .btn-primary { width: 100%; padding: 12px; background: var(--gw-main); color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; }
+        .input-box { width: 100%; padding: 10px; border: 1px solid var(--gw-border); border-radius: 6px; margin-bottom: 10px; }
+        .q-link { padding: 15px; border-radius: 8px; background: #f1f5f9; text-decoration: none; color: var(--text-body); font-size: 14px; display: flex; align-items: center; gap: 10px; font-weight: 600; }
+        .q-link:hover { background: #e2e8f0; transform: translateY(-2px); border-left: 5px solid var(--gw-main); }
+        .item-list { list-style: none; padding: 0; margin: 0; }
+        .list-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid #f1f5f9; font-size: 13px; }
     </style>
 </head>
 <body>
-    <div class="wrap">
-        <header>
-            <div class="logo-area">
-                <div class="logo-box">HR</div>
-                <div class="logo-text">
-                    <h1>HR업무 종합 포탈</h1>
-                    <p>Corporate Administration System</p>
-                </div>
-            </div>
-            <div class="header-info">
-                <span class="today-date" id="datePart"></span>
-                <span id="liveClock">00:00:00</span>
-            </div>
-        </header>
 
-        <main class="grid-main">
-            <div class="card">
-                <div class="card-title">🛒 비품</div>
-                <div class="link-list">
-                    <a href="https://biz.coupang.com" target="_blank" class="link-item"><span>쿠팡</span></a>
-                    <a href="https://www.gmarket.co.kr" target="_blank" class="link-item"><span>G마켓</span></a>
-                    <a href="https://www.cofm.co.kr/" target="_blank" class="link-item"><span>커피몰</span></a>
-                    <a href="https://www.ssg.com/" target="_blank" class="link-item"><span>SSG</span></a>
-                </div>
-            </div>
+    <div id="loginOverlay">
+        <div class="login-box">
+            <h1 style="color:var(--gw-main); font-weight:900;">NATRIS</h1>
+            <input type="password" id="pwInput" class="input-box" placeholder="비밀번호 입력" onkeypress="if(event.keyCode==13) checkPassword()">
+            <button class="btn-primary" onclick="checkPassword()">시스템 접속</button>
+        </div>
+    </div>
 
-            <div class="card">
-                <div class="card-title">✈️ 출장 지원</div>
-                <div class="link-list">
-                    <a href="https://www.google.com/travel/flights" target="_blank" class="link-item"><span>전세계 항공편</span></a>
-                    <a href="https://www.hotels.com/" target="_blank" class="link-item"><span>호텔스닷컴</span></a>
-                </div>
+    <div id="mainContent">
+        <nav>
+            <div class="nav-header"><h3>💠 HR PORTAL</h3></div>
+            <div class="nav-menu">
+                <div class="menu-cat">Main</div>
+                <div class="menu-item active" onclick="showPage('page-home', this)">🏠 홈 바로가기</div>
+                <div class="menu-item" onclick="showPage('page-supply', this)">📦 비품/택배 관리</div>
+                <div class="menu-item" onclick="showPage('page-trip', this)">✈️ 출장 관리</div>
+                <div class="menu-cat">Admin</div>
+                <div class="menu-item" onclick="showPage('page-insurance', this)">📄 4대보험 신고</div>
+                <div class="menu-cat">Search</div>
+                <div class="menu-item" onclick="showPage('page-dinner', this)">🍴 회식/단골 장소</div>
+                <div class="menu-item" onclick="showPage('page-event', this)">🏢 기업 행사 장소</div>
             </div>
+            <div class="logo-text">NATRIS</div>
+        </nav>
 
-            <div class="card">
-                <div class="card-title">🍴 팀/부서 회식</div>
-                <div class="search-form">
-                    <div class="form-group full-col">
-                        <label>회식 지역</label>
-                        <input type="text" id="dinnerArea" class="input-box" placeholder="예: 강남역, 판교">
-                    </div>
-                    <div class="form-group">
-                        <label>예상 인원</label>
-                        <input type="number" id="dinnerPeople" class="input-box" placeholder="명">
-                    </div>
-                    <div class="form-group">
-                        <label>인당 예산</label>
-                        <input type="text" id="dinnerBudget" class="input-box" placeholder="예: 50000">
-                    </div>
-                    <div class="form-group full-col">
-                        <label>선호 메뉴/종류</label>
-                        <select id="dinnerType" class="input-box">
-                            <option value="고기집">고기</option>
-                            <option value="중식당">중식</option>
-                            <option value="일식당">일식</option>
-                            <option value="한식 맛집">한식</option>
-                            <option value="이자카야">이자카야</option>
-                            <option value="샤브샤브">샤브샤브</option>
-                            <option value="한정식">한정식</option>
-                        </select>
-                    </div>
-                    <div class="form-group full-col">
-                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                            <input type="checkbox" id="dinnerRoom"> <span style="font-size: 13px;">🚪 룸 우선검색</span>
-                        </label>
-                    </div>
-                    <button class="btn-search" onclick="searchDinner()">음식점 찾기</button>
+        <div class="container">
+            <header>
+                <div id="dateDisplay" style="font-size: 16px; font-weight: 600; color: var(--text-strong);"></div>
+                <div style="display:flex; align-items:center; gap:12px;">
+                    <select id="userSlot" class="input-box" style="margin:0; width:120px;" onchange="switchUser()">
+                        <option value="slot1" id="opt-slot1">사용자 1</option>
+                        <option value="slot2" id="opt-slot2">사용자 2</option>
+                        <option value="slot3" id="opt-slot3">사용자 3</option>
+                    </select>
+                    <button onclick="renameUser()" style="padding:8px 12px; border:1px solid var(--gw-border); background:white; border-radius:6px; cursor:pointer; font-size:13px;">이름 수정</button>
+                    <div id="timeDisplay" style="font-weight:700; color:var(--gw-main); font-size: 18px; min-width: 100px; text-align: right;"></div>
                 </div>
-            </div>
+            </header>
 
-            <div class="card">
-                <div class="card-title">🏢 사내 공식 행사</div>
-                <div class="search-form">
-                    <div class="form-group full-col">
-                        <label>행사 예정 지역</label>
-                        <input type="text" id="eventArea" class="input-box" placeholder="예: 강남역, 판교">
+            <main id="page-home" class="active">
+                <div class="grid-2" style="grid-template-columns: 1fr 380px;">
+                    <div class="card"><div class="card-header">📅 전사 공용 일정</div>
+                        <iframe src="https://calendar.google.com/calendar/embed?height=500&wkst=1&bgcolor=%23ffffff&ctz=Asia%2FSeoul&showTitle=0&showNav=1&showDate=1&showPrint=0&showTabs=1&showCalendars=0&showTz=0" style="width:100%; height:550px; border:none;"></iframe>
                     </div>
-                    <div class="form-group full-col">
-                        <label>참여 인원</label>
-                        <input type="number" id="eventPeople" class="input-box" placeholder="숫자만 입력 (예: 30)">
-                    </div>
-                    <div class="form-group full-col">
-                        <label>행사 유형</label>
-                        <select id="eventType" class="input-box">
-                            <option value="세미나실 대관">세미나</option>
-                            <option value="워크숍 장소">워크숍</option>
-                        </select>
-                    </div>
-                    <button class="btn-search" onclick="searchEvent()" style="background: #393939; margin-top: 20px;">공식 행사 장소 검색</button>
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="card-title">📋 행정/사회보험</div>
-                <div class="link-list">
-                    <a href="https://www.4insure.or.kr" target="_blank" class="link-item"><span>4대사회보험 연계센터</span></a>
-                    <a href="https://www.nps.or.kr" target="_blank" class="link-item"><span>국민연금공단</span></a>
-                    <a href="https://total.comwel.or.kr/" target="_blank" class="link-item"><span>고용보험시스템</span></a>
-                    <a href="https://www.nhis.or.kr/nhis/index.do" target="_blank" class="link-item"><span>건강보험</span></a>
-                </div>
-            </div>
-
-            <div class="card db-section">
-                <div class="card-title">⭐ 우리 팀 추천 맛집/장소 리스트 (Local DB)</div>
-                <div class="db-wrapper">
-                    <div class="db-form-side">
-                        <div class="form-group">
-                            <label>장소 명칭</label>
-                            <input type="text" id="dbName" class="input-box" placeholder="식당 또는 장소 이름">
+                    <div class="card" style="border-top: 4px solid var(--gw-main);"><div class="card-header"><span id="displayUserName">사용자</span>님 일정</div>
+                        <div class="card-body">
+                            <input type="text" id="schedTitle" class="input-box" placeholder="내용 입력">
+                            <input type="date" id="schedDate" class="input-box">
+                            <button class="btn-primary" onclick="addSchedule()">일정 등록</button>
+                            <ul id="scheduleList" class="item-list" style="margin-top:15px;"></ul>
                         </div>
-                        <div class="form-group" style="margin-top:10px;">
-                            <label>특징/메모</label>
-                            <input type="text" id="dbMemo" class="input-box" placeholder="예: 룸 20석, 주차편함">
-                        </div>
-                        <button class="btn-add-db" onclick="saveToDB()">리스트에 추가하기</button>
-                    </div>
-                    <div class="db-list-side">
-                        <table class="fav-table">
-                            <thead>
-                                <tr>
-                                    <th>장소명</th>
-                                    <th>특징/메모</th>
-                                    <th>관리</th>
-                                </tr>
-                            </thead>
-                            <tbody id="dbBody">
-                                </tbody>
-                        </table>
                     </div>
                 </div>
-            </div>
+            </main>
 
-            <div class="card asset-section">
-                <div class="card-title">💻 전산 기기 자산 대장</div>
-                <div class="file-upload-zone">
-                    <input type="file" id="uploadFile" accept=".xlsx, .xls" />
-                    <span style="font-size:14px; color:var(--text-sub);">자산 목록 Excel 업로드</span>
+            <main id="page-supply">
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="card-header">🛒 비품/소모품 구매처 바로가기</div>
+                        <div class="card-body grid-2">
+                            <a href="https://coupang.com" target="_blank" class="q-link">📦 쿠팡</a>
+                            <a href="https://www.gmarket.co.kr" target="_blank" class="q-link">🛒 G마켓</a>
+                            <a href="https://www.ssg.com" target="_blank" class="q-link">🏢 SSG 닷컴</a>
+                            <a href="https://www.cofm.co.kr/" target="_blank" class="q-link">☕ 커피몰</a>
+                        </div>
+                    </div>
+                    <div class="card" style="border-top: 4px solid var(--gw-main);">
+                        <div class="card-header">📢 슬랙 구매 요청 (Admin)</div>
+                        <div class="card-body">
+                            <label style="font-size:12px;">비품 구매처 선택</label>
+                            <select id="reqShop" class="input-box">
+                                <option value="쿠팡">📦 쿠팡</option>
+                                <option value="G마켓">🛒 G마켓</option>
+                                <option value="SSG 닷컴">🏢 SSG 닷컴</option>
+                                <option value="커피몰">☕ 커피몰 (원두/차)</option>
+                            </select>
+                            <button class="btn-primary" onclick="sendSlackMessage()">구매 요청 보내기</button>
+                            <p style="font-size:11px; color:var(--text-sub); margin-top:10px;">* 상세 품목은 슬랙 채널에서 담당자에게 추가 전달 바랍니다.</p>
+                        </div>
+                    </div>
                 </div>
-                <div id="assetTable"></div>
-            </div>
-        </main>
+                <div class="card" style="border: 2px solid var(--naver-green);">
+                    <div class="card-header" style="color: var(--naver-green);">📦 네이버 택배 통합 조회</div>
+                    <div class="card-body" style="display:flex; gap:10px;">
+                        <select id="courier" class="input-box" style="flex:1;"><option>CJ대한통운</option><option>우체국택배</option><option>롯데택배</option><option>한진택배</option><option>로젠택배</option></select>
+                        <input type="text" id="trackNo" class="input-box" style="flex:2;" placeholder="운송장 번호">
+                        <button onclick="trackPackage()" class="btn-primary" style="width:100px; background:var(--naver-green);">조회하기</button>
+                    </div>
+                </div>
+            </main>
+
+            <main id="page-trip">
+                <div class="card">
+                    <div class="card-header">✈️ 출장 예약 및 이동수단</div>
+                    <div class="card-body grid-3">
+                        <a href="https://www.skyscanner.co.kr" target="_blank" class="q-link">✈️ 스카이스캐너</a>
+                        <a href="https://www.letskorail.com" target="_blank" class="q-link">🚄 KTX 코레일</a>
+                        <a href="https://kr.hotels.com/" target="_blank" class="q-link">🏨 호텔스 닷컴</a>
+                    </div>
+                </div>
+            </main>
+
+            <main id="page-insurance">
+                <div class="card">
+                    <div class="card-header">📄 4대보험 신고</div>
+                    <div class="card-body grid-2">
+                        <a href="https://www.4insure.or.kr" target="_blank" class="q-link">🏛️ 4대사회보험 정보연계센터</a>
+                        <a href="https://edi.nhis.or.kr" target="_blank" class="q-link">🏥 건강보험 EDI 시스템</a>
+                        <a href="https://total.kcomwel.or.kr" target="_blank" class="q-link">👷 고용·산재 토탈서비스</a>
+                        <a href="https://www.nps.or.kr" target="_blank" class="q-link">💰 국민연금 EDI 서비스</a>
+                        <a href="https://hometax.go.kr" target="_blank" class="q-link">🧾 국세청 홈택스</a>
+                    </div>
+                </div>
+            </main>
+
+            <main id="page-dinner">
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="card-header">🍴 회식/단체 식사 장소</div>
+                        <div class="card-body">
+                            <label style="font-size:12px;">지역</label>
+                            <input type="text" id="dinnerArea" class="input-box" placeholder="예: 판교역">
+                            <label style="font-size:12px;">메뉴 종류</label>
+                            <select id="dinnerType" class="input-box">
+                                <optgroup label="고기/구이류">
+                                    <option value="삼겹살 돼지구이">🐷 삼겹살/돼지구이</option>
+                                    <option value="소고기 한우">🐮 소고기/한우</option>
+                                    <option value="곱창 막창">🔥 곱창/막창</option>
+                                </optgroup>
+                                <optgroup label="해산물/일식">
+                                    <option value="횟집 일식">🍣 횟집/일식</option>
+                                    <option value="참치 전문점">🐟 참치회</option>
+                                    <option value="이자카야">🍶 이자카야</option>
+                                </optgroup>
+                                <optgroup label="기타">
+                                    <option value="중식 코스 요리">🥡 중식 코스</option>
+                                    <option value="이탈리안 파스타">🍝 양식</option>
+                                    <option value="한정식 코스">🍲 한정식</option>
+                                </optgroup>
+                            </select>
+                            <button class="btn-primary" onclick="searchDinner()">네이버 지도 검색</button>
+                        </div>
+                    </div>
+                    <div class="card" style="border-top: 4px solid var(--point-orange);">
+                        <div class="card-header">⭐ 회식 단골 장소</div>
+                        <div class="card-body">
+                            <div style="display:flex; gap:5px; margin-bottom:10px;">
+                                <input type="text" id="favName" class="input-box" placeholder="장소명" style="margin:0;">
+                                <button onclick="addFavorite()" style="background:var(--point-orange); color:white; border:none; border-radius:6px; padding:0 15px; cursor:pointer;">추가</button>
+                            </div>
+                            <ul id="favoriteList" class="item-list"></ul>
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            <main id="page-event">
+                <div class="card">
+                    <div class="card-header">🏢 기업 행사/워크샵 장소 </div>
+                    <div class="card-body">
+                        <div class="grid-2">
+                            <div><label style="font-size:12px;">지역</label><input type="text" id="eventArea" class="input-box" placeholder="예: 가평"></div>
+                            <div><label style="font-size:12px;">종류</label>
+                                <select id="eventType" class="input-box">
+                                    <option value="대형 워크샵 펜션">🏡 워크샵 전용 펜션</option>
+                                    <option value="호텔 컨벤션 연회장">🏨 호텔 대관/연회장</option>
+                                    <option value="대관 세미나실">🎤 세미나/강의실</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button class="btn-primary" style="background:#6366f1; margin-top:10px;" onclick="searchEvent()">행사 장소 검색</button>
+                    </div>
+                </div>
+            </main>
+        </div>
     </div>
 
     <script>
-        // 시계 및 날짜 업데이트
-        function updateTime() {
+        const ACCESS_PASSWORD = "1234";
+        const firebaseConfig = { apiKey: "...", /* 기존 본인 정보 유지 */ };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        let userNames = { slot1: "사용자 1", slot2: "사용자 2", slot3: "사용자 3" };
+
+        const SLACK_WEBHOOK_URL = "https://hooks.slack.com/services/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"; 
+
+        // --- 실시간 시간 업데이트 함수 (분/초 단위 적용) ---
+        function updateDateTime() {
             const now = new Date();
-            const dateStr = now.toLocaleDateString('ko-KR', {year:'numeric', month:'long', day:'numeric', weekday:'short'});
-            const timeStr = now.toLocaleTimeString('ko-KR', {hour12: false});
-            document.getElementById('datePart').textContent = dateStr;
-            document.getElementById('liveClock').textContent = timeStr;
-        }
-        updateTime();
-        setInterval(updateTime, 1000);
-
-        // 회식 검색
-        function searchDinner() {
-            const area = document.getElementById('dinnerArea').value.trim();
-            const people = document.getElementById('dinnerPeople').value;
-            const type = document.getElementById('dinnerType').value;
-            const needsRoom = document.getElementById('dinnerRoom').checked;
-            if (!area) { alert("지역을 입력해 주세요."); return; }
-            let query = `${area} ${type}`;
-            if (needsRoom) query += " 룸식당";
-            if (people) query += ` ${people}명`;
-            window.open(`https://map.naver.com/v5/search/${encodeURIComponent(query)}`, '_blank');
-        }
-
-        // 행사 검색
-        function searchEvent() {
-            const area = document.getElementById('eventArea').value.trim();
-            const people = document.getElementById('eventPeople').value;
-            const type = document.getElementById('eventType').value;
-            if (!area) { alert("행사 예정 지역을 입력해 주세요."); return; }
-            let query = `${area} ${type}`;
-            if (people) query += ` ${people}명`;
-            query = query.replace(/\s+/g, ' ').trim();
-            window.open(`https://map.naver.com/v5/search/${encodeURIComponent(query)}`, '_blank');
-        }
-
-        // --- 맛집/장소 DB 로직 ---
-        let favPlaces = JSON.parse(localStorage.getItem('hr_portal_favs')) || [];
-
-        function renderDB() {
-            const tbody = document.getElementById('dbBody');
-            tbody.innerHTML = '';
-            
-            if (favPlaces.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; color:#999; padding:20px;">등록된 장소가 없습니다. 자주 가는 곳을 등록해 보세요!</td></tr>';
-                return;
-            }
-
-            favPlaces.forEach((item, index) => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td><strong>${item.name}</strong></td>
-                    <td style="color:#666;">${item.memo}</td>
-                    <td>
-                        <button class="btn-mini btn-go" onclick="window.open('https://map.naver.com/v5/search/${encodeURIComponent(item.name)}', '_blank')">지도보기</button>
-                        <button class="btn-mini btn-del" onclick="deleteItem(${index})">삭제</button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
+            // 날짜 표시
+            document.getElementById('dateDisplay').textContent = now.toLocaleDateString('ko-KR', { 
+                year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' 
+            });
+            // 시간 표시 (시:분:초 형식, 24시간제)
+            document.getElementById('timeDisplay').textContent = now.toLocaleTimeString('ko-KR', { 
+                hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' 
             });
         }
+        
+        // 1초마다 업데이트 실행
+        setInterval(updateDateTime, 1000);
 
-        function saveToDB() {
-            const nameEl = document.getElementById('dbName');
-            const memoEl = document.getElementById('dbMemo');
-            
-            if(!nameEl.value.trim()) { alert('장소 명칭을 입력해 주세요.'); return; }
-            
-            favPlaces.push({
-                name: nameEl.value.trim(),
-                memo: memoEl.value.trim()
-            });
-            
-            localStorage.setItem('hr_portal_favs', JSON.stringify(favPlaces));
-            nameEl.value = '';
-            memoEl.value = '';
-            renderDB();
+        function checkPassword() {
+            if (document.getElementById('pwInput').value === ACCESS_PASSWORD) {
+                document.getElementById('loginOverlay').style.display = 'none';
+                document.getElementById('mainContent').classList.add('auth-success');
+                // 로그인 직후 시간 즉시 표시
+                updateDateTime();
+                init(); 
+            } else alert("비밀번호 오류");
         }
 
-        function deleteItem(index) {
-            if(confirm('이 장소를 리스트에서 삭제할까요?')) {
-                favPlaces.splice(index, 1);
-                localStorage.setItem('hr_portal_favs', JSON.stringify(favPlaces));
-                renderDB();
-            }
+        function showPage(id, btn) {
+            document.querySelectorAll('main').forEach(m => m.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
+            btn.classList.add('active');
         }
 
-        // 초기 실행
-        renderDB();
-
-        // 엑셀 업로드 로직
-        document.getElementById('uploadFile').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const data = new Uint8Array(e.target.result);
-                const workbook = XLSX.read(data, {type: 'array'});
-                const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-                const json = XLSX.utils.sheet_to_json(worksheet);
-                let html = '<table><thead><tr>';
-                if(json.length > 0) {
-                    Object.keys(json[0]).forEach(key => html += `<th>${key}</th>`);
-                    html += '</tr></thead><tbody>';
-                    json.forEach(row => {
-                        html += '<tr>';
-                        Object.values(row).forEach(val => html += `<td>${val}</td>`);
-                        html += '</tr>';
-                    });
+        async function init() {
+            db.collection("settings").doc("usernames").onSnapshot(doc => {
+                if(doc.exists()) {
+                    userNames = doc.data();
+                    for(let s in userNames) { if(document.getElementById(`opt-${s}`)) document.getElementById(`opt-${s}`).textContent = userNames[s]; }
+                    updateView();
                 }
-                html += '</tbody></table>';
-                document.getElementById('assetTable').innerHTML = html;
+            });
+        }
+
+        function updateView() {
+            const s = document.getElementById('userSlot').value;
+            document.getElementById('displayUserName').textContent = userNames[s];
+            renderSchedules(); renderFavorites();
+        }
+
+        async function sendSlackMessage() {
+            const shop = document.getElementById('reqShop').value; 
+            const user = document.getElementById('displayUserName').textContent;
+            const now = new Date().toLocaleString('ko-KR');
+
+            const payload = {
+                text: `📦 *비품 구매 요청 알림 (테스트)*`,
+                attachments: [{
+                    color: "#2563eb",
+                    fields: [
+                        { title: "요청자", value: user, short: true },
+                        { title: "구매처", value: shop, short: true },
+                        { title: "요청시간", value: now, short: false }
+                    ]
+                }]
             };
-            reader.readAsArrayBuffer(file);
-        });
+
+            try {
+                await fetch(SLACK_WEBHOOK_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    cache: 'no-cache',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                alert(`✅ [${shop}] 구매 요청이 슬랙으로 전송되었습니다!\n슬랙 '나와의 채팅' 채널을 확인해 보세요.`);
+            } catch (error) {
+                console.error("Slack Error:", error);
+                alert("📢 전송 중 오류가 발생했습니다.");
+            }
+        }
+
+        function trackPackage() { window.open(`https://search.naver.com/search.naver?query=${encodeURIComponent(document.getElementById('courier').value + ' ' + document.getElementById('trackNo').value)}`); }
+        function searchDinner() { window.open(`https://map.naver.com/v5/search/${encodeURIComponent(document.getElementById('dinnerArea').value + ' ' + document.getElementById('dinnerType').value)}`); }
+        function searchEvent() { window.open(`https://map.naver.com/v5/search/${encodeURIComponent(document.getElementById('eventArea').value + ' ' + document.getElementById('eventType').value)}`); }
+        function switchUser() { updateView(); }
+
+        async function renameUser() {
+            const s = document.getElementById('userSlot').value;
+            const n = prompt("새 이름:", userNames[s]);
+            if(n) { userNames[s] = n; await db.collection("settings").doc("usernames").set(userNames); }
+        }
+
+        async function addSchedule() {
+            const s = document.getElementById('userSlot').value;
+            const t = document.getElementById('schedTitle').value;
+            const d = document.getElementById('schedDate').value;
+            if(t && d) await db.collection("schedules").add({ slot:s, title:t, date:d });
+            document.getElementById('schedTitle').value = "";
+        }
+
+        function renderSchedules() {
+            const s = document.getElementById('userSlot').value;
+            db.collection("schedules").where("slot","==",s).onSnapshot(qs => {
+                document.getElementById('scheduleList').innerHTML = qs.docs.map(doc => `<li class="list-item"><span><b>${doc.data().date}</b> ${doc.data().title}</span><button onclick="db.collection('schedules').doc('${doc.id}').delete()">×</button></li>`).join('');
+            });
+        }
+
+        async function addFavorite() {
+            const s = document.getElementById('userSlot').value;
+            const n = document.getElementById('favName').value;
+            if(n) await db.collection("favorites").add({ slot:s, name:n });
+            document.getElementById('favName').value = "";
+        }
+
+        function renderFavorites() {
+            const s = document.getElementById('userSlot').value;
+            db.collection("favorites").where("slot","==",s).onSnapshot(qs => {
+                document.getElementById('favoriteList').innerHTML = qs.docs.map(doc => `<li class="list-item"><span>${doc.data().name}</span><button onclick="db.collection('favorites').doc('${doc.id}').delete()">×</button></li>`).join('');
+            });
+        }
     </script>
 </body>
 </html>
