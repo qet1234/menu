@@ -71,11 +71,7 @@
         .err-box strong{color:#fff;font-weight:600}
         .err-box a{color:var(--c-p500);text-decoration:underline;cursor:pointer}
 
-        .fbs{margin-top:.75rem;text-align:center;font-size:.75rem;cursor:pointer;text-decoration:underline;transition:color .2s}
-
-        .dv{position:relative;margin:1.5rem 0;text-align:center}
-        .dv::before{content:'';position:absolute;top:50%;left:0;right:0;height:1px;background:var(--c-s600)}
-        .dv span{position:relative;padding:0 1rem;font-size:.875rem;color:var(--c-s400);background:rgba(20,27,40,.9)}
+        .fbs{margin-top:1.25rem;text-align:center;font-size:.75rem;cursor:pointer;text-decoration:underline;transition:color .2s}
 
         .ff{margin-bottom:1rem}
         .ff>label{display:block;font-size:.875rem;font-weight:500;color:var(--c-s300);margin-bottom:.5rem}
@@ -86,8 +82,6 @@
         .fi2w::placeholder{color:var(--c-s400)}
         .fi2w:focus{border-color:var(--c-p500);box-shadow:0 0 0 3px rgba(14,165,233,.15)}
         textarea.fi2{resize:vertical;min-height:180px;line-height:1.7}
-        .lsub{width:100%;padding:.75rem;background:var(--grad);border-radius:.625rem;font-size:1rem;font-weight:600;color:#fff;margin-top:1.5rem;transition:all .3s}
-        .lsub:hover{box-shadow:0 4px 15px rgba(139,92,246,.3);transform:translateY(-1px)}
         .lfooter{text-align:center;font-size:.75rem;color:var(--c-s500);margin-top:1.5rem}
 
         .mb{position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;padding:1rem;z-index:50;animation:fi .2s ease-out}
@@ -223,14 +217,7 @@
         </button>
         <div id="errBox" class="err-box"></div>
         <p id="fbStat" class="fbs" style="color:var(--c-s400)" onclick="App.ui.showFbModal()">⚙️ Firebase 설정 — 클릭하여 설정</p>
-
-        <div class="dv"><span>또는</span></div>
-        <form onsubmit="return false">
-            <div class="ff"><label for="lName">이름</label><input class="fi2" type="text" id="lName" placeholder="홍길동" value="홍길동" autocomplete="name"></div>
-            <div class="ff"><label for="lEmail">이메일</label><input class="fi2" type="email" id="lEmail" placeholder="user@company.com" value="user@company.com" autocomplete="email"></div>
-            <button class="lsub" type="button" onclick="App.auth.loginForm()">로그인</button>
-        </form>
-        <p class="lfooter">Google 로그인 또는 간편 로그인으로 시작하세요</p>
+        <p class="lfooter">Google 계정으로 안전하게 로그인하세요</p>
     </div>
 </div>
 </div>
@@ -263,7 +250,6 @@
         </div>
     </div>
     <div class="ma"><button class="bp" onclick="App.fb.save()">설정 완료</button><button class="bs" onclick="App.ui.hideFbModal()">취소</button></div>
-    <p class="mtip">💡 Firebase 없이도 간편 로그인을 사용할 수 있습니다</p>
 </div>
 </div>
 
@@ -337,8 +323,7 @@ const U={
     curMonth(s){const d=new Date(s),n=new Date();return d.getMonth()===n.getMonth()&&d.getFullYear()===n.getFullYear()},
     uid(){return Date.now().toString(36)+Math.random().toString(36).substr(2,8)},
     esc(s){if(!s)return'';const d=document.createElement('div');d.textContent=s;return d.innerHTML},
-    trunc(s,m=80){return(!s||s.length<=m)?s||'':s.substring(0,m)+'…'},
-    decJwt(t){try{const b=t.split('.')[1].replace(/-/g,'+').replace(/_/g,'/');return JSON.parse(decodeURIComponent(atob(b).split('').map(c=>'%'+('00'+c.charCodeAt(0).toString(16)).slice(-2)).join('')))}catch{return null}}
+    trunc(s,m=80){return(!s||s.length<=m)?s||'':s.substring(0,m)+'…'}
 };
 
 const LS={_p:'wh_',get(k){try{const v=localStorage.getItem(this._p+k);return v?JSON.parse(v):null}catch{return null}},set(k,v){try{localStorage.setItem(this._p+k,JSON.stringify(v))}catch{}},rm(k){try{localStorage.removeItem(this._p+k)}catch{}}};
@@ -347,10 +332,8 @@ const S={user:null,pg:'dashboard',notices:[],att:[],today:null,editId:null,sbOpe
 
 const T={init(){this._c=$('tc')},show(m,t='inf',d=3500){const e=document.createElement('div');e.className=`tt ${t}`;e.textContent=m;this._c.appendChild(e);setTimeout(()=>{e.classList.add('rm');e.addEventListener('animationend',()=>e.remove())},d)},ok(m){this.show(m,'ok')},er(m){this.show(m,'er',5000)},inf(m){this.show(m,'inf')}};
 
-// ── Firebase + Google Identity Services ──
 const FB={
     _auth:null,
-
     load(){
         const c=LS.get('fb_cfg2');
         if(c&&c.apiKey&&c.authDomain&&c.projectId&&c.clientId){
@@ -359,7 +342,6 @@ const FB={
         }
         return false;
     },
-
     save(){
         const apiKey=$('cfgKey').value.trim(),
               authDomain=$('cfgDomain').value.trim(),
@@ -371,15 +353,12 @@ const FB={
         S.clientId=clientId;
         if(this._init(c)){UI.hideFbModal();T.ok('설정 완료! Google 로그인을 사용할 수 있습니다.')}
     },
-
     _init(c){
         try{
             try{firebase.app().delete().catch(()=>{})}catch{}
             firebase.initializeApp({apiKey:c.apiKey,authDomain:c.authDomain,projectId:c.projectId});
             this._auth=firebase.auth();
             this._auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
-
-            // 자동 로그인 감지
             this._auth.onAuthStateChanged(user=>{
                 if(user&&!S.user){
                     S.user={name:user.displayName||user.email.split('@')[0],email:user.email,picture:user.photoURL||null,uid:user.uid,provider:'google'};
@@ -387,10 +366,8 @@ const FB={
                     AUTH._onLogin();
                 }
             });
-
             S.fbReady=true;
             UI.updateFbStat(true);
-            console.log('[FB] OK');
             return true;
         }catch(e){
             console.error('[FB]',e);
@@ -402,67 +379,38 @@ const FB={
     }
 };
 
-// ── Auth ──
 const AUTH={
-    loginForm(){
-        const name=$('lName').value.trim(),email=$('lEmail').value.trim();
-        if(!name||!email){T.er('이름과 이메일을 입력해주세요.');return}
-        if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){T.er('올바른 이메일 형식을 입력해주세요.');return}
-        S.user={name,email,picture:null,provider:'form'};
-        LS.set('sess',S.user);UI.hideErrBox();this._onLogin();
-    },
-
-    /**
-     * 핵심 변경: signInWithPopup 대신
-     * Google Identity Services로 토큰 → signInWithCredential
-     * iframe, 특수환경 모두 동작
-     */
     loginGoogle(){
         if(!S.fbReady||!S.clientId){T.inf('먼저 Firebase 설정이 필요합니다.');UI.showFbModal();return}
-
         const btn=$('gBtn'),txt=$('gBtnTxt');
         btn.disabled=true;
         txt.innerHTML='<span class="spinner"></span> Google 로그인 준비 중...';
         UI.hideErrBox();
-
         try{
-            // Google Identity Services — One Tap이 아닌 버튼 클릭 방식
             if(!window.google||!window.google.accounts){
                 UI.showErrBox('<strong>⚠️ Google 라이브러리 로드 실패</strong><br>페이지를 새로고침해주세요.');
                 btn.disabled=false;txt.textContent='Google 계정으로 로그인';
                 return;
             }
-
             google.accounts.id.initialize({
-                client_id: S.clientId,
-                callback: (response)=> this._handleGoogleCredential(response),
-                auto_select: false,
-                cancel_on_tap_outside: true,
+                client_id:S.clientId,
+                callback:(response)=>this._handleGoogleCredential(response),
+                auto_select:false,
+                cancel_on_tap_outside:true,
             });
-
-            // prompt를 직접 호출 — 계정 선택 UI가 뜸
             google.accounts.id.prompt((notification)=>{
                 if(notification.isNotDisplayed()){
-                    const reason=notification.getNotDisplayedReason();
-                    console.log('[GIS] Not displayed:',reason);
-
-                    // prompt가 안 뜨면 수동 버튼 렌더링으로 fallback
                     this._fallbackRenderButton();
-                } else if(notification.isSkippedMoment()){
-                    console.log('[GIS] Skipped:',notification.getSkippedReason());
+                }else if(notification.isSkippedMoment()){
                     this._fallbackRenderButton();
-                } else if(notification.isDismissedMoment()){
-                    console.log('[GIS] Dismissed:',notification.getDismissedReason());
+                }else if(notification.isDismissedMoment()){
                     btn.disabled=false;
                     txt.textContent='Google 계정으로 로그인';
-                    if(notification.getDismissedReason()==='credential_returned'){
-                        // 성공 — callback이 처리
-                    } else {
+                    if(notification.getDismissedReason()!=='credential_returned'){
                         T.inf('로그인이 취소되었습니다.');
                     }
                 }
             });
-
         }catch(e){
             console.error('[Auth]',e);
             UI.showErrBox(`<strong>❌ 오류 발생</strong><br>${U.esc(e.message)}`);
@@ -471,61 +419,36 @@ const AUTH={
         }
     },
 
-    /** prompt 안 뜰 때: 화면에 구글 로그인 버튼 직접 렌더 */
     _fallbackRenderButton(){
-        const btn=$('gBtn'),txt=$('gBtnTxt');
-
-        // 기존 버튼을 구글 렌더 버튼으로 교체
+        const btn=$('gBtn');
         const container=document.createElement('div');
         container.id='gsiButtonWrap';
         container.style.cssText='display:flex;justify-content:center;margin-bottom:.5rem';
         btn.parentNode.insertBefore(container,btn);
         btn.style.display='none';
-
         google.accounts.id.renderButton(container,{
-            theme:'outline',
-            size:'large',
-            width:380,
-            text:'signin_with',
-            locale:'ko'
+            theme:'outline',size:'large',width:380,text:'signin_with',locale:'ko'
         });
-
-        // 안내 메시지
         UI.showErrBox('<strong>👆 위 Google 버튼을 클릭해주세요</strong><br>현재 환경에서는 Google 공식 로그인 버튼을 사용해야 합니다.');
     },
 
-    /** GIS에서 credential 받은 후 Firebase 로그인 */
     async _handleGoogleCredential(response){
         const btn=$('gBtn'),txt=$('gBtnTxt');
-
-        // gsiButtonWrap이 있으면 원복
         const wrap=document.getElementById('gsiButtonWrap');
         if(wrap){wrap.remove();btn.style.display='';}
-
         btn.disabled=true;
         txt.innerHTML='<span class="spinner"></span> 로그인 처리 중...';
         UI.hideErrBox();
-
         try{
             const idToken=response.credential;
-
-            // Firebase에 credential로 로그인 (팝업/리다이렉트 필요 없음!)
             const credential=firebase.auth.GoogleAuthProvider.credential(idToken);
             const result=await FB._auth.signInWithCredential(credential);
             const u=result.user;
-
-            S.user={
-                name:u.displayName||u.email.split('@')[0],
-                email:u.email,
-                picture:u.photoURL||null,
-                uid:u.uid,
-                provider:'google'
-            };
+            S.user={name:u.displayName||u.email.split('@')[0],email:u.email,picture:u.photoURL||null,uid:u.uid,provider:'google'};
             LS.set('sess',S.user);
             this._onLogin();
-
         }catch(e){
-            console.error('[Auth] Firebase credential error:',e);
+            console.error('[Auth]',e);
             let html=`<strong>❌ Firebase 인증 실패</strong><br><br>오류: ${U.esc(e.code||'')}<br>${U.esc(e.message||'')}`;
             if(e.code==='auth/invalid-api-key'){
                 html+=`<br><br><a onclick="App.ui.showFbModal()">Firebase 설정 다시 하기</a>`;
@@ -546,31 +469,18 @@ const AUTH={
     },
 
     async logout(){
-        // Firebase 로그아웃
         if(S.fbReady&&FB._auth){try{await FB._auth.signOut()}catch{}}
-        // Google 자동선택 해제
         if(window.google&&window.google.accounts){
             try{google.accounts.id.disableAutoSelect()}catch{}
         }
         S.user=null;S.notices=[];S.att=[];S.today=null;S.pg='dashboard';
         LS.rm('sess');
-
-        // fallback 버튼 정리
         const wrap=document.getElementById('gsiButtonWrap');
         if(wrap){wrap.remove();$('gBtn').style.display='';}
-
         UI.showLogin();T.inf('로그아웃되었습니다.');
-    },
-
-    restore(){
-        if(S.fbReady)return false;
-        const s=LS.get('sess');
-        if(s&&s.name&&s.email&&s.provider==='form'){S.user=s;this._onLogin();return true}
-        return false;
     }
 };
 
-// ── Router ──
 const RT={
     _p:['dashboard','notices','attendance'],
     _el:{dashboard:'pgDash',notices:'pgNot',attendance:'pgAtt'},
@@ -583,7 +493,6 @@ const RT={
     }
 };
 
-// ── Notices ──
 const NT={
     _load(){S.notices=LS.get('notices')||[]},_save(){LS.set('notices',S.notices)},
     open(id=null){S.editId=id;const t=$('nTi'),c=$('nCo');if(id){const n=S.notices.find(x=>x.id===id);if(!n)return;t.value=n.title;c.value=n.content;$('nmT').textContent='공지사항 수정';$('nmS').textContent='수정'}else{t.value='';c.value='';$('nmT').textContent='새 공지사항';$('nmS').textContent='등록'}$('nModal').hidden=false;t.focus()},
@@ -592,7 +501,6 @@ const NT={
     del(id){UI.showCfm('이 공지사항을 삭제하시겠습니까?',()=>{S.notices=S.notices.filter(n=>n.id!==id);this._save();UI.rNot();T.ok('삭제되었습니다.')})}
 };
 
-// ── Attendance ──
 const AT={
     _k(){return S.user?`att_${S.user.email}`:null},
     _load(){const k=this._k();S.att=k?(LS.get(k)||[]):[]},
@@ -602,7 +510,6 @@ const AT={
     checkOut(){if(!S.today){T.er('출근 기록이 없습니다.');return}if(S.today.checkOut){T.er('이미 퇴근 처리되었습니다.');return}S.today.checkOut=U.fmtT();this._save();UI.rAtt();UI.rDash();T.ok('퇴근 기록 완료!')}
 };
 
-// ── UI ──
 const UI={
     showApp(){$('pgLogin').hidden=true;$('app').hidden=false;this.rHeader()},
     showLogin(){$('pgLogin').hidden=false;$('app').hidden=true},
@@ -647,10 +554,8 @@ function init(){
     FB.load();
     const cfg=LS.get('fb_cfg2');
     if(cfg){$('cfgKey').value=cfg.apiKey||'';$('cfgDomain').value=cfg.authDomain||'';$('cfgProject').value=cfg.projectId||'';$('cfgClientId').value=cfg.clientId||''}
-    AUTH.restore();
     document.addEventListener('keydown',e=>{if(e.key==='Escape'){$('fbModal').hidden=true;$('nModal').hidden=true;$('cfmD').hidden=true}});
     ['fbModal','nModal','cfmD'].forEach(id=>{$(id).addEventListener('click',e=>{if(e.target===e.currentTarget)e.currentTarget.hidden=true})});
-    console.log('[WorkHub] Ready');
 }
 
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
