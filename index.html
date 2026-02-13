@@ -786,8 +786,9 @@ const App = (() => {
     };
 
     const notices = {
-        _load() { state.notices = storage.get('notices') || []; },
-        _save() { storage.set('notices', state.notices); },
+        _key() { return state.user ? `notices_${state.user.email}` : 'notices'; },
+        _load() { state.notices = storage.get(this._key()) || []; },
+        _save() { storage.set(this._key(), state.notices); },
 
         open(id = null) {
             state.editId = id;
