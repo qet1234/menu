@@ -34,12 +34,11 @@
             --hh:64px;--sw:256px;
             --ease-out:cubic-bezier(.4,0,.2,1);
         }
-
         *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
         html{-webkit-font-smoothing:antialiased}
         body{font-family:var(--ff);font-size:1rem;color:var(--c-s800);background:var(--c-s50);line-height:1.6;min-height:100vh;overflow-x:hidden}
         button{font-family:var(--ff);cursor:pointer;border:none;background:none}
-        input,textarea{font-family:var(--ff);border:none;outline:none}
+        input,textarea,select{font-family:var(--ff);border:none;outline:none}
         img{max-width:100%;display:block}
         [hidden]{display:none!important}
         .logo{font-family:var(--fd)}
@@ -53,11 +52,11 @@
         @keyframes pulse{0%,100%{opacity:.4}50%{opacity:1}}
         @keyframes bounceIn{0%{opacity:0;transform:scale(.3)}50%{transform:scale(1.05)}70%{transform:scale(.9)}100%{opacity:1;transform:scale(1)}}
         @keyframes fabPulse{0%{box-shadow:0 8px 32px rgba(139,92,246,.45)}50%{box-shadow:0 8px 32px rgba(139,92,246,.7),0 0 0 12px rgba(139,92,246,.1)}100%{box-shadow:0 8px 32px rgba(139,92,246,.45)}}
+        @keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
 
         .anim-slide-up{animation:slideUp .5s ease-out both}
         .anim-slide-right{animation:slideRight .4s ease-out both}
 
-        /* TOAST */
         .toast-container{position:fixed;top:1rem;right:1rem;z-index:9999;display:flex;flex-direction:column;gap:.5rem;pointer-events:none}
         .toast{pointer-events:auto;display:flex;align-items:center;gap:.75rem;padding:.75rem 1.25rem;border-radius:.625rem;font-size:.875rem;font-weight:500;max-width:420px;box-shadow:0 20px 25px -5px rgba(0,0,0,.1);animation:toastIn .3s ease-out both}
         .toast--removing{animation:toastOut .25s ease-in both}
@@ -65,7 +64,6 @@
         .toast--error{background:var(--c-err600);color:#fff}
         .toast--info{background:var(--c-s800);color:#fff}
 
-        /* LOGIN */
         .login{min-height:100vh;background:linear-gradient(135deg,var(--c-s900),var(--c-s800),var(--c-s900));display:flex;align-items:center;justify-content:center;padding:1rem;position:relative;overflow:hidden}
         .login::before{content:'';position:absolute;inset:-50%;width:200%;height:200%;background:radial-gradient(ellipse at 25% 15%,rgba(14,165,233,.07),transparent 50%),radial-gradient(ellipse at 75% 85%,rgba(139,92,246,.07),transparent 50%);pointer-events:none}
         .login__wrapper{width:100%;max-width:440px;position:relative;z-index:1}
@@ -84,9 +82,8 @@
         .login__error strong{color:#fff;font-weight:600}
         .login__footer{text-align:center;font-size:.75rem;color:var(--c-s500);margin-top:1.5rem}
 
-        /* HEADER */
         .header{background:#fff;border-bottom:1px solid var(--c-s200);position:sticky;top:0;z-index:20;box-shadow:0 1px 2px rgba(0,0,0,.05);height:var(--hh)}
-        .header__inner{max-width:1280px;margin:0 auto;padding:0 1rem;display:flex;justify-content:space-between;align-items:center;height:100%}
+        .header__inner{max-width:1440px;margin:0 auto;padding:0 1rem;display:flex;justify-content:space-between;align-items:center;height:100%}
         .header__left{display:flex;align-items:center;gap:1rem}
         .header__menu{display:none;padding:.5rem;border-radius:.5rem;color:var(--c-s600)}
         .header__menu:hover{background:var(--c-s100)}
@@ -103,7 +100,6 @@
 
         .app-layout{display:flex}
 
-        /* SIDEBAR */
         .sidebar{width:var(--sw);background:#fff;border-right:1px solid var(--c-s200);min-height:calc(100vh - var(--hh));padding:1rem;flex-shrink:0;transition:transform .3s var(--ease-out)}
         .sidebar__nav{display:flex;flex-direction:column;gap:.25rem}
         .sidebar__link{width:100%;display:flex;align-items:center;gap:.75rem;padding:.75rem 1rem;border-radius:.625rem;font-size:.875rem;font-weight:500;color:var(--c-s500);transition:all .2s}
@@ -112,7 +108,7 @@
         .sidebar__link svg{width:20px;height:20px;flex-shrink:0}
         .sidebar__overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:29}
 
-        .main{flex:1;padding:2rem;max-width:1024px;min-width:0}
+        .main{flex:1;padding:2rem;max-width:1100px;min-width:0}
         .page-title{font-size:1.875rem;font-weight:700;color:var(--c-s900);margin-bottom:2rem}
         .page-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem}
         .page-header .page-title{margin-bottom:0}
@@ -121,7 +117,7 @@
         .card--hover:hover{transform:translateY(-3px);box-shadow:0 10px 15px -3px rgba(0,0,0,.08)}
         .card__body{padding:1.5rem}
 
-        .stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.5rem;margin-bottom:2rem}
+        .stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-bottom:2rem}
         .stat__header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
         .stat__label{font-size:1rem;font-weight:600;color:var(--c-s900)}
         .stat__icon svg{width:32px;height:32px}
@@ -177,6 +173,7 @@
         .form-input::placeholder{color:var(--c-s400)}
         .form-input:focus{border-color:var(--c-p500);box-shadow:0 0 0 3px rgba(14,165,233,.15)}
         textarea.form-input{resize:vertical;min-height:180px;line-height:1.7}
+        select.form-input{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%2394a3b8' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 1rem center}
         .modal__actions{display:flex;gap:.75rem;margin-top:1.5rem}
         .modal__actions button{flex:1;padding:.75rem;border-radius:.625rem;font-size:.875rem;font-weight:600;transition:all .2s}
         .btn-primary{background:var(--grad);color:#fff}
@@ -185,209 +182,144 @@
         .btn-secondary:hover{background:var(--c-s300)}
         .btn-danger{background:var(--c-err500);color:#fff}
 
+        /* ===== DINING FINDER ===== */
+        .dining-hero{
+            background:linear-gradient(135deg,#f97316,#ef4444,#ec4899);
+            border-radius:1.25rem;padding:2rem;color:#fff;margin-bottom:2rem;
+            position:relative;overflow:hidden;
+        }
+        .dining-hero::before{
+            content:'';position:absolute;top:-50%;right:-20%;width:300px;height:300px;
+            background:rgba(255,255,255,.08);border-radius:50%;
+        }
+        .dining-hero::after{
+            content:'';position:absolute;bottom:-30%;left:-10%;width:200px;height:200px;
+            background:rgba(255,255,255,.05);border-radius:50%;
+        }
+        .dining-hero h2{font-size:1.5rem;font-weight:800;position:relative;z-index:1;margin-bottom:.25rem}
+        .dining-hero p{font-size:.875rem;opacity:.9;position:relative;z-index:1}
+
+        .dining-form{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:2rem}
+        .dining-form .form-group{margin-bottom:0}
+
+        .food-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-bottom:0}
+        .food-chip{
+            display:flex;flex-direction:column;align-items:center;gap:.5rem;
+            padding:1rem .5rem;background:#fff;border:2px solid var(--c-s200);
+            border-radius:.875rem;cursor:pointer;transition:all .25s var(--ease-out);
+            font-size:.8125rem;font-weight:500;color:var(--c-s600);
+        }
+        .food-chip:hover{border-color:var(--c-p500);color:var(--c-p600);transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.08)}
+        .food-chip--active{
+            border-color:var(--c-or500);background:linear-gradient(135deg,#fff7ed,#fff1f2);
+            color:var(--c-or500);font-weight:600;
+            box-shadow:0 4px 15px rgba(249,115,22,.2);
+        }
+        .food-chip__icon{font-size:1.75rem;line-height:1}
+        .food-chip__name{font-size:.75rem;text-align:center;line-height:1.3}
+
+        .dining-search-btn{
+            width:100%;padding:1rem;background:linear-gradient(135deg,#f97316,#ef4444);
+            border-radius:.875rem;color:#fff;font-size:1.0625rem;font-weight:700;
+            display:flex;align-items:center;justify-content:center;gap:.75rem;
+            box-shadow:0 8px 25px rgba(249,115,22,.35);transition:all .25s;
+            margin-top:1.5rem;
+        }
+        .dining-search-btn:hover{transform:translateY(-2px);box-shadow:0 12px 35px rgba(249,115,22,.45)}
+        .dining-search-btn:disabled{opacity:.6;transform:none;cursor:wait}
+        .dining-search-btn svg{width:22px;height:22px}
+
+        .dining-recent{margin-top:2rem}
+        .dining-recent h3{font-size:1.125rem;font-weight:700;color:var(--c-s900);margin-bottom:1rem}
+        .dining-history{display:flex;flex-wrap:wrap;gap:.5rem}
+        .dining-history-chip{
+            padding:.5rem 1rem;background:var(--c-s100);border-radius:2rem;
+            font-size:.75rem;color:var(--c-s600);font-weight:500;
+            cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:.375rem;
+        }
+        .dining-history-chip:hover{background:var(--c-s200);color:var(--c-s800)}
+        .dining-history-chip svg{width:14px;height:14px}
+
+        .dining-result-info{
+            margin-top:1.5rem;padding:1rem 1.25rem;
+            background:var(--c-ok100);border-radius:.75rem;
+            font-size:.875rem;color:var(--c-ok800);font-weight:500;
+            display:flex;align-items:center;gap:.75rem;
+        }
+        .dining-result-info svg{width:20px;height:20px;flex-shrink:0}
+
+        .people-btns{display:flex;gap:.5rem;flex-wrap:wrap}
+        .people-btn{
+            padding:.625rem 1.25rem;background:#fff;border:2px solid var(--c-s200);
+            border-radius:.625rem;font-size:.8125rem;font-weight:500;color:var(--c-s600);
+            transition:all .2s;cursor:pointer;
+        }
+        .people-btn:hover{border-color:var(--c-p500);color:var(--c-p600)}
+        .people-btn--active{
+            border-color:var(--c-p500);background:var(--c-p50);
+            color:var(--c-p600);font-weight:600;
+        }
+
         /* ===== CHATBOT ===== */
-        #chatbotContainer {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            z-index: 9990;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-        }
+        #chatbotContainer{position:fixed;bottom:24px;right:24px;z-index:9990;display:flex;flex-direction:column;align-items:flex-end}
+        .chatbot-fab{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#0ea5e9,#8b5cf6);color:#fff;border:none;cursor:pointer;box-shadow:0 8px 32px rgba(139,92,246,.45);font-size:1.6rem;display:flex;align-items:center;justify-content:center;transition:all .3s ease;animation:fabPulse 3s ease-in-out infinite;position:relative}
+        .chatbot-fab:hover{transform:scale(1.12) rotate(5deg);box-shadow:0 12px 40px rgba(139,92,246,.6)}
+        .chatbot-fab__badge{position:absolute;top:-4px;right:-4px;width:22px;height:22px;background:#ef4444;border-radius:50%;font-size:.7rem;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;border:2.5px solid #fff;animation:bounceIn .4s ease-out}
+        .chatbot-fab__tooltip{position:absolute;right:calc(100% + 12px);top:50%;transform:translateY(-50%);background:var(--c-s800);color:#fff;padding:.5rem .875rem;border-radius:.5rem;font-size:.75rem;font-weight:500;white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,.15);animation:fadeIn .3s ease-out;pointer-events:none}
+        .chatbot-fab__tooltip::after{content:'';position:absolute;top:50%;right:-6px;transform:translateY(-50%);border:6px solid transparent;border-left-color:var(--c-s800)}
 
-        .chatbot-fab {
-            width: 64px; height: 64px; border-radius: 50%;
-            background: linear-gradient(135deg, #0ea5e9, #8b5cf6);
-            color: #fff; border: none; cursor: pointer;
-            box-shadow: 0 8px 32px rgba(139,92,246,.45);
-            font-size: 1.6rem;
-            display: flex; align-items: center; justify-content: center;
-            transition: all .3s ease;
-            animation: fabPulse 3s ease-in-out infinite;
-            position: relative;
-        }
-        .chatbot-fab:hover {
-            transform: scale(1.12) rotate(5deg);
-            box-shadow: 0 12px 40px rgba(139,92,246,.6);
-        }
-        .chatbot-fab__badge {
-            position: absolute; top: -4px; right: -4px;
-            width: 22px; height: 22px;
-            background: #ef4444; border-radius: 50%;
-            font-size: .7rem; font-weight: 700; color: #fff;
-            display: flex; align-items: center; justify-content: center;
-            border: 2.5px solid #fff;
-            animation: bounceIn .4s ease-out;
-        }
-        .chatbot-fab__tooltip {
-            position: absolute; right: calc(100% + 12px); top: 50%; transform: translateY(-50%);
-            background: var(--c-s800); color: #fff; padding: .5rem .875rem;
-            border-radius: .5rem; font-size: .75rem; font-weight: 500;
-            white-space: nowrap;
-            box-shadow: 0 4px 12px rgba(0,0,0,.15);
-            animation: fadeIn .3s ease-out;
-            pointer-events: none;
-        }
-        .chatbot-fab__tooltip::after {
-            content: ''; position: absolute; top: 50%; right: -6px;
-            transform: translateY(-50%);
-            border: 6px solid transparent; border-left-color: var(--c-s800);
-        }
+        .chat-window{width:400px;max-height:600px;background:#fff;border-radius:1.25rem;box-shadow:0 25px 60px -12px rgba(0,0,0,.3);border:1px solid var(--c-s200);display:none;flex-direction:column;overflow:hidden;margin-bottom:.875rem;animation:slideUp .3s ease-out}
+        .chat-window--open{display:flex}
+        .chat-header{padding:1rem 1.25rem;background:linear-gradient(135deg,#0ea5e9,#8b5cf6);color:#fff;display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
+        .chat-header__left{display:flex;align-items:center;gap:.75rem}
+        .chat-header__avatar{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:1.2rem}
+        .chat-header__info h4{font-size:.9375rem;font-weight:700}
+        .chat-header__info span{font-size:.7rem;opacity:.85;display:flex;align-items:center;gap:.3rem}
+        .chat-header__info span::before{content:'';width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block}
+        .chat-header__close{color:#fff;font-size:1.5rem;padding:.25rem .5rem;border-radius:.375rem;transition:background .2s;line-height:1;cursor:pointer;border:none;background:none}
+        .chat-header__close:hover{background:rgba(255,255,255,.15)}
+        .chat-messages{flex:1;overflow-y:auto;padding:1rem;display:flex;flex-direction:column;gap:.5rem;max-height:370px;min-height:280px;scrollbar-width:thin;scrollbar-color:var(--c-s300) transparent}
+        .chat-messages::-webkit-scrollbar{width:5px}
+        .chat-messages::-webkit-scrollbar-track{background:transparent}
+        .chat-messages::-webkit-scrollbar-thumb{background:var(--c-s300);border-radius:3px}
+        .chat-msg{max-width:88%;animation:slideUp .25s ease-out}
+        .chat-msg--bot{align-self:flex-start}
+        .chat-msg--user{align-self:flex-end}
+        .chat-msg__bubble{padding:.75rem 1rem;border-radius:.875rem;font-size:.8125rem;line-height:1.65;word-break:break-word}
+        .chat-msg--bot .chat-msg__bubble{background:var(--c-s100);color:var(--c-s800);border-bottom-left-radius:.25rem}
+        .chat-msg--user .chat-msg__bubble{background:linear-gradient(135deg,#0ea5e9,#8b5cf6);color:#fff;border-bottom-right-radius:.25rem}
+        .chat-msg__time{font-size:.65rem;color:var(--c-s400);margin-top:.2rem;padding:0 .25rem}
+        .chat-msg--user .chat-msg__time{text-align:right}
+        .chat-msg__bubble b{font-weight:600}
+        .chat-msg__bubble code{background:rgba(0,0,0,.06);padding:.125rem .375rem;border-radius:.25rem;font-size:.75rem}
+        .chat-typing{align-self:flex-start;display:flex;gap:.3rem;padding:.75rem 1rem;animation:fadeIn .3s}
+        .chat-typing span{width:8px;height:8px;border-radius:50%;background:var(--c-s400);animation:pulse 1.4s infinite}
+        .chat-typing span:nth-child(2){animation-delay:.2s}
+        .chat-typing span:nth-child(3){animation-delay:.4s}
+        .chat-suggestions{display:flex;flex-wrap:wrap;gap:.375rem;padding:.625rem 1rem;border-top:1px solid var(--c-s100);background:var(--c-s50);flex-shrink:0}
+        .chat-suggest-btn{padding:.375rem .75rem;background:#fff;border:1px solid var(--c-s200);border-radius:2rem;font-size:.7rem;color:var(--c-s600);font-weight:500;transition:all .2s;white-space:nowrap;cursor:pointer}
+        .chat-suggest-btn:hover{border-color:var(--c-p500);color:var(--c-p500);background:var(--c-p50)}
+        .chat-input-area{padding:.75rem;border-top:1px solid var(--c-s200);display:flex;gap:.5rem;background:#fff;flex-shrink:0}
+        .chat-input{flex:1;padding:.625rem 1rem;border:1.5px solid var(--c-s200);border-radius:.75rem;font-size:.8125rem;font-family:var(--ff);outline:none;transition:border-color .2s;background:var(--c-s50)}
+        .chat-input:focus{border-color:var(--c-p500);background:#fff}
+        .chat-send{padding:.625rem 1rem;background:linear-gradient(135deg,#0ea5e9,#8b5cf6);color:#fff;border-radius:.75rem;font-size:.8125rem;font-weight:600;font-family:var(--ff);transition:all .2s;display:flex;align-items:center;gap:.375rem;cursor:pointer;border:none}
+        .chat-send:hover{box-shadow:0 4px 12px rgba(139,92,246,.3);transform:translateY(-1px)}
+        .chat-send:disabled{opacity:.5;transform:none;box-shadow:none;cursor:not-allowed}
+        .chat-send svg{width:16px;height:16px}
+        .chat-notice-card{background:#fff;border:1px solid var(--c-s200);border-radius:.625rem;padding:.75rem;margin-top:.5rem}
+        .chat-notice-card__title{font-size:.8125rem;font-weight:700;color:var(--c-s900);margin-bottom:.25rem}
+        .chat-notice-card__content{font-size:.75rem;color:var(--c-s500);line-height:1.5}
+        .chat-notice-card__meta{font-size:.65rem;color:var(--c-s400);margin-top:.375rem;display:flex;gap:.5rem}
+        .chat-notice-card__actions{display:flex;gap:.375rem;margin-top:.5rem}
+        .chat-notice-card__actions button{padding:.25rem .625rem;border-radius:.375rem;font-size:.7rem;font-weight:600;transition:all .15s;cursor:pointer;border:none}
+        .chat-action-edit{background:var(--c-p50);color:var(--c-p600)}
+        .chat-action-edit:hover{background:var(--c-p100)}
+        .chat-action-delete{background:var(--c-err50);color:var(--c-err600)}
+        .chat-action-delete:hover{background:rgba(239,68,68,.15)}
+        .chat-action-view{background:var(--c-s100);color:var(--c-s600)}
+        .chat-action-view:hover{background:var(--c-s200)}
 
-        .chat-window {
-            width: 400px; max-height: 600px;
-            background: #fff; border-radius: 1.25rem;
-            box-shadow: 0 25px 60px -12px rgba(0,0,0,.3);
-            border: 1px solid var(--c-s200);
-            display: none; flex-direction: column;
-            overflow: hidden; margin-bottom: .875rem;
-            animation: slideUp .3s ease-out;
-        }
-        .chat-window--open { display: flex; }
-
-        .chat-header {
-            padding: 1rem 1.25rem;
-            background: linear-gradient(135deg, #0ea5e9, #8b5cf6);
-            color: #fff; display: flex;
-            justify-content: space-between; align-items: center;
-            flex-shrink: 0;
-        }
-        .chat-header__left { display: flex; align-items: center; gap: .75rem; }
-        .chat-header__avatar {
-            width: 38px; height: 38px; border-radius: 50%;
-            background: rgba(255,255,255,.2);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.2rem;
-        }
-        .chat-header__info h4 { font-size: .9375rem; font-weight: 700; }
-        .chat-header__info span {
-            font-size: .7rem; opacity: .85;
-            display: flex; align-items: center; gap: .3rem;
-        }
-        .chat-header__info span::before {
-            content: ''; width: 7px; height: 7px; border-radius: 50%;
-            background: #4ade80; display: inline-block;
-        }
-        .chat-header__close {
-            color: #fff; font-size: 1.5rem;
-            padding: .25rem .5rem; border-radius: .375rem;
-            transition: background .2s; line-height: 1;
-            cursor: pointer; border: none; background: none;
-        }
-        .chat-header__close:hover { background: rgba(255,255,255,.15); }
-
-        .chat-messages {
-            flex: 1; overflow-y: auto; padding: 1rem;
-            display: flex; flex-direction: column; gap: .5rem;
-            max-height: 370px; min-height: 280px;
-            scrollbar-width: thin; scrollbar-color: var(--c-s300) transparent;
-        }
-        .chat-messages::-webkit-scrollbar { width: 5px; }
-        .chat-messages::-webkit-scrollbar-track { background: transparent; }
-        .chat-messages::-webkit-scrollbar-thumb { background: var(--c-s300); border-radius: 3px; }
-
-        .chat-msg { max-width: 88%; animation: slideUp .25s ease-out; }
-        .chat-msg--bot { align-self: flex-start; }
-        .chat-msg--user { align-self: flex-end; }
-        .chat-msg__bubble {
-            padding: .75rem 1rem; border-radius: .875rem;
-            font-size: .8125rem; line-height: 1.65; word-break: break-word;
-        }
-        .chat-msg--bot .chat-msg__bubble {
-            background: var(--c-s100); color: var(--c-s800);
-            border-bottom-left-radius: .25rem;
-        }
-        .chat-msg--user .chat-msg__bubble {
-            background: linear-gradient(135deg, #0ea5e9, #8b5cf6);
-            color: #fff; border-bottom-right-radius: .25rem;
-        }
-        .chat-msg__time {
-            font-size: .65rem; color: var(--c-s400);
-            margin-top: .2rem; padding: 0 .25rem;
-        }
-        .chat-msg--user .chat-msg__time { text-align: right; }
-        .chat-msg__bubble b { font-weight: 600; }
-        .chat-msg__bubble code {
-            background: rgba(0,0,0,.06); padding: .125rem .375rem;
-            border-radius: .25rem; font-size: .75rem;
-        }
-
-        .chat-typing {
-            align-self: flex-start; display: flex; gap: .3rem;
-            padding: .75rem 1rem; animation: fadeIn .3s;
-        }
-        .chat-typing span {
-            width: 8px; height: 8px; border-radius: 50%;
-            background: var(--c-s400); animation: pulse 1.4s infinite;
-        }
-        .chat-typing span:nth-child(2) { animation-delay: .2s; }
-        .chat-typing span:nth-child(3) { animation-delay: .4s; }
-
-        .chat-suggestions {
-            display: flex; flex-wrap: wrap; gap: .375rem;
-            padding: .625rem 1rem;
-            border-top: 1px solid var(--c-s100);
-            background: var(--c-s50); flex-shrink: 0;
-        }
-        .chat-suggest-btn {
-            padding: .375rem .75rem; background: #fff;
-            border: 1px solid var(--c-s200); border-radius: 2rem;
-            font-size: .7rem; color: var(--c-s600); font-weight: 500;
-            transition: all .2s; white-space: nowrap;
-            cursor: pointer;
-        }
-        .chat-suggest-btn:hover {
-            border-color: var(--c-p500); color: var(--c-p500); background: var(--c-p50);
-        }
-
-        .chat-input-area {
-            padding: .75rem; border-top: 1px solid var(--c-s200);
-            display: flex; gap: .5rem; background: #fff; flex-shrink: 0;
-        }
-        .chat-input {
-            flex: 1; padding: .625rem 1rem;
-            border: 1.5px solid var(--c-s200); border-radius: .75rem;
-            font-size: .8125rem; font-family: var(--ff);
-            outline: none; transition: border-color .2s;
-            background: var(--c-s50);
-        }
-        .chat-input:focus { border-color: var(--c-p500); background: #fff; }
-        .chat-send {
-            padding: .625rem 1rem;
-            background: linear-gradient(135deg, #0ea5e9, #8b5cf6);
-            color: #fff; border-radius: .75rem;
-            font-size: .8125rem; font-weight: 600; font-family: var(--ff);
-            transition: all .2s;
-            display: flex; align-items: center; gap: .375rem;
-            cursor: pointer; border: none;
-        }
-        .chat-send:hover { box-shadow: 0 4px 12px rgba(139,92,246,.3); transform: translateY(-1px); }
-        .chat-send:disabled { opacity: .5; transform: none; box-shadow: none; cursor: not-allowed; }
-        .chat-send svg { width: 16px; height: 16px; }
-
-        /* Notice card inside chat */
-        .chat-notice-card {
-            background: #fff; border: 1px solid var(--c-s200);
-            border-radius: .625rem; padding: .75rem; margin-top: .5rem;
-        }
-        .chat-notice-card__title { font-size: .8125rem; font-weight: 700; color: var(--c-s900); margin-bottom: .25rem; }
-        .chat-notice-card__content { font-size: .75rem; color: var(--c-s500); line-height: 1.5; }
-        .chat-notice-card__meta { font-size: .65rem; color: var(--c-s400); margin-top: .375rem; display: flex; gap: .5rem; }
-        .chat-notice-card__actions { display: flex; gap: .375rem; margin-top: .5rem; }
-        .chat-notice-card__actions button {
-            padding: .25rem .625rem; border-radius: .375rem;
-            font-size: .7rem; font-weight: 600; transition: all .15s;
-            cursor: pointer; border: none;
-        }
-        .chat-action-edit { background: var(--c-p50); color: var(--c-p600); }
-        .chat-action-edit:hover { background: var(--c-p100); }
-        .chat-action-delete { background: var(--c-err50); color: var(--c-err600); }
-        .chat-action-delete:hover { background: rgba(239,68,68,.15); }
-        .chat-action-view { background: var(--c-s100); color: var(--c-s600); }
-        .chat-action-view:hover { background: var(--c-s200); }
-
-        @media(max-width:1024px){.stats-grid{grid-template-columns:1fr}}
+        @media(max-width:1024px){.stats-grid{grid-template-columns:1fr 1fr}.food-grid{grid-template-columns:repeat(3,1fr)}}
         @media(max-width:768px){
             .header__menu{display:block}
             .sidebar{position:fixed;top:var(--hh);left:0;bottom:0;z-index:30;transform:translateX(-100%)}
@@ -395,11 +327,19 @@
             .sidebar__overlay--visible{display:block}
             .main{padding:1rem}
             .bottom-grid{grid-template-columns:1fr}
+            .stats-grid{grid-template-columns:1fr}
+            .dining-form{grid-template-columns:1fr}
+            .food-grid{grid-template-columns:repeat(3,1fr)}
             .header__logout-text{display:none}
             .login__brand h1{font-size:2.25rem}
             .login__card{padding:1.5rem}
             .chat-window{width:calc(100vw - 3rem);max-height:calc(100vh - 120px)}
             #chatbotContainer{bottom:16px;right:16px}
+        }
+        @media(max-width:480px){
+            .food-grid{grid-template-columns:repeat(2,1fr)}
+            .people-btns{gap:.375rem}
+            .people-btn{padding:.5rem .875rem;font-size:.75rem}
         }
     </style>
 </head>
@@ -407,7 +347,7 @@
 
 <div id="toastContainer" class="toast-container" aria-live="polite"></div>
 
-<!-- LOGIN PAGE -->
+<!-- LOGIN -->
 <div id="pageLogin" class="login">
     <div class="login__wrapper anim-slide-up">
         <div class="login__brand">
@@ -461,6 +401,10 @@
                     <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
                     <span>공지사항</span>
                 </button>
+                <button class="sidebar__link" data-page="dining" onclick="App.router.go('dining')">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 010 8h-1"/><path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+                    <span>회식 찾기</span>
+                </button>
                 <button class="sidebar__link" data-page="chatbot" onclick="App.chat.toggle()">
                     <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
                     <span>AI 챗봇</span>
@@ -469,60 +413,189 @@
         </aside>
 
         <main class="main">
+            <!-- Dashboard -->
             <section id="pageDashboard" class="anim-slide-right">
                 <h2 class="page-title">대시보드</h2>
                 <div class="stats-grid">
                     <div class="card card--hover"><div class="card__body">
-                        <div class="stat__header">
-                            <h3 class="stat__label">전체 공지사항</h3>
-                            <span class="stat__icon" style="color:var(--c-a500)"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg></span>
-                        </div>
-                        <p id="dashNoticeCount" class="stat__value">0</p>
-                        <p class="stat__desc">등록된 공지</p>
+                        <div class="stat__header"><h3 class="stat__label">전체 공지사항</h3><span class="stat__icon" style="color:var(--c-a500)"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg></span></div>
+                        <p id="dashNoticeCount" class="stat__value">0</p><p class="stat__desc">등록된 공지</p>
                     </div></div>
                     <div class="card card--hover"><div class="card__body">
-                        <div class="stat__header">
-                            <h3 class="stat__label">최근 활동</h3>
-                            <span class="stat__icon" style="color:var(--c-p500)"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
-                        </div>
-                        <p id="dashLastActivity" class="stat__value">-</p>
-                        <p class="stat__desc">마지막 공지 등록일</p>
+                        <div class="stat__header"><h3 class="stat__label">최근 활동</h3><span class="stat__icon" style="color:var(--c-p500)"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span></div>
+                        <p id="dashLastActivity" class="stat__value">-</p><p class="stat__desc">마지막 공지 등록일</p>
+                    </div></div>
+                    <div class="card card--hover" style="cursor:pointer" onclick="App.router.go('dining')"><div class="card__body">
+                        <div class="stat__header"><h3 class="stat__label">회식 찾기</h3><span class="stat__icon" style="color:var(--c-or500)"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 010 8h-1"/><path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg></span></div>
+                        <p class="stat__value" style="font-size:1.25rem">🍽️ 맛집 검색</p><p class="stat__desc">회식 장소를 찾아보세요</p>
                     </div></div>
                 </div>
                 <div class="bottom-grid">
                     <div class="card"><div class="card__body">
                         <h3 class="recent-title">최근 공지사항</h3>
-                        <div id="dashRecentNotices">
-                            <div style="padding:2rem;text-align:center;color:var(--c-s400);font-size:.875rem">등록된 공지사항이 없습니다</div>
-                        </div>
+                        <div id="dashRecentNotices"><div style="padding:2rem;text-align:center;color:var(--c-s400);font-size:.875rem">등록된 공지사항이 없습니다</div></div>
                     </div></div>
                     <div class="quick-panel">
                         <h3>빠른 시작</h3>
-                        <button class="quick-btn" onclick="App.router.go('notices')">
-                            <span>공지사항 확인하기</span>
-                            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
-                        </button>
-                        <button class="quick-btn" onclick="App.notices.open()">
-                            <span>새 공지사항 작성</span>
-                            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
-                        </button>
-                        <button class="quick-btn" onclick="App.chat.toggle()">
-                            <span>AI 챗봇으로 관리하기</span>
-                            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
-                        </button>
+                        <button class="quick-btn" onclick="App.router.go('notices')"><span>공지사항 확인하기</span><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
+                        <button class="quick-btn" onclick="App.notices.open()"><span>새 공지사항 작성</span><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
+                        <button class="quick-btn" onclick="App.router.go('dining')"><span>🍽️ 회식 장소 찾기</span><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
                     </div>
                 </div>
             </section>
 
+            <!-- Notices -->
             <section id="pageNotices" hidden>
-                <div class="page-header">
-                    <h2 class="page-title">공지사항</h2>
-                    <button class="btn-add" onclick="App.notices.open()">
-                        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                        <span>새 공지사항</span>
-                    </button>
+                <div class="page-header"><h2 class="page-title">공지사항</h2>
+                    <button class="btn-add" onclick="App.notices.open()"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span>새 공지사항</span></button>
                 </div>
                 <div id="noticeList"></div>
+            </section>
+
+            <!-- Dining Finder -->
+            <section id="pageDining" hidden>
+                <div class="dining-hero">
+                    <h2>🍽️ 회식 장소 찾기</h2>
+                    <p>지역, 인원, 음식 종류를 선택하면 네이버 지도에서 바로 검색됩니다</p>
+                </div>
+
+                <div class="card"><div class="card__body">
+                    <div class="dining-form">
+                        <!-- 지역 선택 -->
+                        <div class="form-group">
+                            <label style="font-size:1rem;font-weight:700;color:var(--c-s900);margin-bottom:.75rem;display:flex;align-items:center;gap:.5rem">
+                                📍 지역 선택
+                            </label>
+                            <select class="form-input" id="diningArea" style="font-size:.9375rem">
+                                <option value="">지역을 선택하세요</option>
+                                <option value="강남구">강남구</option>
+                                <option value="강동구">강동구</option>
+                                <option value="강북구">강북구</option>
+                                <option value="강서구">강서구</option>
+                                <option value="관악구">관악구</option>
+                                <option value="광진구">광진구</option>
+                                <option value="구로구">구로구</option>
+                                <option value="금천구">금천구</option>
+                                <option value="노원구">노원구</option>
+                                <option value="도봉구">도봉구</option>
+                                <option value="동대문구">동대문구</option>
+                                <option value="동작구">동작구</option>
+                                <option value="마포구">마포구</option>
+                                <option value="서대문구">서대문구</option>
+                                <option value="서초구">서초구</option>
+                                <option value="성동구">성동구</option>
+                                <option value="성북구">성북구</option>
+                                <option value="송파구">송파구</option>
+                                <option value="양천구">양천구</option>
+                                <option value="영등포구">영등포구</option>
+                                <option value="용산구">용산구</option>
+                                <option value="은평구">은평구</option>
+                                <option value="종로구">종로구</option>
+                                <option value="중구">중구</option>
+                                <option value="중랑구">중랑구</option>
+                            </select>
+                        </div>
+
+                        <!-- 인원 선택 -->
+                        <div class="form-group">
+                            <label style="font-size:1rem;font-weight:700;color:var(--c-s900);margin-bottom:.75rem;display:flex;align-items:center;gap:.5rem">
+                                👥 인원 <span style="font-size:.75rem;font-weight:400;color:var(--c-s400)">(선택)</span>
+                            </label>
+                            <div class="people-btns" id="peopleBtns">
+                                <button class="people-btn" data-people="" onclick="App.dining.setPeople(this)">상관없음</button>
+                                <button class="people-btn" data-people="2~4명" onclick="App.dining.setPeople(this)">2~4명</button>
+                                <button class="people-btn" data-people="5~10명" onclick="App.dining.setPeople(this)">5~10명</button>
+                                <button class="people-btn" data-people="10~20명" onclick="App.dining.setPeople(this)">10~20명</button>
+                                <button class="people-btn" data-people="20명이상" onclick="App.dining.setPeople(this)">20명 이상</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 음식 종류 -->
+                    <div class="form-group">
+                        <label style="font-size:1rem;font-weight:700;color:var(--c-s900);margin-bottom:.75rem;display:flex;align-items:center;gap:.5rem">
+                            🍴 음식 종류
+                        </label>
+                        <div class="food-grid" id="foodGrid">
+                            <button class="food-chip" data-food="고기 맛집" onclick="App.dining.toggleFood(this)">
+                                <span class="food-chip__icon">🥩</span><span class="food-chip__name">고기·BBQ</span>
+                            </button>
+                            <button class="food-chip" data-food="삼겹살" onclick="App.dining.toggleFood(this)">
+                                <span class="food-chip__icon">🐷</span><span class="food-chip__name">삼겹살</span>
+                            </button>
+                            <button class="food-chip" data-food="소고기 맛집" onclick="App.dining.toggleFood(this)">
+                                <span class="food-chip__icon">🐂</span><span class="food-chip__name">소고기</span>
+                            </button>
+                            <button class="food-chip" data-food="치킨 맛집" onclick="App.dining.toggleFood(this)">
+                                <span class="food-chip__icon">🍗</span><span class="food-chip__name">치킨</span>
+                            </button>
+                            <button class="food-chip" data-food="회 해산물" onclick="App.dining.toggleFood(this)">
+                                <span class="food-chip__icon">🐟</span><span class="food-chip__name">회·해산물</span>
+                            </button>
+                            <button class="food-chip" data-food="초밥 일식" onclick="App.dining.toggleFood(this)">
+                                <span class="food-chip__icon">🍣</span><span class="food-chip__name">초밥·일식</span>
+                            </button>
+                            <button class="food-chip" data-food="중식 중국집" onclick="App.dining.toggleFood(this)">
+                                <span class="food-chip__icon">🥟</span><span class="food-chip__name">중식</span>
+                            </button>
+                            <button class="food-chip" data-food="양식 파스타" onclick="App.dining.toggleFood(this)">
+                                <span class="food-chip__icon">🍝</span><span class="food-chip__name">양식·파스타</span>
+                            </button>
+                            <button class="food-chip" data-food="한식 한정식" onclick="App.dining.toggleFood(this)">
+                                <span class="food-chip__icon">🍚</span><span class="food-chip__name">한식·한정식</span>
+                            </button>
+                            <button class="food-chip" data-food="족발 보쌈" onclick="App.dining.toggleFood(this)">
+                                <span class="food-chip__icon">🦶</span><span class="food-chip__name">족발·보쌈</span>
+                            </button>
+                            <button class="food-chip" data-food="곱창 막창" onclick="App.dining.toggleFood(this)">
+                                <span class="food-chip__icon">🫕</span><span class="food-chip__name">곱창·막창</span>
+                            </button>
+                            <button class="food-chip" data-food="찜 탕 찌개" onclick="App.dining.toggleFood(this)">
+                                <span class="food-chip__icon">🍲</span><span class="food-chip__name">찜·탕·찌개</span>
+                            </button>
+                            <button class="food-chip" data-food="피자" onclick="App.dining.toggleFood(this)">
+                                <span class="food-chip__icon">🍕</span><span class="food-chip__name">피자</span>
+                            </button>
+                            <button class="food-chip" data-food="태국 동남아 음식" onclick="App.dining.toggleFood(this)">
+                                <span class="food-chip__icon">🍜</span><span class="food-chip__name">태국·동남아</span>
+                            </button>
+                            <button class="food-chip" data-food="멕시칸 타코" onclick="App.dining.toggleFood(this)">
+                                <span class="food-chip__icon">🌮</span><span class="food-chip__name">멕시칸</span>
+                            </button>
+                            <button class="food-chip" data-food="술집 호프 이자카야" onclick="App.dining.toggleFood(this)">
+                                <span class="food-chip__icon">🍺</span><span class="food-chip__name">술집·호프</span>
+                            </button>
+                            <button class="food-chip" data-food="와인바 와인" onclick="App.dining.toggleFood(this)">
+                                <span class="food-chip__icon">🍷</span><span class="food-chip__name">와인바</span>
+                            </button>
+                            <button class="food-chip" data-food="뷔페" onclick="App.dining.toggleFood(this)">
+                                <span class="food-chip__icon">🍽️</span><span class="food-chip__name">뷔페</span>
+                            </button>
+                            <button class="food-chip" data-food="베이커리 카페" onclick="App.dining.toggleFood(this)">
+                                <span class="food-chip__icon">☕</span><span class="food-chip__name">카페·디저트</span>
+                            </button>
+                            <button class="food-chip" data-food="맛집 단체 회식" onclick="App.dining.toggleFood(this)">
+                                <span class="food-chip__icon">🎉</span><span class="food-chip__name">단체 회식</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button class="dining-search-btn" id="diningSearchBtn" onclick="App.dining.search()">
+                        <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                        네이버 지도에서 검색하기
+                    </button>
+
+                    <div id="diningResultInfo" class="dining-result-info" style="display:none">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                        <span id="diningResultText"></span>
+                    </div>
+                </div></div>
+
+                <!-- 최근 검색 -->
+                <div class="dining-recent" id="diningRecent" style="display:none">
+                    <h3>🕐 최근 검색</h3>
+                    <div class="dining-history" id="diningHistory"></div>
+                </div>
             </section>
         </main>
     </div>
@@ -532,18 +605,9 @@
 <div id="noticeModal" class="modal" hidden>
     <div class="modal__dialog modal__dialog--white anim-slide-up">
         <h3 id="noticeModalTitle" style="color:var(--c-s900)">새 공지사항</h3>
-        <div class="form-group">
-            <label for="noticeTitle">제목</label>
-            <input class="form-input" type="text" id="noticeTitle" placeholder="제목을 입력하세요">
-        </div>
-        <div class="form-group">
-            <label for="noticeContent">내용</label>
-            <textarea class="form-input" id="noticeContent" rows="8" placeholder="내용을 입력하세요"></textarea>
-        </div>
-        <div class="modal__actions">
-            <button id="noticeModalSave" class="btn-primary" onclick="App.notices.save()">등록</button>
-            <button class="btn-secondary" onclick="App.notices.close()">취소</button>
-        </div>
+        <div class="form-group"><label for="noticeTitle">제목</label><input class="form-input" type="text" id="noticeTitle" placeholder="제목을 입력하세요"></div>
+        <div class="form-group"><label for="noticeContent">내용</label><textarea class="form-input" id="noticeContent" rows="8" placeholder="내용을 입력하세요"></textarea></div>
+        <div class="modal__actions"><button id="noticeModalSave" class="btn-primary" onclick="App.notices.save()">등록</button><button class="btn-secondary" onclick="App.notices.close()">취소</button></div>
     </div>
 </div>
 
@@ -551,274 +615,101 @@
 <div id="confirmModal" class="modal" hidden>
     <div class="modal__dialog modal__dialog--white anim-slide-up" style="max-width:400px;padding:2rem">
         <h3 style="color:var(--c-s900);font-size:1.125rem" id="confirmMessage"></h3>
-        <div class="modal__actions">
-            <button class="btn-danger" id="confirmYes">삭제</button>
-            <button class="btn-secondary" onclick="App.ui.hideConfirm()">취소</button>
-        </div>
+        <div class="modal__actions"><button class="btn-danger" id="confirmYes">삭제</button><button class="btn-secondary" onclick="App.ui.hideConfirm()">취소</button></div>
     </div>
 </div>
 
-<!-- ===== CHATBOT WIDGET ===== -->
+<!-- CHATBOT -->
 <div id="chatbotContainer">
-    <!-- Chat Window -->
     <div id="chatWindow" class="chat-window">
         <div class="chat-header">
-            <div class="chat-header__left">
-                <div class="chat-header__avatar">🤖</div>
-                <div class="chat-header__info">
-                    <h4>AI 어시스턴트</h4>
-                    <span>온라인</span>
-                </div>
-            </div>
+            <div class="chat-header__left"><div class="chat-header__avatar">🤖</div><div class="chat-header__info"><h4>AI 어시스턴트</h4><span>온라인</span></div></div>
             <button class="chat-header__close" onclick="App.chat.toggle()">✕</button>
         </div>
         <div id="chatMessages" class="chat-messages"></div>
         <div id="chatSuggestions" class="chat-suggestions">
             <button class="chat-suggest-btn" onclick="App.chat.quickSend('공지 등록')">📝 공지 등록</button>
             <button class="chat-suggest-btn" onclick="App.chat.quickSend('공지 목록')">📋 공지 목록</button>
-            <button class="chat-suggest-btn" onclick="App.chat.quickSend('공지 검색')">🔍 공지 검색</button>
+            <button class="chat-suggest-btn" onclick="App.chat.quickSend('회식 찾기')">🍽️ 회식 찾기</button>
             <button class="chat-suggest-btn" onclick="App.chat.quickSend('도움말')">❓ 도움말</button>
         </div>
         <div class="chat-input-area">
             <input id="chatInput" class="chat-input" type="text" placeholder="메시지를 입력하세요..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();App.chat.send()}">
-            <button id="chatSendBtn" class="chat-send" onclick="App.chat.send()">
-                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-                전송
-            </button>
+            <button id="chatSendBtn" class="chat-send" onclick="App.chat.send()"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>전송</button>
         </div>
     </div>
-
-    <!-- FAB Button -->
-    <button class="chatbot-fab" onclick="App.chat.toggle()" id="chatFab">
-        💬
-        <span class="chatbot-fab__badge" id="chatBadge" style="display:none">!</span>
-    </button>
-    <div class="chatbot-fab__tooltip" id="chatTooltip">AI 챗봇으로 공지사항을 관리해보세요!</div>
+    <button class="chatbot-fab" onclick="App.chat.toggle()" id="chatFab">💬<span class="chatbot-fab__badge" id="chatBadge" style="display:none">!</span></button>
+    <div class="chatbot-fab__tooltip" id="chatTooltip" style="display:none">AI 챗봇으로 관리해보세요!</div>
 </div>
 
 <script>
 const App = (() => {
     'use strict';
+    const FIREBASE_CONFIG = Object.freeze({apiKey:'AIzaSyDcHSt46CHlu_LZYnNUU7xwIlMY7xE8KdU',authDomain:'workhub2.firebaseapp.com',projectId:'workhub2'});
+    const GIS_SCRIPT_URL='https://accounts.google.com/gsi/client';
+    const TOAST_DURATION_MS=3500;const TOAST_ERROR_MS=5000;const LOCAL_PREFIX='wh_';
+    const $=(id)=>document.getElementById(id);
 
-    const FIREBASE_CONFIG = Object.freeze({
-        apiKey:'AIzaSyDcHSt46CHlu_LZYnNUU7xwIlMY7xE8KdU',
-        authDomain:'workhub2.firebaseapp.com',
-        projectId:'workhub2'
-    });
-
-    const GIS_SCRIPT_URL = 'https://accounts.google.com/gsi/client';
-    const GIS_LOAD_TIMEOUT_MS = 10000;
-    const TOAST_DURATION_MS = 3500;
-    const TOAST_ERROR_MS = 5000;
-    const LOCAL_PREFIX = 'wh_';
-
-    const $ = (id) => document.getElementById(id);
-
-    const utils = {
-        formatDate(iso) {
-            try { return new Date(iso).toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric'}); }
-            catch { return ''; }
-        },
-        formatDateTime(iso) {
-            try { return new Date(iso).toLocaleString('ko-KR'); }
-            catch { return ''; }
-        },
-        formatTime(d) {
-            return new Date(d).toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'});
-        },
-        uid() { return Date.now().toString(36)+Math.random().toString(36).substr(2,8); },
-        escapeHtml(str) {
-            if(!str)return '';
-            const el=document.createElement('div');el.textContent=str;return el.innerHTML;
-        },
-        truncate(str,max=80) { return(!str||str.length<=max)?(str||''):str.substring(0,max)+'…'; }
+    const utils={
+        formatDate(iso){try{return new Date(iso).toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric'});}catch{return'';}},
+        formatDateTime(iso){try{return new Date(iso).toLocaleString('ko-KR');}catch{return'';}},
+        formatTime(d){return new Date(d).toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'});},
+        uid(){return Date.now().toString(36)+Math.random().toString(36).substr(2,8);},
+        escapeHtml(str){if(!str)return'';const el=document.createElement('div');el.textContent=str;return el.innerHTML;},
+        truncate(str,max=80){return(!str||str.length<=max)?(str||''):str.substring(0,max)+'…';}
     };
-
-    const storage = {
+    const storage={
         get(key){try{const v=localStorage.getItem(LOCAL_PREFIX+key);return v?JSON.parse(v):null;}catch{return null;}},
         set(key,v){try{localStorage.setItem(LOCAL_PREFIX+key,JSON.stringify(v));}catch{}},
         remove(key){try{localStorage.removeItem(LOCAL_PREFIX+key);}catch{}}
     };
 
-    const state = {
-        user:null,page:'dashboard',notices:[],editId:null,sidebarOpen:false,
-        firebaseReady:false,gisReady:false,authListenerAttached:false,loginInProgress:false,
-        chatContext:null,chatOpen:false
+    const state={user:null,page:'dashboard',notices:[],editId:null,sidebarOpen:false,firebaseReady:false,gisReady:false,authListenerAttached:false,loginInProgress:false,chatContext:null,chatOpen:false,diningPeople:'',diningFoods:[],diningHistory:[]};
+
+    const toast={_container:null,init(){this._container=$('toastContainer');},_show(m,t='info',d=TOAST_DURATION_MS){const el=document.createElement('div');el.className=`toast toast--${t}`;el.textContent=m;this._container.appendChild(el);setTimeout(()=>{el.classList.add('toast--removing');el.addEventListener('animationend',()=>el.remove());},d);},success(m){this._show(m,'success');},error(m){this._show(m,'error',TOAST_ERROR_MS);},info(m){this._show(m,'info');}};
+
+    const gis={_loadPromise:null,load(){if(this._loadPromise)return this._loadPromise;this._loadPromise=new Promise((resolve,reject)=>{if(window.google?.accounts?.id){state.gisReady=true;resolve();return;}const s=document.createElement('script');s.src=GIS_SCRIPT_URL;s.async=true;s.defer=true;s.onload=()=>{state.gisReady=true;resolve();};s.onerror=()=>reject(new Error('GIS fail'));document.head.appendChild(s);setTimeout(()=>reject(new Error('GIS timeout')),10000);});return this._loadPromise;}};
+
+    const fb={_auth:null,_initPromise:null,init(){if(this._initPromise)return this._initPromise;this._initPromise=new Promise((resolve)=>{try{firebase.initializeApp(FIREBASE_CONFIG);this._auth=firebase.auth();this._auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);if(!state.authListenerAttached){state.authListenerAttached=true;this._auth.onAuthStateChanged((u)=>{this._handleAuthChange(u);});}state.firebaseReady=true;resolve(true);}catch(err){console.error('[FB]',err);toast.error('시스템 초기화 실패');resolve(false);}});return this._initPromise;},_handleAuthChange(fu){if(state.loginInProgress)return;if(fu&&!state.user){state.user=this._mapUser(fu);storage.set('session',state.user);auth._onLoginSuccess();}},_mapUser(u){return Object.freeze({name:u.displayName||u.email.split('@')[0],email:u.email,picture:u.photoURL||null,uid:u.uid,provider:'google'});},getAuth(){return this._auth;}};
+
+    const auth={
+        async loginGoogle(){if(state.loginInProgress)return;if(!state.firebaseReady){toast.error('시스템 준비 중입니다.');return;}const btn=$('btnGoogle'),txt=$('btnGoogleText');state.loginInProgress=true;btn.disabled=true;txt.innerHTML='<span class="spinner"></span> 로그인 중...';ui.hideLoginError();try{const provider=new firebase.auth.GoogleAuthProvider();provider.setCustomParameters({prompt:'select_account'});const result=await fb.getAuth().signInWithPopup(provider);state.user=fb._mapUser(result.user);storage.set('session',state.user);this._onLoginSuccess();}catch(err){if(err.code==='auth/popup-closed-by-user')toast.info('로그인이 취소되었습니다.');else{ui.showLoginError(`<strong>❌ 로그인 실패</strong><br>${utils.escapeHtml(err.message)}`);toast.error('로그인에 실패했습니다.');}}finally{this._resetLoginButton();}},
+        async _onLoginSuccess(){state.loginInProgress=false;ui.hideLoginError();await notices._load();ui.showApp();router.go('dashboard');toast.success(`${state.user.name}님, 환영합니다!`);setTimeout(()=>chat._initWelcome(),500);setTimeout(()=>{const tip=$('chatTooltip');if(tip)tip.style.display='block';setTimeout(()=>{if(tip)tip.style.display='none';},4000);},2000);},
+        async logout(){try{if(state.firebaseReady&&fb.getAuth())await fb.getAuth().signOut();}catch{}state.user=null;state.notices=[];state.page='dashboard';state.chatContext=null;state.chatOpen=false;storage.remove('session');$('chatWindow').classList.remove('chat-window--open');ui.showLogin();toast.info('로그아웃되었습니다.');},
+        _resetLoginButton(){state.loginInProgress=false;const btn=$('btnGoogle'),txt=$('btnGoogleText');if(btn)btn.disabled=false;if(txt)txt.textContent='Google 계정으로 로그인';}
     };
 
-    /* TOAST */
-    const toast = {
-        _container:null,
-        init(){this._container=$('toastContainer');},
-        _show(message,type='info',duration=TOAST_DURATION_MS){
-            const el=document.createElement('div');el.className=`toast toast--${type}`;
-            el.textContent=message;this._container.appendChild(el);
-            setTimeout(()=>{el.classList.add('toast--removing');el.addEventListener('animationend',()=>el.remove());},duration);
-        },
-        success(m){this._show(m,'success');},
-        error(m){this._show(m,'error',TOAST_ERROR_MS);},
-        info(m){this._show(m,'info');}
-    };
-
-    /* GIS */
-    const gis = {
-        _loadPromise:null,
-        load(){
-            if(this._loadPromise)return this._loadPromise;
-            this._loadPromise=new Promise((resolve,reject)=>{
-                if(window.google?.accounts?.id){state.gisReady=true;resolve();return;}
-                const s=document.createElement('script');s.src=GIS_SCRIPT_URL;s.async=true;s.defer=true;
-                s.onload=()=>{state.gisReady=true;resolve();};s.onerror=()=>reject(new Error('GIS fail'));
-                document.head.appendChild(s);
-                setTimeout(()=>reject(new Error('GIS timeout')),GIS_LOAD_TIMEOUT_MS);
-            });
-            return this._loadPromise;
-        }
-    };
-
-    /* FIREBASE */
-    const fb = {
-        _auth:null,_initPromise:null,
-        init(){
-            if(this._initPromise)return this._initPromise;
-            this._initPromise=new Promise((resolve)=>{
-                try{
-                    firebase.initializeApp(FIREBASE_CONFIG);
-                    this._auth=firebase.auth();
-                    this._auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
-                    if(!state.authListenerAttached){
-                        state.authListenerAttached=true;
-                        this._auth.onAuthStateChanged((u)=>{this._handleAuthChange(u);});
-                    }
-                    state.firebaseReady=true;resolve(true);
-                }catch(err){console.error('[FB]',err);toast.error('시스템 초기화 실패');resolve(false);}
-            });
-            return this._initPromise;
-        },
-        _handleAuthChange(fu){
-            if(state.loginInProgress)return;
-            if(fu&&!state.user){
-                state.user=this._mapUser(fu);storage.set('session',state.user);auth._onLoginSuccess();
-            }
-        },
-        _mapUser(u){return Object.freeze({name:u.displayName||u.email.split('@')[0],email:u.email,picture:u.photoURL||null,uid:u.uid,provider:'google'});},
-        getAuth(){return this._auth;}
-    };
-
-    /* AUTH */
-    const auth = {
-        async loginGoogle(){
-            if(state.loginInProgress)return;
-            if(!state.firebaseReady){toast.error('시스템 준비 중입니다.');return;}
-            const btn=$('btnGoogle'),txt=$('btnGoogleText');
-            state.loginInProgress=true;btn.disabled=true;
-            txt.innerHTML='<span class="spinner"></span> 로그인 중...';ui.hideLoginError();
-            try{
-                const provider=new firebase.auth.GoogleAuthProvider();
-                provider.setCustomParameters({prompt:'select_account'});
-                const result=await fb.getAuth().signInWithPopup(provider);
-                state.user=fb._mapUser(result.user);storage.set('session',state.user);this._onLoginSuccess();
-            }catch(err){
-                if(err.code==='auth/popup-closed-by-user')toast.info('로그인이 취소되었습니다.');
-                else{ui.showLoginError(`<strong>❌ 로그인 실패</strong><br>${utils.escapeHtml(err.message)}`);toast.error('로그인에 실패했습니다.');}
-            }finally{this._resetLoginButton();}
-        },
-        async _onLoginSuccess(){
-            state.loginInProgress=false;ui.hideLoginError();
-            await notices._load();ui.showApp();router.go('dashboard');
-            toast.success(`${state.user.name}님, 환영합니다!`);
-            // Init chatbot welcome after login
-            setTimeout(()=>chat._initWelcome(),500);
-            // Show tooltip briefly
-            setTimeout(()=>{
-                const tip=$('chatTooltip');if(tip)tip.style.display='block';
-                setTimeout(()=>{if(tip)tip.style.display='none';},4000);
-            },2000);
-        },
-        async logout(){
-            try{if(state.firebaseReady&&fb.getAuth())await fb.getAuth().signOut();}catch{}
-            try{google?.accounts?.id?.disableAutoSelect();}catch{}
-            state.user=null;state.notices=[];state.page='dashboard';state.chatContext=null;state.chatOpen=false;
-            storage.remove('session');
-            $('chatWindow').classList.remove('chat-window--open');
-            ui.showLogin();toast.info('로그아웃되었습니다.');
-        },
-        _resetLoginButton(){
-            state.loginInProgress=false;
-            const btn=$('btnGoogle'),txt=$('btnGoogleText');
-            if(btn)btn.disabled=false;if(txt)txt.textContent='Google 계정으로 로그인';
-        }
-    };
-
-    /* ROUTER */
-    const PAGES=Object.freeze({dashboard:'pageDashboard',notices:'pageNotices'});
-    const router = {
-        async go(page){
-            if(!PAGES[page])return;state.page=page;await notices._load();
-            Object.entries(PAGES).forEach(([key,elId])=>{
-                const el=$(elId);if(!el)return;el.hidden=(key!==page);
-                if(key===page){el.classList.remove('anim-slide-right');void el.offsetWidth;el.classList.add('anim-slide-right');}
-            });
+    const PAGES=Object.freeze({dashboard:'pageDashboard',notices:'pageNotices',dining:'pageDining'});
+    const router={
+        async go(page){if(!PAGES[page])return;state.page=page;if(page!=='dining')await notices._load();
+            Object.entries(PAGES).forEach(([key,elId])=>{const el=$(elId);if(!el)return;el.hidden=(key!==page);if(key===page){el.classList.remove('anim-slide-right');void el.offsetWidth;el.classList.add('anim-slide-right');}});
             document.querySelectorAll('.sidebar__link').forEach(btn=>{btn.classList.toggle('sidebar__link--active',btn.dataset.page===page);});
             ui.closeSidebar();
-            ({dashboard:()=>ui.renderDashboard(),notices:()=>ui.renderNotices()})[page]?.();
+            ({dashboard:()=>ui.renderDashboard(),notices:()=>ui.renderNotices(),dining:()=>dining.renderHistory()})[page]?.();
         }
     };
 
-    /* NOTICES */
-    const notices = {
+    const notices={
         _db(){return firebase.firestore().collection('notices');},
-        async _load(){
-            try{const snap=await this._db().orderBy('createdAt','desc').get();state.notices=snap.docs.map(d=>({id:d.id,...d.data()}));}
-            catch(err){console.error('공지 로드 실패:',err);state.notices=[];}
-        },
-        open(id=null){
-            state.editId=id;const tEl=$('noticeTitle'),cEl=$('noticeContent');
-            if(id){const n=state.notices.find(n=>n.id===id);if(!n)return;tEl.value=n.title;cEl.value=n.content;$('noticeModalTitle').textContent='공지사항 수정';$('noticeModalSave').textContent='수정';}
-            else{tEl.value='';cEl.value='';$('noticeModalTitle').textContent='새 공지사항';$('noticeModalSave').textContent='등록';}
-            $('noticeModal').hidden=false;tEl.focus();
-        },
+        async _load(){try{const snap=await this._db().orderBy('createdAt','desc').get();state.notices=snap.docs.map(d=>({id:d.id,...d.data()}));}catch(err){console.error('공지 로드 실패:',err);state.notices=[];}},
+        open(id=null){state.editId=id;const tEl=$('noticeTitle'),cEl=$('noticeContent');if(id){const n=state.notices.find(n=>n.id===id);if(!n)return;tEl.value=n.title;cEl.value=n.content;$('noticeModalTitle').textContent='공지사항 수정';$('noticeModalSave').textContent='수정';}else{tEl.value='';cEl.value='';$('noticeModalTitle').textContent='새 공지사항';$('noticeModalSave').textContent='등록';}$('noticeModal').hidden=false;tEl.focus();},
         close(){$('noticeModal').hidden=true;state.editId=null;},
-        async save(){
-            const title=$('noticeTitle').value.trim(),content=$('noticeContent').value.trim();
-            if(!title||!content){toast.error('제목과 내용을 입력해주세요.');return;}
-            try{
-                if(state.editId){await this._db().doc(state.editId).update({title,content,updatedAt:new Date().toISOString()});toast.success('수정되었습니다.');}
-                else{await this._db().add({title,content,author:state.user.name,authorEmail:state.user.email,createdAt:new Date().toISOString()});toast.success('등록되었습니다.');}
-                await this._load();this.close();ui.renderNotices();ui.renderDashboard();
-            }catch(err){console.error('저장 실패:',err);toast.error('저장에 실패했습니다.');}
-        },
-        delete(id){
-            ui.showConfirm('이 공지사항을 삭제하시겠습니까?',async()=>{
-                try{await this._db().doc(id).delete();await this._load();ui.renderNotices();ui.renderDashboard();toast.success('삭제되었습니다.');}
-                catch{toast.error('삭제에 실패했습니다.');}
-            });
-        }
+        async save(){const title=$('noticeTitle').value.trim(),content=$('noticeContent').value.trim();if(!title||!content){toast.error('제목과 내용을 입력해주세요.');return;}try{if(state.editId){await this._db().doc(state.editId).update({title,content,updatedAt:new Date().toISOString()});toast.success('수정되었습니다.');}else{await this._db().add({title,content,author:state.user.name,authorEmail:state.user.email,createdAt:new Date().toISOString()});toast.success('등록되었습니다.');}await this._load();this.close();ui.renderNotices();ui.renderDashboard();}catch(err){console.error('저장 실패:',err);toast.error('저장에 실패했습니다.');}},
+        delete(id){ui.showConfirm('이 공지사항을 삭제하시겠습니까?',async()=>{try{await this._db().doc(id).delete();await this._load();ui.renderNotices();ui.renderDashboard();toast.success('삭제되었습니다.');}catch{toast.error('삭제에 실패했습니다.');}});}
     };
 
-    /* SVG ICONS */
-    const SVG = {
+    const SVG={
         user:'<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
         edit:'<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>',
         trash:'<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>',
         bell:'<svg width="64" height="64" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>'
     };
 
-    /* UI */
-    const ui = {
+    const ui={
         showApp(){$('pageLogin').hidden=true;$('appShell').hidden=false;this.renderHeader();$('chatbotContainer').style.display='flex';},
         showLogin(){$('pageLogin').hidden=false;$('appShell').hidden=true;$('chatbotContainer').style.display='none';},
-        renderHeader(){
-            if(!state.user)return;$('headerName').textContent=state.user.name;
-            const a=$('headerAvatar');a.innerHTML=state.user.picture
-                ?`<img class="header__avatar" src="${utils.escapeHtml(state.user.picture)}" alt="" referrerpolicy="no-referrer">`
-                :`<span class="header__avatar-fb">${SVG.user}</span>`;
-        },
-        toggleSidebar(){
-            state.sidebarOpen=!state.sidebarOpen;
-            $('sidebar').classList.toggle('sidebar--open',state.sidebarOpen);
-            $('sidebarOverlay').classList.toggle('sidebar__overlay--visible',state.sidebarOpen);
-        },
+        renderHeader(){if(!state.user)return;$('headerName').textContent=state.user.name;const a=$('headerAvatar');a.innerHTML=state.user.picture?`<img class="header__avatar" src="${utils.escapeHtml(state.user.picture)}" alt="" referrerpolicy="no-referrer">`:`<span class="header__avatar-fb">${SVG.user}</span>`;},
+        toggleSidebar(){state.sidebarOpen=!state.sidebarOpen;$('sidebar').classList.toggle('sidebar--open',state.sidebarOpen);$('sidebarOverlay').classList.toggle('sidebar__overlay--visible',state.sidebarOpen);},
         closeSidebar(){state.sidebarOpen=false;$('sidebar').classList.remove('sidebar--open');$('sidebarOverlay').classList.remove('sidebar__overlay--visible');},
         showLoginError(html){const el=$('loginError');el.innerHTML=html;el.classList.add('login__error--visible');},
         hideLoginError(){const el=$('loginError');el.innerHTML='';el.classList.remove('login__error--visible');},
@@ -837,332 +728,272 @@ const App = (() => {
         }
     };
 
-    /* ===== AI CHATBOT ENGINE ===== */
-    const chat = {
-        toggle() {
-            state.chatOpen = !state.chatOpen;
-            const w = $('chatWindow');
-            if (state.chatOpen) {
-                w.classList.add('chat-window--open');
-                $('chatInput').focus();
-                $('chatBadge').style.display = 'none';
-                $('chatTooltip').style.display = 'none';
-            } else {
-                w.classList.remove('chat-window--open');
-            }
+    /* ===== DINING FINDER ===== */
+    const dining = {
+        setPeople(btn) {
+            document.querySelectorAll('.people-btn').forEach(b => b.classList.remove('people-btn--active'));
+            btn.classList.add('people-btn--active');
+            state.diningPeople = btn.dataset.people;
         },
 
-        _initWelcome() {
-            const container = $('chatMessages');
-            container.innerHTML = '';
-            const name = state.user ? state.user.name : '';
-            this._addBotMessage(
-                `👋 안녕하세요${name ? ', <b>' + utils.escapeHtml(name) + '</b>님' : ''}! AI 어시스턴트입니다.\n\n` +
-                `자연어로 편하게 말씀해주시면 공지사항을 관리해드릴게요.\n\n` +
-                `<b>💡 이런 것들을 할 수 있어요:</b>\n` +
-                `• "회의 안내 공지 올려줘"\n` +
-                `• "공지 목록 보여줘"\n` +
-                `• "회의 관련 공지 검색해줘"\n` +
-                `• "첫 번째 공지 삭제해줘"\n` +
-                `• "2번 공지 수정해줘"\n\n` +
-                `무엇을 도와드릴까요?`
-            );
-            this._updateSuggestions(['📝 공지 등록', '📋 공지 목록', '🔍 공지 검색', '❓ 도움말']);
+        toggleFood(btn) {
+            btn.classList.toggle('food-chip--active');
+            const food = btn.dataset.food;
+            const idx = state.diningFoods.indexOf(food);
+            if (idx > -1) state.diningFoods.splice(idx, 1);
+            else state.diningFoods.push(food);
+        },
 
-            // Show badge after a moment
-            setTimeout(() => {
-                if (!state.chatOpen) {
-                    $('chatBadge').style.display = 'flex';
+        search() {
+            const area = $('diningArea').value;
+            if (!area) { toast.error('지역을 선택해주세요.'); return; }
+            if (state.diningFoods.length === 0) { toast.error('음식 종류를 하나 이상 선택해주세요.'); return; }
+
+            // 검색어 조합
+            let query = '서울 ' + area + ' ';
+            query += state.diningFoods.join(' ');
+            if (state.diningPeople) {
+                if (state.diningPeople === '10~20명' || state.diningPeople === '20명이상') {
+                    query += ' 단체석';
                 }
-            }, 3000);
+            }
+            query += ' 맛집';
+
+            // 네이버 지도 검색 URL 생성
+            const naverMapUrl = 'https://map.naver.com/p/search/' + encodeURIComponent(query);
+
+            // 새 탭에서 네이버 지도 열기
+            window.open(naverMapUrl, '_blank');
+
+            // 검색 결과 안내
+            const infoEl = $('diningResultInfo');
+            const textEl = $('diningResultText');
+            infoEl.style.display = 'flex';
+            textEl.innerHTML = `<b>"${utils.escapeHtml(query)}"</b> 네이버 지도에서 검색 완료! 새 탭을 확인하세요.`;
+
+            // 검색 기록 저장
+            const record = {
+                area,
+                foods: [...state.diningFoods],
+                people: state.diningPeople,
+                query,
+                date: new Date().toISOString()
+            };
+            let history = storage.get('diningHistory') || [];
+            history.unshift(record);
+            history = history.slice(0, 10); // 최근 10개만
+            storage.set('diningHistory', history);
+            state.diningHistory = history;
+            this.renderHistory();
+
+            toast.success('네이버 지도에서 검색 결과를 확인하세요!');
         },
 
-        _addMessage(html, isUser) {
-            const container = $('chatMessages');
-            const wrapper = document.createElement('div');
-            wrapper.className = `chat-msg chat-msg--${isUser ? 'user' : 'bot'}`;
-            wrapper.innerHTML = `<div class="chat-msg__bubble">${html.replace(/\n/g, '<br>')}</div><div class="chat-msg__time">${utils.formatTime(new Date())}</div>`;
-            container.appendChild(wrapper);
-            container.scrollTop = container.scrollHeight;
-        },
-        _addBotMessage(html) { this._addMessage(html, false); },
-        _addUserMessage(text) { this._addMessage(utils.escapeHtml(text), true); },
+        renderHistory() {
+            const history = storage.get('diningHistory') || [];
+            state.diningHistory = history;
+            const container = $('diningRecent');
+            const listEl = $('diningHistory');
 
-        _showTyping() {
-            const c = $('chatMessages');
-            const el = document.createElement('div');
-            el.className = 'chat-typing'; el.id = 'chatTypingIndicator';
-            el.innerHTML = '<span></span><span></span><span></span>';
-            c.appendChild(el); c.scrollTop = c.scrollHeight;
-        },
-        _hideTyping() { const el = $('chatTypingIndicator'); if (el) el.remove(); },
+            if (history.length === 0) {
+                container.style.display = 'none';
+                return;
+            }
 
-        _updateSuggestions(items) {
-            $('chatSuggestions').innerHTML = items.map(item => {
-                const clean = item.replace(/^[📝📋🔍❓🗑️✏️#\s]+/, '').trim();
-                return `<button class="chat-suggest-btn" onclick="App.chat.quickSend('${utils.escapeHtml(clean)}')">${item}</button>`;
+            container.style.display = 'block';
+            listEl.innerHTML = history.map((h, i) => {
+                const label = h.area + ' · ' + h.foods.slice(0, 2).join(', ') + (h.foods.length > 2 ? ' 외' : '') + (h.people ? ' · ' + h.people : '');
+                return `<button class="dining-history-chip" onclick="App.dining.reSearch(${i})">
+                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    ${utils.escapeHtml(label)}
+                </button>`;
             }).join('');
         },
 
-        quickSend(text) { $('chatInput').value = text; this.send(); },
+        reSearch(index) {
+            const history = storage.get('diningHistory') || [];
+            const h = history[index];
+            if (!h) return;
 
-        async send() {
-            const input = $('chatInput');
-            const text = input.value.trim();
-            if (!text) return;
-            input.value = '';
-            $('chatSendBtn').disabled = true;
-            this._addUserMessage(text);
-            this._showTyping();
-            await new Promise(r => setTimeout(r, 350 + Math.random() * 350));
-            this._hideTyping();
-            const response = await this._processCommand(text);
-            this._addBotMessage(response.message);
-            if (response.suggestions) this._updateSuggestions(response.suggestions);
-            $('chatSendBtn').disabled = false;
-            $('chatInput').focus();
-        },
+            // UI 복원
+            $('diningArea').value = h.area;
+            state.diningPeople = h.people || '';
+            state.diningFoods = [...h.foods];
 
-        _renderNoticeCard(n, index) {
-            return `<div class="chat-notice-card">
-                <div class="chat-notice-card__title">${index !== undefined ? (index + 1) + '. ' : ''}${utils.escapeHtml(n.title)}</div>
-                <div class="chat-notice-card__content">${utils.escapeHtml(utils.truncate(n.content, 80))}</div>
-                <div class="chat-notice-card__meta"><span>👤 ${utils.escapeHtml(n.author)}</span><span>📅 ${utils.formatDate(n.createdAt)}</span></div>
-                <div class="chat-notice-card__actions">
-                    <button class="chat-action-view" onclick="App.router.go('notices')">보기</button>
-                    <button class="chat-action-edit" onclick="App.notices.open('${n.id}')">수정</button>
-                    <button class="chat-action-delete" onclick="App.notices.delete('${n.id}')">삭제</button>
-                </div>
-            </div>`;
-        },
+            // 인원 버튼 복원
+            document.querySelectorAll('.people-btn').forEach(btn => {
+                btn.classList.toggle('people-btn--active', btn.dataset.people === state.diningPeople);
+            });
 
-        async _processCommand(text) {
-            const lower = text.replace(/\s+/g, ' ').trim().toLowerCase();
+            // 음식 칩 복원
+            document.querySelectorAll('.food-chip').forEach(chip => {
+                chip.classList.toggle('food-chip--active', state.diningFoods.includes(chip.dataset.food));
+            });
 
-            // ---- MULTI-STEP CONTEXT ----
-            if (state.chatContext) return await this._handleContext(text);
-
-            // ---- REGISTER ----
-            const registerPatterns = [/^공지\s*등록/,/공지.*(?:올려|작성|등록|만들어|써|생성|추가)/,/(?:올려|작성|등록|만들어|써|생성|추가).*공지/,/^(?:새|신규)\s*공지/,/공지.*(?:해줘|해주세요|해 줘|부탁)/];
-            if (registerPatterns.some(p => p.test(lower))) {
-                let cleaned = text.replace(/^공지\s*등록\s*/, '').replace(/공지\s*(?:올려|작성|등록|만들어|써|생성|추가)\s*/g,'').replace(/(?:올려|작성|등록|만들어|써|생성|추가)\s*.*?공지\s*/g,'').replace(/새\s*공지\s*/g,'').replace(/(?:해줘|해주세요|해 줘|부탁|좀)/g,'').trim();
-                if (!cleaned || cleaned.length < 2) {
-                    state.chatContext = { type: 'register', step: 'title' };
-                    return { message: '📝 공지사항을 등록할게요!\n\n먼저 <b>제목</b>을 입력해주세요.', suggestions: ['취소'] };
-                }
-                const si = cleaned.indexOf(' ');
-                if (si === -1) {
-                    state.chatContext = { type: 'register', step: 'content', title: cleaned };
-                    return { message: `📝 제목: <b>${utils.escapeHtml(cleaned)}</b>\n\n이제 <b>내용</b>을 입력해주세요.`, suggestions: ['취소'] };
-                }
-                const title = cleaned.substring(0, si), body = cleaned.substring(si + 1);
-                state.chatContext = { type: 'register', step: 'confirm', title, content: body };
-                return { message: `📝 다음 내용으로 공지를 등록할까요?\n\n<b>제목:</b> ${utils.escapeHtml(title)}\n<b>내용:</b> ${utils.escapeHtml(body)}\n\n"<b>등록</b>" 또는 "<b>취소</b>"를 입력해주세요.`, suggestions: ['✅ 등록', '❌ 취소', '✏️ 수정'] };
-            }
-
-            // ---- LIST ----
-            if ([/^공지\s*목록/,/공지.*(?:보여|확인|조회|리스트|목록|보기|알려)/,/(?:전체|모든|최근)\s*공지/,/공지.*(?:뭐|몇|있|어떤)/].some(p => p.test(lower))) {
-                await notices._load();
-                if (!state.notices.length) return { message: '📋 등록된 공지사항이 없습니다.\n\n새 공지를 등록해보시겠어요?', suggestions: ['📝 공지 등록','❓ 도움말'] };
-                let html = `📋 <b>전체 공지사항 (${state.notices.length}건)</b>\n`;
-                state.notices.slice(0,5).forEach((n,i) => { html += this._renderNoticeCard(n,i); });
-                if (state.notices.length > 5) html += `\n<span style="color:var(--c-s400)">...외 ${state.notices.length-5}건</span>`;
-                const sg = ['📝 공지 등록','🔍 공지 검색']; if (state.notices.length > 0) sg.push('🗑️ 공지 삭제');
-                return { message: html, suggestions: sg };
-            }
-
-            // ---- SEARCH ----
-            if ([/^공지\s*검색/,/공지.*검색/,/검색.*공지/,/공지.*찾아/,/찾아.*공지/].some(p => p.test(lower))) {
-                let kw = text.replace(/공지\s*검색\s*/g,'').replace(/검색\s*/g,'').replace(/공지\s*/g,'').replace(/(?:찾아|줘|주세요|해줘|해주세요|좀)/g,'').trim();
-                if (!kw) { state.chatContext = { type: 'search' }; return { message: '🔍 어떤 키워드로 검색할까요?\n\n검색할 <b>키워드</b>를 입력해주세요.', suggestions: ['취소'] }; }
-                return await this._doSearch(kw);
-            }
-
-            // ---- DELETE ----
-            if ([/^공지\s*삭제/,/공지.*삭제/,/삭제.*공지/,/공지.*(?:지워|없애|제거)/,/(?:지워|없애|제거).*공지/].some(p => p.test(lower))) {
-                await notices._load();
-                const numM = lower.match(/(\d+)/);
-                if (numM) {
-                    const idx = parseInt(numM[1])-1;
-                    if (idx >= 0 && idx < state.notices.length) {
-                        const t = state.notices[idx];
-                        state.chatContext = { type:'delete', step:'confirm', noticeId:t.id, noticeTitle:t.title };
-                        return { message: `🗑️ 다음 공지를 삭제할까요?\n${this._renderNoticeCard(t)}\n\n"<b>삭제</b>" 또는 "<b>취소</b>"`, suggestions: ['✅ 삭제','❌ 취소'] };
-                    }
-                }
-                let kw = text.replace(/공지\s*삭제\s*/g,'').replace(/삭제\s*/g,'').replace(/공지\s*/g,'').replace(/(?:지워|없애|제거|줘|주세요|해줘|좀)/g,'').trim();
-                if (kw) {
-                    const found = state.notices.find(n => n.title.includes(kw));
-                    if (found) { state.chatContext = { type:'delete', step:'confirm', noticeId:found.id, noticeTitle:found.title }; return { message: `🗑️ 다음 공지를 삭제할까요?\n${this._renderNoticeCard(found)}\n\n"<b>삭제</b>" 또는 "<b>취소</b>"`, suggestions: ['✅ 삭제','❌ 취소'] }; }
-                    return { message: `❌ "<b>${utils.escapeHtml(kw)}</b>"가 포함된 공지를 찾을 수 없습니다.`, suggestions: ['📋 공지 목록','🔍 공지 검색'] };
-                }
-                if (!state.notices.length) return { message: '📋 삭제할 공지사항이 없습니다.', suggestions: ['📝 공지 등록'] };
-                let html = '🗑️ 삭제할 공지의 <b>번호</b>를 입력해주세요.\n';
-                state.notices.slice(0,5).forEach((n,i) => { html += this._renderNoticeCard(n,i); });
-                state.chatContext = { type:'delete', step:'select' };
-                return { message: html, suggestions: ['취소'] };
-            }
-
-            // ---- EDIT ----
-            if ([/^공지\s*수정/,/공지.*수정/,/수정.*공지/,/공지.*(?:바꿔|변경|고쳐|편집)/,/(?:바꿔|변경|고쳐|편집).*공지/].some(p => p.test(lower))) {
-                await notices._load();
-                const numM = lower.match(/(\d+)/);
-                if (numM) {
-                    const idx = parseInt(numM[1])-1;
-                    if (idx >= 0 && idx < state.notices.length) { const t = state.notices[idx]; notices.open(t.id); return { message: `✏️ <b>${utils.escapeHtml(t.title)}</b> 수정 창을 열었습니다.`, suggestions: ['📋 공지 목록','📝 공지 등록'] }; }
-                }
-                let kw = text.replace(/공지\s*수정\s*/g,'').replace(/수정\s*/g,'').replace(/공지\s*/g,'').replace(/(?:바꿔|변경|고쳐|편집|줘|주세요|해줘|좀)/g,'').trim();
-                if (kw) {
-                    const found = state.notices.find(n => n.title.includes(kw));
-                    if (found) { notices.open(found.id); return { message: `✏️ <b>${utils.escapeHtml(found.title)}</b> 수정 창을 열었습니다.`, suggestions: ['📋 공지 목록','📝 공지 등록'] }; }
-                    return { message: `❌ "<b>${utils.escapeHtml(kw)}</b>"가 포함된 공지를 찾을 수 없습니다.`, suggestions: ['📋 공지 목록','🔍 공지 검색'] };
-                }
-                if (!state.notices.length) return { message: '📋 수정할 공지사항이 없습니다.', suggestions: ['📝 공지 등록'] };
-                let html = '✏️ 수정할 공지의 <b>번호</b>를 입력해주세요.\n';
-                state.notices.slice(0,5).forEach((n,i) => { html += this._renderNoticeCard(n,i); });
-                state.chatContext = { type:'edit', step:'select' };
-                return { message: html, suggestions: ['취소'] };
-            }
-
-            // ---- HELP ----
-            if (/^(?:도움말|도움|help|\?|명령어|사용법|뭐\s*할\s*수|기능)/.test(lower)) {
-                return { message: `📌 <b>사용 가능한 기능</b>\n\n📝 <b>공지 등록</b> — 새 공지사항 작성\n&nbsp;&nbsp;&nbsp;<code>공지 등록</code> 또는 <code>회의 공지 올려줘</code>\n\n📋 <b>공지 목록</b> — 전체 공지 확인\n&nbsp;&nbsp;&nbsp;<code>공지 목록</code> 또는 <code>공지 보여줘</code>\n\n🔍 <b>공지 검색</b> — 키워드로 공지 찾기\n&nbsp;&nbsp;&nbsp;<code>공지 검색 회의</code>\n\n✏️ <b>공지 수정</b> — 기존 공지 수정\n&nbsp;&nbsp;&nbsp;<code>1번 공지 수정</code>\n\n🗑️ <b>공지 삭제</b> — 공지 삭제\n&nbsp;&nbsp;&nbsp;<code>공지 삭제 회의</code>\n\n📊 <b>현황</b> — 공지사항 통계\n\n💡 자연어로 편하게 말씀해주세요!`, suggestions: ['📝 공지 등록','📋 공지 목록','🔍 공지 검색'] };
-            }
-
-            // ---- GREETING ----
-            if (/안녕|하이|헬로|hello|hi|반가|좋은\s*(?:아침|오후|저녁)/.test(lower)) {
-                return { message: `👋 안녕하세요, <b>${utils.escapeHtml(state.user.name)}</b>님! 무엇을 도와드릴까요?`, suggestions: ['📝 공지 등록','📋 공지 목록','❓ 도움말'] };
-            }
-
-            // ---- THANKS ----
-            if (/고마|감사|땡큐|thank/.test(lower)) {
-                return { message: `😊 도움이 되었다니 기쁩니다! 더 필요한 것이 있으면 말씀해주세요.`, suggestions: ['📝 공지 등록','📋 공지 목록','❓ 도움말'] };
-            }
-
-            // ---- STATS ----
-            if (/현황|통계|상태|요약|몇\s*개|총/.test(lower)) {
-                await notices._load();const c = state.notices.length;
-                return { message: `📊 <b>공지사항 현황</b>\n\n• 전체: <b>${c}건</b>\n• 최근 등록일: <b>${c>0?utils.formatDate(state.notices[0].createdAt):'없음'}</b>\n${c>0?'• 최근 공지: <b>'+utils.escapeHtml(state.notices[0].title)+'</b>':''}`, suggestions: ['📋 공지 목록','📝 공지 등록'] };
-            }
-
-            // ---- FALLBACK ----
-            return { message: `🤖 죄송합니다, 요청을 이해하지 못했어요.\n\n다음과 같이 말씀해보세요:\n• "공지 등록해줘"\n• "공지 목록 보여줘"\n• "회의 공지 검색"\n• "1번 공지 삭제"\n\n<b>도움말</b>을 입력하면 전체 기능을 확인할 수 있어요.`, suggestions: ['📝 공지 등록','📋 공지 목록','🔍 공지 검색','❓ 도움말'] };
-        },
-
-        async _handleContext(text) {
-            const lower = text.trim().toLowerCase();
-            const ctx = state.chatContext;
-
-            if (/^(?:취소|캔슬|cancel|그만|돌아가|뒤로)/.test(lower)) {
-                state.chatContext = null;
-                return { message: '↩️ 작업이 취소되었습니다.', suggestions: ['📝 공지 등록','📋 공지 목록','❓ 도움말'] };
-            }
-
-            // REGISTER
-            if (ctx.type === 'register') {
-                if (ctx.step === 'title') {
-                    state.chatContext = { type:'register', step:'content', title:text.trim() };
-                    return { message: `📝 제목: <b>${utils.escapeHtml(text.trim())}</b>\n\n이제 <b>내용</b>을 입력해주세요.`, suggestions: ['취소'] };
-                }
-                if (ctx.step === 'content') {
-                    state.chatContext = { type:'register', step:'confirm', title:ctx.title, content:text.trim() };
-                    return { message: `📝 다음 내용으로 공지를 등록할까요?\n\n<b>제목:</b> ${utils.escapeHtml(ctx.title)}\n<b>내용:</b> ${utils.escapeHtml(text.trim())}\n\n"<b>등록</b>" 또는 "<b>취소</b>"`, suggestions: ['✅ 등록','❌ 취소','✏️ 제목 다시'] };
-                }
-                if (ctx.step === 'confirm') {
-                    if (/^(?:등록|확인|네|예|yes|ok|ㅇㅇ|ㅇ|응|저장)/.test(lower)) {
-                        try {
-                            await notices._db().add({ title:ctx.title, content:ctx.content, author:state.user.name, authorEmail:state.user.email, createdAt:new Date().toISOString() });
-                            await notices._load(); ui.renderNotices(); ui.renderDashboard();
-                            state.chatContext = null;
-                            return { message: `✅ 공지사항이 등록되었습니다!\n${this._renderNoticeCard(state.notices[0])}`, suggestions: ['📋 공지 목록','📝 공지 등록'] };
-                        } catch { state.chatContext = null; return { message: '❌ 등록에 실패했습니다.', suggestions: ['📝 공지 등록'] }; }
-                    }
-                    if (/^(?:제목|타이틀|다시)/.test(lower)) { state.chatContext = { type:'register', step:'title' }; return { message: '📝 새 <b>제목</b>을 입력해주세요.', suggestions: ['취소'] }; }
-                    if (/^(?:내용|본문)/.test(lower)) { state.chatContext = { ...ctx, step:'content' }; return { message: '📝 새 <b>내용</b>을 입력해주세요.', suggestions: ['취소'] }; }
-                    state.chatContext = null;
-                    return { message: '↩️ 등록이 취소되었습니다.', suggestions: ['📝 공지 등록','📋 공지 목록','❓ 도움말'] };
-                }
-            }
-
-            // DELETE
-            if (ctx.type === 'delete') {
-                if (ctx.step === 'select') {
-                    const num = parseInt(lower);
-                    if (!isNaN(num) && num >= 1 && num <= state.notices.length) {
-                        const t = state.notices[num-1];
-                        state.chatContext = { type:'delete', step:'confirm', noticeId:t.id, noticeTitle:t.title };
-                        return { message: `🗑️ 다음 공지를 삭제할까요?\n${this._renderNoticeCard(t)}\n\n"<b>삭제</b>" 또는 "<b>취소</b>"`, suggestions: ['✅ 삭제','❌ 취소'] };
-                    }
-                    return { message: '❌ 올바른 번호를 입력해주세요.', suggestions: ['취소'] };
-                }
-                if (ctx.step === 'confirm') {
-                    if (/^(?:삭제|확인|네|예|yes|ok|ㅇㅇ|ㅇ|응)/.test(lower)) {
-                        try {
-                            await notices._db().doc(ctx.noticeId).delete(); await notices._load(); ui.renderNotices(); ui.renderDashboard();
-                            state.chatContext = null;
-                            return { message: `✅ "<b>${utils.escapeHtml(ctx.noticeTitle)}</b>" 삭제 완료!`, suggestions: ['📋 공지 목록','📝 공지 등록'] };
-                        } catch { state.chatContext = null; return { message: '❌ 삭제 실패', suggestions: ['📋 공지 목록'] }; }
-                    }
-                    state.chatContext = null;
-                    return { message: '↩️ 삭제가 취소되었습니다.', suggestions: ['📋 공지 목록','📝 공지 등록','❓ 도움말'] };
-                }
-            }
-
-            // EDIT
-            if (ctx.type === 'edit' && ctx.step === 'select') {
-                const num = parseInt(lower);
-                if (!isNaN(num) && num >= 1 && num <= state.notices.length) {
-                    const t = state.notices[num-1]; notices.open(t.id);
-                    state.chatContext = null;
-                    return { message: `✏️ <b>${utils.escapeHtml(t.title)}</b> 수정 창을 열었습니다.`, suggestions: ['📋 공지 목록','📝 공지 등록'] };
-                }
-                return { message: '❌ 올바른 번호를 입력해주세요.', suggestions: ['취소'] };
-            }
-
-            // SEARCH
-            if (ctx.type === 'search') { state.chatContext = null; return await this._doSearch(text.trim()); }
-
-            state.chatContext = null;
-            return await this._processCommand(text);
-        },
-
-        async _doSearch(keyword) {
-            await notices._load();
-            const results = state.notices.filter(n => n.title.toLowerCase().includes(keyword.toLowerCase()) || n.content.toLowerCase().includes(keyword.toLowerCase()));
-            if (!results.length) return { message: `🔍 "<b>${utils.escapeHtml(keyword)}</b>" 검색 결과가 없습니다.`, suggestions: ['📋 공지 목록','📝 공지 등록','🔍 다른 검색'] };
-            let html = `🔍 "<b>${utils.escapeHtml(keyword)}</b>" 검색 결과 (${results.length}건)\n`;
-            results.slice(0,5).forEach((n,i) => { html += this._renderNoticeCard(n,i); });
-            if (results.length > 5) html += `\n<span style="color:var(--c-s400)">...외 ${results.length-5}건</span>`;
-            return { message: html, suggestions: ['📋 공지 목록','📝 공지 등록','🔍 다른 검색'] };
+            // 바로 검색
+            this.search();
         }
     };
 
-    /* ---- INIT ---- */
-    async function init() {
-        toast.init();
-        // Hide chatbot initially (show after login)
-        $('chatbotContainer').style.display = 'none';
-        $('chatTooltip').style.display = 'none';
+    /* ===== CHATBOT ===== */
+    const chat={
+        toggle(){state.chatOpen=!state.chatOpen;const w=$('chatWindow');if(state.chatOpen){w.classList.add('chat-window--open');$('chatInput').focus();$('chatBadge').style.display='none';$('chatTooltip').style.display='none';}else{w.classList.remove('chat-window--open');}},
+        _initWelcome(){const c=$('chatMessages');c.innerHTML='';const name=state.user?state.user.name:'';this._addBotMessage(`👋 안녕하세요${name?', <b>'+utils.escapeHtml(name)+'</b>님':''}! AI 어시스턴트입니다.\n\n자연어로 편하게 말씀해주시면 도와드릴게요.\n\n<b>💡 이런 것들을 할 수 있어요:</b>\n• "공지 등록해줘"\n• "공지 목록 보여줘"\n• "강남 고기 회식 찾아줘"\n• "마포구 삼겹살 10명"\n\n무엇을 도와드릴까요?`);this._updateSuggestions(['📝 공지 등록','📋 공지 목록','🍽️ 회식 찾기','❓ 도움말']);setTimeout(()=>{if(!state.chatOpen){$('chatBadge').style.display='flex';}},3000);},
+        _addMessage(html,isUser){const c=$('chatMessages');const w=document.createElement('div');w.className=`chat-msg chat-msg--${isUser?'user':'bot'}`;w.innerHTML=`<div class="chat-msg__bubble">${html.replace(/\n/g,'<br>')}</div><div class="chat-msg__time">${utils.formatTime(new Date())}</div>`;c.appendChild(w);c.scrollTop=c.scrollHeight;},
+        _addBotMessage(html){this._addMessage(html,false);},
+        _addUserMessage(text){this._addMessage(utils.escapeHtml(text),true);},
+        _showTyping(){const c=$('chatMessages');const el=document.createElement('div');el.className='chat-typing';el.id='chatTypingIndicator';el.innerHTML='<span></span><span></span><span></span>';c.appendChild(el);c.scrollTop=c.scrollHeight;},
+        _hideTyping(){const el=$('chatTypingIndicator');if(el)el.remove();},
+        _updateSuggestions(items){$('chatSuggestions').innerHTML=items.map(item=>{const clean=item.replace(/^[📝📋🔍❓🗑️✏️🍽️#\s]+/,'').trim();return`<button class="chat-suggest-btn" onclick="App.chat.quickSend('${utils.escapeHtml(clean)}')">${item}</button>`;}).join('');},
+        quickSend(text){$('chatInput').value=text;this.send();},
+        async send(){const input=$('chatInput');const text=input.value.trim();if(!text)return;input.value='';$('chatSendBtn').disabled=true;this._addUserMessage(text);this._showTyping();await new Promise(r=>setTimeout(r,350+Math.random()*350));this._hideTyping();const response=await this._processCommand(text);this._addBotMessage(response.message);if(response.suggestions)this._updateSuggestions(response.suggestions);$('chatSendBtn').disabled=false;$('chatInput').focus();},
+        _renderNoticeCard(n,index){return`<div class="chat-notice-card"><div class="chat-notice-card__title">${index!==undefined?(index+1)+'. ':''}${utils.escapeHtml(n.title)}</div><div class="chat-notice-card__content">${utils.escapeHtml(utils.truncate(n.content,80))}</div><div class="chat-notice-card__meta"><span>👤 ${utils.escapeHtml(n.author)}</span><span>📅 ${utils.formatDate(n.createdAt)}</span></div><div class="chat-notice-card__actions"><button class="chat-action-view" onclick="App.router.go('notices')">보기</button><button class="chat-action-edit" onclick="App.notices.open('${n.id}')">수정</button><button class="chat-action-delete" onclick="App.notices.delete('${n.id}')">삭제</button></div></div>`;},
 
-        await fb.init();
-        gis.load().catch(e => console.warn('[GIS]', e));
+        async _processCommand(text){
+            const lower=text.replace(/\s+/g,' ').trim().toLowerCase();
+            if(state.chatContext)return await this._handleContext(text);
 
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                $('noticeModal').hidden = true;
-                $('confirmModal').hidden = true;
-                if (state.chatOpen) chat.toggle();
+            // ---- DINING via Chat ----
+            const diningPatterns=[/회식/,/맛집/,/음식점/,/식당/,/밥\s*먹/,/저녁\s*먹/,/고기.*(?:찾|검색|추천)/,/삼겹살.*(?:찾|검색|추천)/,/먹으러/];
+            if(diningPatterns.some(p=>p.test(lower))){
+                // Try to extract area and food
+                const areas=['강남','강동','강북','강서','관악','광진','구로','금천','노원','도봉','동대문','동작','마포','서대문','서초','성동','성북','송파','양천','영등포','용산','은평','종로','중구','중랑'];
+                const foodMap={'고기':'고기 맛집','삼겹살':'삼겹살','소고기':'소고기 맛집','치킨':'치킨 맛집','회':'회 해산물','해산물':'회 해산물','초밥':'초밥 일식','일식':'초밥 일식','중식':'중식 중국집','중국':'중식 중국집','양식':'양식 파스타','파스타':'양식 파스타','한식':'한식 한정식','한정식':'한식 한정식','족발':'족발 보쌈','보쌈':'족발 보쌈','곱창':'곱창 막창','막창':'곱창 막창','찜':'찜 탕 찌개','탕':'찜 탕 찌개','찌개':'찜 탕 찌개','피자':'피자','태국':'태국 동남아 음식','동남아':'태국 동남아 음식','타코':'멕시칸 타코','술집':'술집 호프 이자카야','호프':'술집 호프 이자카야','이자카야':'술집 호프 이자카야','와인':'와인바 와인','뷔페':'뷔페','카페':'베이커리 카페'};
+
+                let foundArea='';
+                for(const a of areas){if(lower.includes(a)){foundArea=a+'구';if(a==='중구')foundArea='중구';break;}}
+
+                let foundFoods=[];
+                for(const[keyword,value]of Object.entries(foodMap)){if(lower.includes(keyword)&&!foundFoods.includes(value))foundFoods.push(value);}
+
+                // Extract people count
+                const pMatch=lower.match(/(\d+)\s*명/);
+                let people='';
+                if(pMatch){const n=parseInt(pMatch[1]);if(n<=4)people='2~4명';else if(n<=10)people='5~10명';else if(n<=20)people='10~20명';else people='20명이상';}
+
+                if(foundArea&&foundFoods.length>0){
+                    let query='서울 '+foundArea+' '+foundFoods.join(' ');
+                    if(people==='10~20명'||people==='20명이상')query+=' 단체석';
+                    query+=' 맛집';
+                    const url='https://map.naver.com/p/search/'+encodeURIComponent(query);
+                    window.open(url,'_blank');
+
+                    const record={area:foundArea,foods:foundFoods,people,query,date:new Date().toISOString()};
+                    let history=storage.get('diningHistory')||[];history.unshift(record);storage.set('diningHistory',history.slice(0,10));
+                    dining.renderHistory();
+
+                    return{message:`🍽️ 네이버 지도에서 검색했어요!\n\n📍 <b>${utils.escapeHtml(foundArea)}</b>\n🍴 <b>${foundFoods.join(', ')}</b>${people?'\n👥 <b>'+people+'</b>':''}\n\n🔗 새 탭에서 검색 결과를 확인해주세요!`,suggestions:['📋 공지 목록','🍽️ 다른 회식 찾기','❓ 도움말']};
+                }
+
+                if(foundArea&&foundFoods.length===0){
+                    state.chatContext={type:'dining',step:'food',area:foundArea,people};
+                    return{message:`📍 <b>${utils.escapeHtml(foundArea)}</b>에서 검색할게요!\n\n어떤 종류의 음식을 원하시나요?\n예: 고기, 삼겹살, 회, 중식, 치킨 등`,suggestions:['🥩 고기','🐷 삼겹살','🐟 회','🍣 일식','🍝 양식','🍺 술집']};
+                }
+
+                if(!foundArea){
+                    state.chatContext={type:'dining',step:'area',foods:foundFoods,people};
+                    return{message:`🍽️ 회식 장소를 찾아드릴게요!\n\n서울 어느 지역에서 찾으시나요?\n예: 강남, 마포, 종로, 홍대 등`,suggestions:['강남','마포','종로','서초','영등포','송파']};
+                }
             }
-        });
-        ['noticeModal','confirmModal'].forEach(id => {
-            $(id).addEventListener('click', (e) => { if (e.target === e.currentTarget) e.currentTarget.hidden = true; });
-        });
+
+            // ---- REGISTER ----
+            const registerPatterns=[/^공지\s*등록/,/공지.*(?:올려|작성|등록|만들어|써|생성|추가)/,/(?:올려|작성|등록|만들어|써|생성|추가).*공지/,/^(?:새|신규)\s*공지/,/공지.*(?:해줘|해주세요|부탁)/];
+            if(registerPatterns.some(p=>p.test(lower))){let cleaned=text.replace(/^공지\s*등록\s*/,'').replace(/공지\s*(?:올려|작성|등록|만들어|써|생성|추가)\s*/g,'').replace(/(?:올려|작성|등록|만들어|써|생성|추가)\s*.*?공지\s*/g,'').replace(/새\s*공지\s*/g,'').replace(/(?:해줘|해주세요|해 줘|부탁|좀)/g,'').trim();if(!cleaned||cleaned.length<2){state.chatContext={type:'register',step:'title'};return{message:'📝 공지사항을 등록할게요!\n\n먼저 <b>제목</b>을 입력해주세요.',suggestions:['취소']};}const si=cleaned.indexOf(' ');if(si===-1){state.chatContext={type:'register',step:'content',title:cleaned};return{message:`📝 제목: <b>${utils.escapeHtml(cleaned)}</b>\n\n이제 <b>내용</b>을 입력해주세요.`,suggestions:['취소']};}const title=cleaned.substring(0,si),body=cleaned.substring(si+1);state.chatContext={type:'register',step:'confirm',title,content:body};return{message:`📝 다음 내용으로 공지를 등록할까요?\n\n<b>제목:</b> ${utils.escapeHtml(title)}\n<b>내용:</b> ${utils.escapeHtml(body)}\n\n"<b>등록</b>" 또는 "<b>취소</b>"`,suggestions:['✅ 등록','❌ 취소','✏️ 수정']};}
+
+            // ---- LIST ----
+            if([/^공지\s*목록/,/공지.*(?:보여|확인|조회|리스트|목록|보기|알려)/,/(?:전체|모든|최근)\s*공지/,/공지.*(?:뭐|몇|있|어떤)/].some(p=>p.test(lower))){await notices._load();if(!state.notices.length)return{message:'📋 등록된 공지사항이 없습니다.\n\n새 공지를 등록해보시겠어요?',suggestions:['📝 공지 등록','❓ 도움말']};let html=`📋 <b>전체 공지사항 (${state.notices.length}건)</b>\n`;state.notices.slice(0,5).forEach((n,i)=>{html+=this._renderNoticeCard(n,i);});if(state.notices.length>5)html+=`\n<span style="color:var(--c-s400)">...외 ${state.notices.length-5}건</span>`;return{message:html,suggestions:['📝 공지 등록','🔍 공지 검색','🗑️ 공지 삭제']};}
+
+            // ---- SEARCH ----
+            if([/^공지\s*검색/,/공지.*검색/,/검색.*공지/,/공지.*찾아/,/찾아.*공지/].some(p=>p.test(lower))){let kw=text.replace(/공지\s*검색\s*/g,'').replace(/검색\s*/g,'').replace(/공지\s*/g,'').replace(/(?:찾아|줘|주세요|해줘|좀)/g,'').trim();if(!kw){state.chatContext={type:'search'};return{message:'🔍 검색할 <b>키워드</b>를 입력해주세요.',suggestions:['취소']};}return await this._doSearch(kw);}
+
+            // ---- DELETE ----
+            if([/^공지\s*삭제/,/공지.*삭제/,/삭제.*공지/,/공지.*(?:지워|없애|제거)/].some(p=>p.test(lower))){await notices._load();const numM=lower.match(/(\d+)/);if(numM){const idx=parseInt(numM[1])-1;if(idx>=0&&idx<state.notices.length){const t=state.notices[idx];state.chatContext={type:'delete',step:'confirm',noticeId:t.id,noticeTitle:t.title};return{message:`🗑️ 삭제할까요?\n${this._renderNoticeCard(t)}\n\n"<b>삭제</b>" 또는 "<b>취소</b>"`,suggestions:['✅ 삭제','❌ 취소']};}}let kw=text.replace(/공지\s*삭제\s*/g,'').replace(/삭제\s*/g,'').replace(/공지\s*/g,'').replace(/(?:지워|없애|제거|줘|주세요|해줘|좀)/g,'').trim();if(kw){const found=state.notices.find(n=>n.title.includes(kw));if(found){state.chatContext={type:'delete',step:'confirm',noticeId:found.id,noticeTitle:found.title};return{message:`🗑️ 삭제할까요?\n${this._renderNoticeCard(found)}\n\n"<b>삭제</b>" 또는 "<b>취소</b>"`,suggestions:['✅ 삭제','❌ 취소']};}return{message:`❌ "${utils.escapeHtml(kw)}" 공지를 찾을 수 없습니다.`,suggestions:['📋 공지 목록','🔍 공지 검색']};}if(!state.notices.length)return{message:'📋 삭제할 공지가 없습니다.',suggestions:['📝 공지 등록']};let html='🗑️ 삭제할 공지 <b>번호</b>를 입력하세요.\n';state.notices.slice(0,5).forEach((n,i)=>{html+=this._renderNoticeCard(n,i);});state.chatContext={type:'delete',step:'select'};return{message:html,suggestions:['취소']};}
+
+            // ---- EDIT ----
+            if([/^공지\s*수정/,/공지.*수정/,/수정.*공지/,/공지.*(?:바꿔|변경|고쳐|편집)/].some(p=>p.test(lower))){await notices._load();const numM=lower.match(/(\d+)/);if(numM){const idx=parseInt(numM[1])-1;if(idx>=0&&idx<state.notices.length){const t=state.notices[idx];notices.open(t.id);return{message:`✏️ <b>${utils.escapeHtml(t.title)}</b> 수정 창을 열었습니다.`,suggestions:['📋 공지 목록','📝 공지 등록']};}}if(!state.notices.length)return{message:'📋 수정할 공지가 없습니다.',suggestions:['📝 공지 등록']};let html='✏️ 수정할 공지 <b>번호</b>를 입력하세요.\n';state.notices.slice(0,5).forEach((n,i)=>{html+=this._renderNoticeCard(n,i);});state.chatContext={type:'edit',step:'select'};return{message:html,suggestions:['취소']};}
+
+            // ---- HELP ----
+            if(/^(?:도움말|도움|help|\?|명령어|사용법|기능)/.test(lower)){return{message:`📌 <b>사용 가능한 기능</b>\n\n📝 <b>공지 등록</b> — "공지 등록해줘"\n📋 <b>공지 목록</b> — "공지 보여줘"\n🔍 <b>공지 검색</b> — "공지 검색 회의"\n✏️ <b>공지 수정</b> — "1번 공지 수정"\n🗑️ <b>공지 삭제</b> — "공지 삭제 회의"\n🍽️ <b>회식 찾기</b> — "강남 고기 회식 찾아줘"\n📊 <b>현황</b> — "공지사항 현황"\n\n💡 자연어로 편하게 말씀해주세요!`,suggestions:['📝 공지 등록','📋 공지 목록','🍽️ 회식 찾기']};}
+
+            if(/안녕|하이|헬로|hello|hi|반가/.test(lower)){return{message:`👋 안녕하세요, <b>${utils.escapeHtml(state.user.name)}</b>님!`,suggestions:['📝 공지 등록','📋 공지 목록','🍽️ 회식 찾기','❓ 도움말']};}
+            if(/고마|감사|땡큐|thank/.test(lower)){return{message:`😊 도움이 되었다니 기쁩니다!`,suggestions:['📝 공지 등록','📋 공지 목록','🍽️ 회식 찾기']};}
+            if(/현황|통계|상태|요약/.test(lower)){await notices._load();const c=state.notices.length;return{message:`📊 <b>현황</b>\n\n• 전체 공지: <b>${c}건</b>\n• 최근 등록일: <b>${c>0?utils.formatDate(state.notices[0].createdAt):'없음'}</b>`,suggestions:['📋 공지 목록','📝 공지 등록']};}
+
+            return{message:`🤖 요청을 이해하지 못했어요.\n\n• "공지 등록해줘"\n• "공지 목록 보여줘"\n• "강남 고기 회식 찾아줘"\n\n<b>도움말</b>을 입력해보세요.`,suggestions:['📝 공지 등록','📋 공지 목록','🍽️ 회식 찾기','❓ 도움말']};
+        },
+
+        async _handleContext(text){
+            const lower=text.trim().toLowerCase();const ctx=state.chatContext;
+            if(/^(?:취소|캔슬|cancel|그만|돌아가)/.test(lower)){state.chatContext=null;return{message:'↩️ 취소되었습니다.',suggestions:['📝 공지 등록','📋 공지 목록','🍽️ 회식 찾기','❓ 도움말']};}
+
+            // DINING CONTEXT
+            if(ctx.type==='dining'){
+                if(ctx.step==='area'){
+                    const areas={'강남':'강남구','강동':'강동구','강북':'강북구','강서':'강서구','관악':'관악구','광진':'광진구','구로':'구로구','금천':'금천구','노원':'노원구','도봉':'도봉구','동대문':'동대문구','동작':'동작구','마포':'마포구','서대문':'서대문구','서초':'서초구','성동':'성동구','성북':'성북구','송파':'송파구','양천':'양천구','영등포':'영등포구','용산':'용산구','은평':'은평구','종로':'종로구','중구':'중구','중랑':'중랑구','홍대':'마포구','신촌':'서대문구','이태원':'용산구','건대':'광진구','잠실':'송파구','여의도':'영등포구'};
+                    let foundArea='';for(const[k,v]of Object.entries(areas)){if(lower.includes(k)){foundArea=v;break;}}
+                    if(!foundArea){return{message:'❌ 서울 지역명을 입력해주세요.\n예: 강남, 마포, 종로, 홍대',suggestions:['강남','마포','종로','서초','취소']};}
+                    if(ctx.foods&&ctx.foods.length>0){
+                        let query='서울 '+foundArea+' '+ctx.foods.join(' ')+' 맛집';
+                        const url='https://map.naver.com/p/search/'+encodeURIComponent(query);window.open(url,'_blank');
+                        state.chatContext=null;
+                        return{message:`🍽️ 검색 완료!\n\n📍 <b>${foundArea}</b>\n🍴 <b>${ctx.foods.join(', ')}</b>\n\n새 탭을 확인해주세요!`,suggestions:['📋 공지 목록','🍽️ 다른 회식','❓ 도움말']};
+                    }
+                    state.chatContext={type:'dining',step:'food',area:foundArea,people:ctx.people||''};
+                    return{message:`📍 <b>${foundArea}</b> 선택!\n\n어떤 음식을 원하시나요?`,suggestions:['🥩 고기','🐷 삼겹살','🐟 회','🍣 일식','🍝 양식','🍺 술집']};
+                }
+                if(ctx.step==='food'){
+                    const foodMap={'고기':'고기 맛집','삼겹살':'삼겹살','소고기':'소고기 맛집','치킨':'치킨 맛집','회':'회 해산물','해산물':'회 해산물','초밥':'초밥 일식','일식':'초밥 일식','중식':'중식 중국집','양식':'양식 파스타','파스타':'양식 파스타','한식':'한식 한정식','족발':'족발 보쌈','보쌈':'족발 보쌈','곱창':'곱창 막창','피자':'피자','술집':'술집 호프 이자카야','호프':'술집 호프 이자카야','이자카야':'술집 호프 이자카야','와인':'와인바 와인','뷔페':'뷔페','카페':'베이커리 카페'};
+                    let foods=[];for(const[k,v]of Object.entries(foodMap)){if(lower.includes(k)&&!foods.includes(v))foods.push(v);}
+                    if(foods.length===0)foods=[text.trim()];
+
+                    let query='서울 '+ctx.area+' '+foods.join(' ');
+                    if(ctx.people==='10~20명'||ctx.people==='20명이상')query+=' 단체석';
+                    query+=' 맛집';
+                    const url='https://map.naver.com/p/search/'+encodeURIComponent(query);window.open(url,'_blank');
+
+                    const record={area:ctx.area,foods,people:ctx.people,query,date:new Date().toISOString()};
+                    let history=storage.get('diningHistory')||[];history.unshift(record);storage.set('diningHistory',history.slice(0,10));
+                    dining.renderHistory();
+                    state.chatContext=null;
+                    return{message:`🍽️ 검색 완료!\n\n📍 <b>${utils.escapeHtml(ctx.area)}</b>\n🍴 <b>${foods.join(', ')}</b>${ctx.people?'\n👥 <b>'+ctx.people+'</b>':''}\n\n새 탭에서 확인해주세요!`,suggestions:['📋 공지 목록','🍽️ 다른 회식','❓ 도움말']};
+                }
+            }
+
+            // REGISTER
+            if(ctx.type==='register'){
+                if(ctx.step==='title'){state.chatContext={type:'register',step:'content',title:text.trim()};return{message:`📝 제목: <b>${utils.escapeHtml(text.trim())}</b>\n\n<b>내용</b>을 입력해주세요.`,suggestions:['취소']};}
+                if(ctx.step==='content'){state.chatContext={type:'register',step:'confirm',title:ctx.title,content:text.trim()};return{message:`📝 등록할까요?\n\n<b>제목:</b> ${utils.escapeHtml(ctx.title)}\n<b>내용:</b> ${utils.escapeHtml(text.trim())}\n\n"<b>등록</b>" 또는 "<b>취소</b>"`,suggestions:['✅ 등록','❌ 취소']};}
+                if(ctx.step==='confirm'){if(/^(?:등록|확인|네|예|yes|ok|ㅇ|응)/.test(lower)){try{await notices._db().add({title:ctx.title,content:ctx.content,author:state.user.name,authorEmail:state.user.email,createdAt:new Date().toISOString()});await notices._load();ui.renderNotices();ui.renderDashboard();state.chatContext=null;return{message:`✅ 등록 완료!\n${this._renderNoticeCard(state.notices[0])}`,suggestions:['📋 공지 목록','📝 공지 등록']};}catch{state.chatContext=null;return{message:'❌ 등록 실패',suggestions:['📝 공지 등록']};}}state.chatContext=null;return{message:'↩️ 취소되었습니다.',suggestions:['📝 공지 등록','📋 공지 목록','❓ 도움말']};}
+            }
+
+            // DELETE
+            if(ctx.type==='delete'){
+                if(ctx.step==='select'){const num=parseInt(lower);if(!isNaN(num)&&num>=1&&num<=state.notices.length){const t=state.notices[num-1];state.chatContext={type:'delete',step:'confirm',noticeId:t.id,noticeTitle:t.title};return{message:`🗑️ 삭제할까요?\n${this._renderNoticeCard(t)}\n\n"<b>삭제</b>" 또는 "<b>취소</b>"`,suggestions:['✅ 삭제','❌ 취소']};}return{message:'❌ 올바른 번호를 입력하세요.',suggestions:['취소']};}
+                if(ctx.step==='confirm'){if(/^(?:삭제|확인|네|예|yes|ok|ㅇ|응)/.test(lower)){try{await notices._db().doc(ctx.noticeId).delete();await notices._load();ui.renderNotices();ui.renderDashboard();state.chatContext=null;return{message:`✅ "<b>${utils.escapeHtml(ctx.noticeTitle)}</b>" 삭제 완료!`,suggestions:['📋 공지 목록','📝 공지 등록']};}catch{state.chatContext=null;return{message:'❌ 삭제 실패',suggestions:['📋 공지 목록']};}}state.chatContext=null;return{message:'↩️ 취소되었습니다.',suggestions:['📋 공지 목록','📝 공지 등록']};}
+            }
+
+            // EDIT
+            if(ctx.type==='edit'&&ctx.step==='select'){const num=parseInt(lower);if(!isNaN(num)&&num>=1&&num<=state.notices.length){const t=state.notices[num-1];notices.open(t.id);state.chatContext=null;return{message:`✏️ <b>${utils.escapeHtml(t.title)}</b> 수정 창 열림`,suggestions:['📋 공지 목록','📝 공지 등록']};}return{message:'❌ 올바른 번호를 입력하세요.',suggestions:['취소']};}
+
+            // SEARCH
+            if(ctx.type==='search'){state.chatContext=null;return await this._doSearch(text.trim());}
+
+            state.chatContext=null;return await this._processCommand(text);
+        },
+
+        async _doSearch(kw){await notices._load();const r=state.notices.filter(n=>n.title.toLowerCase().includes(kw.toLowerCase())||n.content.toLowerCase().includes(kw.toLowerCase()));if(!r.length)return{message:`🔍 "${utils.escapeHtml(kw)}" 결과 없음`,suggestions:['📋 공지 목록','📝 공지 등록']};let html=`🔍 "${utils.escapeHtml(kw)}" 결과 (${r.length}건)\n`;r.slice(0,5).forEach((n,i)=>{html+=this._renderNoticeCard(n,i);});return{message:html,suggestions:['📋 공지 목록','📝 공지 등록']};}
+    };
+
+    /* INIT */
+    async function init(){toast.init();$('chatbotContainer').style.display='none';$('chatTooltip').style.display='none';await fb.init();gis.load().catch(()=>{});
+        document.addEventListener('keydown',(e)=>{if(e.key==='Escape'){$('noticeModal').hidden=true;$('confirmModal').hidden=true;if(state.chatOpen)chat.toggle();}});
+        ['noticeModal','confirmModal'].forEach(id=>{$(id).addEventListener('click',(e)=>{if(e.target===e.currentTarget)e.currentTarget.hidden=true;});});
+        // Load dining history
+        state.diningHistory=storage.get('diningHistory')||[];
     }
+    if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 
-    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
-    else init();
-
-    return Object.freeze({ auth, router, notices, ui, chat });
+    return Object.freeze({auth,router,notices,ui,chat,dining});
 })();
 </script>
 </body>
