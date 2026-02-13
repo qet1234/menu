@@ -8,337 +8,398 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
 
-    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 
     <style>
         :root {
-            --c-p50:  #f0f9ff; --c-p100: #e0f2fe;
-            --c-p500: #0ea5e9; --c-p600: #0284c7;
-            --c-a500: #8b5cf6; --c-a600: #7c3aed;
-            --c-ok100: #dcfce7; --c-ok500: #22c55e;
-            --c-ok600: #16a34a; --c-ok800: #166534;
-            --c-w100:  #fef3c7; --c-w800:  #92400e;
-            --c-err50: #fef2f2; --c-err500:#ef4444;
+            --c-p50:#f0f9ff;--c-p100:#e0f2fe;
+            --c-p500:#0ea5e9;--c-p600:#0284c7;
+            --c-a500:#8b5cf6;--c-a600:#7c3aed;
+            --c-ok100:#dcfce7;--c-ok500:#22c55e;
+            --c-ok600:#16a34a;--c-ok800:#166534;
+            --c-w100:#fef3c7;--c-w800:#92400e;
+            --c-err50:#fef2f2;--c-err500:#ef4444;
             --c-err600:#dc2626;
-            --c-or500: #f97316;
-            --c-s50:  #f8fafc; --c-s100: #f1f5f9;
-            --c-s200: #e2e8f0; --c-s300: #cbd5e1;
-            --c-s400: #94a3b8; --c-s500: #64748b;
-            --c-s600: #475569; --c-s700: #334155;
-            --c-s800: #1e293b; --c-s900: #0f172a;
-            --grad:     linear-gradient(135deg, var(--c-p500), var(--c-a500));
-            --ff: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
-            --fd: 'Playfair Display', Georgia, serif;
-            --hh: 64px; --sw: 256px;
-            --ease-out: cubic-bezier(.4, 0, .2, 1);
+            --c-or500:#f97316;
+            --c-s50:#f8fafc;--c-s100:#f1f5f9;
+            --c-s200:#e2e8f0;--c-s300:#cbd5e1;
+            --c-s400:#94a3b8;--c-s500:#64748b;
+            --c-s600:#475569;--c-s700:#334155;
+            --c-s800:#1e293b;--c-s900:#0f172a;
+            --grad:linear-gradient(135deg,var(--c-p500),var(--c-a500));
+            --ff:'Noto Sans KR',-apple-system,BlinkMacSystemFont,sans-serif;
+            --fd:'Playfair Display',Georgia,serif;
+            --hh:64px;--sw:256px;
+            --ease-out:cubic-bezier(.4,0,.2,1);
         }
 
-        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-        html { -webkit-font-smoothing: antialiased; }
-        body {
-            font-family: var(--ff); font-size: 1rem; color: var(--c-s800);
-            background: var(--c-s50); line-height: 1.6;
-            min-height: 100vh; overflow-x: hidden;
+        *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+        html{-webkit-font-smoothing:antialiased}
+        body{font-family:var(--ff);font-size:1rem;color:var(--c-s800);background:var(--c-s50);line-height:1.6;min-height:100vh;overflow-x:hidden}
+        button{font-family:var(--ff);cursor:pointer;border:none;background:none}
+        input,textarea{font-family:var(--ff);border:none;outline:none}
+        img{max-width:100%;display:block}
+        [hidden]{display:none!important}
+        .logo{font-family:var(--fd)}
+
+        @keyframes slideUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes slideRight{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:translateX(0)}}
+        @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+        @keyframes toastIn{from{opacity:0;transform:translateY(-12px) scale(.95)}to{opacity:1;transform:translateY(0) scale(1)}}
+        @keyframes toastOut{from{opacity:1}to{opacity:0;transform:translateY(-12px) scale(.95)}}
+        @keyframes spin{to{transform:rotate(360deg)}}
+        @keyframes pulse{0%,100%{opacity:.4}50%{opacity:1}}
+        @keyframes bounceIn{0%{opacity:0;transform:scale(.3)}50%{transform:scale(1.05)}70%{transform:scale(.9)}100%{opacity:1;transform:scale(1)}}
+        @keyframes fabPulse{0%{box-shadow:0 8px 32px rgba(139,92,246,.45)}50%{box-shadow:0 8px 32px rgba(139,92,246,.7),0 0 0 12px rgba(139,92,246,.1)}100%{box-shadow:0 8px 32px rgba(139,92,246,.45)}}
+
+        .anim-slide-up{animation:slideUp .5s ease-out both}
+        .anim-slide-right{animation:slideRight .4s ease-out both}
+
+        /* TOAST */
+        .toast-container{position:fixed;top:1rem;right:1rem;z-index:9999;display:flex;flex-direction:column;gap:.5rem;pointer-events:none}
+        .toast{pointer-events:auto;display:flex;align-items:center;gap:.75rem;padding:.75rem 1.25rem;border-radius:.625rem;font-size:.875rem;font-weight:500;max-width:420px;box-shadow:0 20px 25px -5px rgba(0,0,0,.1);animation:toastIn .3s ease-out both}
+        .toast--removing{animation:toastOut .25s ease-in both}
+        .toast--success{background:var(--c-ok600);color:#fff}
+        .toast--error{background:var(--c-err600);color:#fff}
+        .toast--info{background:var(--c-s800);color:#fff}
+
+        /* LOGIN */
+        .login{min-height:100vh;background:linear-gradient(135deg,var(--c-s900),var(--c-s800),var(--c-s900));display:flex;align-items:center;justify-content:center;padding:1rem;position:relative;overflow:hidden}
+        .login::before{content:'';position:absolute;inset:-50%;width:200%;height:200%;background:radial-gradient(ellipse at 25% 15%,rgba(14,165,233,.07),transparent 50%),radial-gradient(ellipse at 75% 85%,rgba(139,92,246,.07),transparent 50%);pointer-events:none}
+        .login__wrapper{width:100%;max-width:440px;position:relative;z-index:1}
+        .login__brand{text-align:center;margin-bottom:2rem}
+        .login__brand h1{font-size:3rem;font-weight:900;color:#fff;letter-spacing:-1px}
+        .login__brand p{color:var(--c-s400);font-size:.875rem;letter-spacing:2px;margin-top:.5rem}
+        .login__card{background:rgba(255,255,255,.04);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,.08);border-radius:1.25rem;padding:2.5rem;box-shadow:0 25px 50px -12px rgba(0,0,0,.25)}
+        .login__card h2{font-size:1.5rem;font-weight:700;color:#fff;margin-bottom:1.5rem}
+        .btn-google{width:100%;padding:.75rem 1rem;background:#fff;border-radius:.625rem;font-size:.9375rem;font-weight:500;color:var(--c-s700);display:flex;align-items:center;justify-content:center;gap:.75rem;transition:all .2s var(--ease-out)}
+        .btn-google:hover:not(:disabled){background:var(--c-s50);box-shadow:0 8px 24px rgba(0,0,0,.2);transform:translateY(-1px)}
+        .btn-google:disabled{opacity:.6;cursor:wait}
+        .btn-google svg{width:20px;height:20px;flex-shrink:0}
+        .spinner{display:inline-block;width:20px;height:20px;border:2.5px solid var(--c-s300);border-top-color:var(--c-p500);border-radius:50%;animation:spin .6s linear infinite}
+        .login__error{margin-top:.75rem;padding:.75rem 1rem;background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);border-radius:.625rem;font-size:.75rem;color:#fca5a5;line-height:1.7;display:none}
+        .login__error--visible{display:block}
+        .login__error strong{color:#fff;font-weight:600}
+        .login__footer{text-align:center;font-size:.75rem;color:var(--c-s500);margin-top:1.5rem}
+
+        /* HEADER */
+        .header{background:#fff;border-bottom:1px solid var(--c-s200);position:sticky;top:0;z-index:20;box-shadow:0 1px 2px rgba(0,0,0,.05);height:var(--hh)}
+        .header__inner{max-width:1280px;margin:0 auto;padding:0 1rem;display:flex;justify-content:space-between;align-items:center;height:100%}
+        .header__left{display:flex;align-items:center;gap:1rem}
+        .header__menu{display:none;padding:.5rem;border-radius:.5rem;color:var(--c-s600)}
+        .header__menu:hover{background:var(--c-s100)}
+        .header__logo{font-size:1.5rem;font-weight:900;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .header__right{display:flex;align-items:center;gap:.75rem}
+        .header__user{display:flex;align-items:center;gap:.75rem;padding:.5rem 1rem;background:var(--c-s50);border-radius:.625rem}
+        .header__avatar{width:32px;height:32px;border-radius:50%;object-fit:cover}
+        .header__avatar-fb{width:32px;height:32px;border-radius:50%;background:var(--c-s200);display:flex;align-items:center;justify-content:center}
+        .header__avatar-fb svg{width:16px;height:16px;color:var(--c-s500)}
+        .header__name{font-size:.875rem;font-weight:500;color:var(--c-s600)}
+        .header__logout{display:flex;align-items:center;gap:.5rem;padding:.5rem 1rem;font-size:.875rem;font-weight:500;color:var(--c-s500);border-radius:.625rem;transition:all .2s}
+        .header__logout:hover{background:var(--c-s100);color:var(--c-s800)}
+        .header__logout svg{width:16px;height:16px}
+
+        .app-layout{display:flex}
+
+        /* SIDEBAR */
+        .sidebar{width:var(--sw);background:#fff;border-right:1px solid var(--c-s200);min-height:calc(100vh - var(--hh));padding:1rem;flex-shrink:0;transition:transform .3s var(--ease-out)}
+        .sidebar__nav{display:flex;flex-direction:column;gap:.25rem}
+        .sidebar__link{width:100%;display:flex;align-items:center;gap:.75rem;padding:.75rem 1rem;border-radius:.625rem;font-size:.875rem;font-weight:500;color:var(--c-s500);transition:all .2s}
+        .sidebar__link:hover{background:var(--c-s50);color:var(--c-s800)}
+        .sidebar__link--active{background:var(--grad);color:#fff;box-shadow:0 4px 15px rgba(139,92,246,.3)}
+        .sidebar__link svg{width:20px;height:20px;flex-shrink:0}
+        .sidebar__overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:29}
+
+        .main{flex:1;padding:2rem;max-width:1024px;min-width:0}
+        .page-title{font-size:1.875rem;font-weight:700;color:var(--c-s900);margin-bottom:2rem}
+        .page-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem}
+        .page-header .page-title{margin-bottom:0}
+
+        .card{background:#fff;border-radius:.875rem;border:1px solid var(--c-s200);box-shadow:0 1px 2px rgba(0,0,0,.05);transition:all .3s var(--ease-out)}
+        .card--hover:hover{transform:translateY(-3px);box-shadow:0 10px 15px -3px rgba(0,0,0,.08)}
+        .card__body{padding:1.5rem}
+
+        .stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.5rem;margin-bottom:2rem}
+        .stat__header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
+        .stat__label{font-size:1rem;font-weight:600;color:var(--c-s900)}
+        .stat__icon svg{width:32px;height:32px}
+        .stat__value{font-size:1.75rem;font-weight:700;color:var(--c-s900)}
+        .stat__desc{font-size:.875rem;color:var(--c-s400);margin-top:.25rem}
+
+        .bottom-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+        .recent-title{font-size:1.25rem;font-weight:700;color:var(--c-s900);margin-bottom:1rem}
+        .recent-item{padding:1rem;background:var(--c-s50);border-radius:.625rem;margin-bottom:.75rem;cursor:pointer;transition:background .2s}
+        .recent-item:last-child{margin-bottom:0}
+        .recent-item:hover{background:var(--c-s100)}
+        .recent-item__title{font-size:.875rem;font-weight:600;color:var(--c-s900);margin-bottom:.25rem}
+        .recent-item__body{font-size:.75rem;color:var(--c-s500);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+        .recent-item__date{font-size:.75rem;color:var(--c-s400);margin-top:.5rem}
+
+        .quick-panel{background:var(--grad);border-radius:.875rem;padding:1.5rem;color:#fff;box-shadow:0 8px 25px rgba(139,92,246,.35)}
+        .quick-panel h3{font-size:1.25rem;font-weight:700;margin-bottom:1rem}
+        .quick-btn{width:100%;display:flex;align-items:center;justify-content:space-between;padding:1rem;background:rgba(255,255,255,.12);border-radius:.625rem;color:#fff;font-size:.875rem;font-weight:500;backdrop-filter:blur(4px);margin-bottom:.75rem;transition:background .2s}
+        .quick-btn:last-child{margin-bottom:0}
+        .quick-btn:hover{background:rgba(255,255,255,.22)}
+        .quick-btn svg{width:20px;height:20px}
+
+        .btn-add{display:inline-flex;align-items:center;gap:.5rem;padding:.75rem 1.25rem;background:var(--grad);border-radius:.625rem;color:#fff;font-size:.875rem;font-weight:600;box-shadow:0 4px 15px rgba(139,92,246,.3);transition:all .2s}
+        .btn-add:hover{transform:translateY(-1px);box-shadow:0 8px 25px rgba(139,92,246,.35)}
+        .btn-add svg{width:18px;height:18px}
+
+        .notice{margin-bottom:1rem}
+        .notice__top{display:flex;justify-content:space-between;align-items:flex-start}
+        .notice__info{flex:1;min-width:0}
+        .notice__title{font-size:1.25rem;font-weight:700;color:var(--c-s900);margin-bottom:.5rem}
+        .notice__content{font-size:.875rem;color:var(--c-s600);white-space:pre-wrap;line-height:1.7}
+        .notice__actions{display:flex;gap:.25rem;flex-shrink:0;margin-left:1rem}
+        .notice__actions button{padding:.5rem;border-radius:.375rem;transition:all .2s}
+        .notice__actions button svg{width:16px;height:16px}
+        .btn-edit{color:var(--c-p500)}.btn-edit:hover{background:var(--c-p50)}
+        .btn-del{color:var(--c-err500)}.btn-del:hover{background:var(--c-err50)}
+        .notice__meta{display:flex;align-items:center;gap:1rem;font-size:.75rem;color:var(--c-s400);margin-top:1rem;padding-top:1rem;border-top:1px solid var(--c-s100)}
+        .notice__meta span{display:inline-flex;align-items:center;gap:.25rem}
+        .notice__meta svg{width:14px;height:14px}
+
+        .empty{text-align:center;padding:4rem 2rem}
+        .empty svg{width:64px;height:64px;color:var(--c-s300);margin:0 auto 1rem}
+        .empty p{font-size:1.125rem;color:var(--c-s400)}
+        .empty .empty__sub{font-size:.875rem;color:var(--c-s300);margin-top:.5rem}
+
+        .modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;padding:1rem;z-index:50;animation:fadeIn .2s ease-out}
+        .modal__dialog{width:100%;border-radius:1.25rem;padding:2.5rem;box-shadow:0 25px 50px -12px rgba(0,0,0,.25);animation:slideUp .3s ease-out}
+        .modal__dialog--white{max-width:640px;background:#fff;color:var(--c-s900)}
+        .modal__dialog h3{font-size:1.5rem;font-weight:700;margin-bottom:1rem}
+        .form-group{margin-bottom:1rem}
+        .form-group>label{display:block;font-size:.875rem;font-weight:500;color:var(--c-s700);margin-bottom:.5rem}
+        .form-input{width:100%;padding:.75rem 1rem;background:#fff;border:1px solid var(--c-s300);border-radius:.625rem;font-size:.875rem;color:var(--c-s900);transition:all .2s}
+        .form-input::placeholder{color:var(--c-s400)}
+        .form-input:focus{border-color:var(--c-p500);box-shadow:0 0 0 3px rgba(14,165,233,.15)}
+        textarea.form-input{resize:vertical;min-height:180px;line-height:1.7}
+        .modal__actions{display:flex;gap:.75rem;margin-top:1.5rem}
+        .modal__actions button{flex:1;padding:.75rem;border-radius:.625rem;font-size:.875rem;font-weight:600;transition:all .2s}
+        .btn-primary{background:var(--grad);color:#fff}
+        .btn-primary:hover{box-shadow:0 4px 15px rgba(139,92,246,.3)}
+        .btn-secondary{background:var(--c-s200);color:var(--c-s700)}
+        .btn-secondary:hover{background:var(--c-s300)}
+        .btn-danger{background:var(--c-err500);color:#fff}
+
+        /* ===== CHATBOT ===== */
+        #chatbotContainer {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 9990;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
         }
-        button { font-family: var(--ff); cursor: pointer; border: none; background: none; }
-        input, textarea { font-family: var(--ff); border: none; outline: none; }
-        img { max-width: 100%; display: block; }
-        [hidden] { display: none !important; }
-        .logo { font-family: var(--fd); }
 
-        @keyframes slideUp   { from { opacity:0; transform:translateY(24px) } to { opacity:1; transform:translateY(0) } }
-        @keyframes slideRight { from { opacity:0; transform:translateX(24px)} to { opacity:1; transform:translateX(0) } }
-        @keyframes fadeIn     { from { opacity:0 } to { opacity:1 } }
-        @keyframes toastIn   { from { opacity:0; transform:translateY(-12px) scale(.95) } to { opacity:1; transform:translateY(0) scale(1) } }
-        @keyframes toastOut  { from { opacity:1 } to { opacity:0; transform:translateY(-12px) scale(.95) } }
-        @keyframes spin      { to { transform: rotate(360deg) } }
-
-        .anim-slide-up    { animation: slideUp   .5s ease-out both; }
-        .anim-slide-right { animation: slideRight .4s ease-out both; }
-
-        .toast-container {
-            position: fixed; top: 1rem; right: 1rem; z-index: 9999;
-            display: flex; flex-direction: column; gap: .5rem; pointer-events: none;
-        }
-        .toast {
-            pointer-events: auto; display: flex; align-items: center; gap: .75rem;
-            padding: .75rem 1.25rem; border-radius: .625rem;
-            font-size: .875rem; font-weight: 500; max-width: 420px;
-            box-shadow: 0 20px 25px -5px rgba(0,0,0,.1);
-            animation: toastIn .3s ease-out both;
-        }
-        .toast--removing { animation: toastOut .25s ease-in both; }
-        .toast--success   { background: var(--c-ok600);  color: #fff; }
-        .toast--error     { background: var(--c-err600); color: #fff; }
-        .toast--info      { background: var(--c-s800);   color: #fff; }
-
-        .login {
-            min-height: 100vh;
-            background: linear-gradient(135deg, var(--c-s900), var(--c-s800), var(--c-s900));
+        .chatbot-fab {
+            width: 64px; height: 64px; border-radius: 50%;
+            background: linear-gradient(135deg, #0ea5e9, #8b5cf6);
+            color: #fff; border: none; cursor: pointer;
+            box-shadow: 0 8px 32px rgba(139,92,246,.45);
+            font-size: 1.6rem;
             display: flex; align-items: center; justify-content: center;
-            padding: 1rem; position: relative; overflow: hidden;
+            transition: all .3s ease;
+            animation: fabPulse 3s ease-in-out infinite;
+            position: relative;
         }
-        .login::before {
-            content: ''; position: absolute; inset: -50%; width: 200%; height: 200%;
-            background:
-                radial-gradient(ellipse at 25% 15%, rgba(14,165,233,.07), transparent 50%),
-                radial-gradient(ellipse at 75% 85%, rgba(139,92,246,.07), transparent 50%);
+        .chatbot-fab:hover {
+            transform: scale(1.12) rotate(5deg);
+            box-shadow: 0 12px 40px rgba(139,92,246,.6);
+        }
+        .chatbot-fab__badge {
+            position: absolute; top: -4px; right: -4px;
+            width: 22px; height: 22px;
+            background: #ef4444; border-radius: 50%;
+            font-size: .7rem; font-weight: 700; color: #fff;
+            display: flex; align-items: center; justify-content: center;
+            border: 2.5px solid #fff;
+            animation: bounceIn .4s ease-out;
+        }
+        .chatbot-fab__tooltip {
+            position: absolute; right: calc(100% + 12px); top: 50%; transform: translateY(-50%);
+            background: var(--c-s800); color: #fff; padding: .5rem .875rem;
+            border-radius: .5rem; font-size: .75rem; font-weight: 500;
+            white-space: nowrap;
+            box-shadow: 0 4px 12px rgba(0,0,0,.15);
+            animation: fadeIn .3s ease-out;
             pointer-events: none;
         }
-        .login__wrapper   { width: 100%; max-width: 440px; position: relative; z-index: 1; }
-        .login__brand     { text-align: center; margin-bottom: 2rem; }
-        .login__brand h1  { font-size: 3rem; font-weight: 900; color: #fff; letter-spacing: -1px; }
-        .login__brand p   { color: var(--c-s400); font-size: .875rem; letter-spacing: 2px; margin-top: .5rem; }
-        .login__card {
-            background: rgba(255,255,255,.04);
-            backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
-            border: 1px solid rgba(255,255,255,.08);
-            border-radius: 1.25rem; padding: 2.5rem;
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,.25);
-        }
-        .login__card h2 { font-size: 1.5rem; font-weight: 700; color: #fff; margin-bottom: 1.5rem; }
-
-        .btn-google {
-            width: 100%; padding: .75rem 1rem; background: #fff; border-radius: .625rem;
-            font-size: .9375rem; font-weight: 500; color: var(--c-s700);
-            display: flex; align-items: center; justify-content: center; gap: .75rem;
-            transition: all .2s var(--ease-out);
-        }
-        .btn-google:hover:not(:disabled) {
-            background: var(--c-s50); box-shadow: 0 8px 24px rgba(0,0,0,.2);
-            transform: translateY(-1px);
-        }
-        .btn-google:disabled { opacity: .6; cursor: wait; }
-        .btn-google svg { width: 20px; height: 20px; flex-shrink: 0; }
-
-        .spinner {
-            display: inline-block; width: 20px; height: 20px;
-            border: 2.5px solid var(--c-s300); border-top-color: var(--c-p500);
-            border-radius: 50%; animation: spin .6s linear infinite;
+        .chatbot-fab__tooltip::after {
+            content: ''; position: absolute; top: 50%; right: -6px;
+            transform: translateY(-50%);
+            border: 6px solid transparent; border-left-color: var(--c-s800);
         }
 
-        .login__error {
-            margin-top: .75rem; padding: .75rem 1rem;
-            background: rgba(239,68,68,.15); border: 1px solid rgba(239,68,68,.3);
-            border-radius: .625rem; font-size: .75rem; color: #fca5a5;
-            line-height: 1.7; display: none;
-        }
-        .login__error--visible { display: block; }
-        .login__error strong { color: #fff; font-weight: 600; }
-        .login__footer { text-align: center; font-size: .75rem; color: var(--c-s500); margin-top: 1.5rem; }
-
-        .header {
-            background: #fff; border-bottom: 1px solid var(--c-s200);
-            position: sticky; top: 0; z-index: 20;
-            box-shadow: 0 1px 2px rgba(0,0,0,.05); height: var(--hh);
-        }
-        .header__inner {
-            max-width: 1280px; margin: 0 auto; padding: 0 1rem;
-            display: flex; justify-content: space-between; align-items: center; height: 100%;
-        }
-        .header__left  { display: flex; align-items: center; gap: 1rem; }
-        .header__menu  { display: none; padding: .5rem; border-radius: .5rem; color: var(--c-s600); }
-        .header__menu:hover { background: var(--c-s100); }
-        .header__logo {
-            font-size: 1.5rem; font-weight: 900;
-            background: var(--grad); -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent; background-clip: text;
-        }
-        .header__right { display: flex; align-items: center; gap: .75rem; }
-        .header__user  {
-            display: flex; align-items: center; gap: .75rem;
-            padding: .5rem 1rem; background: var(--c-s50); border-radius: .625rem;
-        }
-        .header__avatar     { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; }
-        .header__avatar-fb  {
-            width: 32px; height: 32px; border-radius: 50%; background: var(--c-s200);
-            display: flex; align-items: center; justify-content: center;
-        }
-        .header__avatar-fb svg { width: 16px; height: 16px; color: var(--c-s500); }
-        .header__name { font-size: .875rem; font-weight: 500; color: var(--c-s600); }
-        .header__logout {
-            display: flex; align-items: center; gap: .5rem;
-            padding: .5rem 1rem; font-size: .875rem; font-weight: 500;
-            color: var(--c-s500); border-radius: .625rem; transition: all .2s;
-        }
-        .header__logout:hover { background: var(--c-s100); color: var(--c-s800); }
-        .header__logout svg   { width: 16px; height: 16px; }
-
-        .app-layout { display: flex; }
-
-        .sidebar {
-            width: var(--sw); background: #fff; border-right: 1px solid var(--c-s200);
-            min-height: calc(100vh - var(--hh)); padding: 1rem; flex-shrink: 0;
-            transition: transform .3s var(--ease-out);
-        }
-        .sidebar__nav { display: flex; flex-direction: column; gap: .25rem; }
-        .sidebar__link {
-            width: 100%; display: flex; align-items: center; gap: .75rem;
-            padding: .75rem 1rem; border-radius: .625rem;
-            font-size: .875rem; font-weight: 500; color: var(--c-s500); transition: all .2s;
-        }
-        .sidebar__link:hover { background: var(--c-s50); color: var(--c-s800); }
-        .sidebar__link--active {
-            background: var(--grad); color: #fff;
-            box-shadow: 0 4px 15px rgba(139,92,246,.3);
-        }
-        .sidebar__link svg { width: 20px; height: 20px; flex-shrink: 0; }
-        .sidebar__overlay {
-            display: none; position: fixed; inset: 0;
-            background: rgba(0,0,0,.4); z-index: 29;
-        }
-
-        .main { flex: 1; padding: 2rem; max-width: 1024px; min-width: 0; }
-
-        .page-title { font-size: 1.875rem; font-weight: 700; color: var(--c-s900); margin-bottom: 2rem; }
-        .page-header {
-            display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;
-        }
-        .page-header .page-title { margin-bottom: 0; }
-
-        .card {
-            background: #fff; border-radius: .875rem;
-            border: 1px solid var(--c-s200); box-shadow: 0 1px 2px rgba(0,0,0,.05);
-            transition: all .3s var(--ease-out);
-        }
-        .card--hover:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 15px -3px rgba(0,0,0,.08);
-        }
-        .card__body { padding: 1.5rem; }
-
-        .stats-grid {
-            display: grid; grid-template-columns: repeat(2, 1fr);
-            gap: 1.5rem; margin-bottom: 2rem;
-        }
-        .stat__header {
-            display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;
-        }
-        .stat__label  { font-size: 1rem; font-weight: 600; color: var(--c-s900); }
-        .stat__icon svg { width: 32px; height: 32px; }
-        .stat__value  { font-size: 1.75rem; font-weight: 700; color: var(--c-s900); }
-        .stat__desc   { font-size: .875rem; color: var(--c-s400); margin-top: .25rem; }
-
-        .bottom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
-
-        .recent-title { font-size: 1.25rem; font-weight: 700; color: var(--c-s900); margin-bottom: 1rem; }
-        .recent-item {
-            padding: 1rem; background: var(--c-s50); border-radius: .625rem;
-            margin-bottom: .75rem; cursor: pointer; transition: background .2s;
-        }
-        .recent-item:last-child { margin-bottom: 0; }
-        .recent-item:hover { background: var(--c-s100); }
-        .recent-item__title { font-size: .875rem; font-weight: 600; color: var(--c-s900); margin-bottom: .25rem; }
-        .recent-item__body {
-            font-size: .75rem; color: var(--c-s500);
-            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
-        }
-        .recent-item__date { font-size: .75rem; color: var(--c-s400); margin-top: .5rem; }
-
-        .quick-panel {
-            background: var(--grad); border-radius: .875rem; padding: 1.5rem;
-            color: #fff; box-shadow: 0 8px 25px rgba(139,92,246,.35);
-        }
-        .quick-panel h3 { font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem; }
-        .quick-btn {
-            width: 100%; display: flex; align-items: center; justify-content: space-between;
-            padding: 1rem; background: rgba(255,255,255,.12); border-radius: .625rem;
-            color: #fff; font-size: .875rem; font-weight: 500;
-            backdrop-filter: blur(4px); margin-bottom: .75rem; transition: background .2s;
-        }
-        .quick-btn:last-child { margin-bottom: 0; }
-        .quick-btn:hover { background: rgba(255,255,255,.22); }
-        .quick-btn svg { width: 20px; height: 20px; }
-
-        .btn-add {
-            display: inline-flex; align-items: center; gap: .5rem;
-            padding: .75rem 1.25rem; background: var(--grad);
-            border-radius: .625rem; color: #fff; font-size: .875rem; font-weight: 600;
-            box-shadow: 0 4px 15px rgba(139,92,246,.3); transition: all .2s;
-        }
-        .btn-add:hover { transform: translateY(-1px); box-shadow: 0 8px 25px rgba(139,92,246,.35); }
-        .btn-add svg { width: 18px; height: 18px; }
-
-        .notice { margin-bottom: 1rem; }
-        .notice__top { display: flex; justify-content: space-between; align-items: flex-start; }
-        .notice__info { flex: 1; min-width: 0; }
-        .notice__title { font-size: 1.25rem; font-weight: 700; color: var(--c-s900); margin-bottom: .5rem; }
-        .notice__content { font-size: .875rem; color: var(--c-s600); white-space: pre-wrap; line-height: 1.7; }
-        .notice__actions { display: flex; gap: .25rem; flex-shrink: 0; margin-left: 1rem; }
-        .notice__actions button { padding: .5rem; border-radius: .375rem; transition: all .2s; }
-        .notice__actions button svg { width: 16px; height: 16px; }
-        .btn-edit { color: var(--c-p500); }  .btn-edit:hover { background: var(--c-p50); }
-        .btn-del  { color: var(--c-err500); } .btn-del:hover  { background: var(--c-err50); }
-        .notice__meta {
-            display: flex; align-items: center; gap: 1rem;
-            font-size: .75rem; color: var(--c-s400);
-            margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--c-s100);
-        }
-        .notice__meta span { display: inline-flex; align-items: center; gap: .25rem; }
-        .notice__meta svg  { width: 14px; height: 14px; }
-
-        .empty { text-align: center; padding: 4rem 2rem; }
-        .empty svg { width: 64px; height: 64px; color: var(--c-s300); margin: 0 auto 1rem; }
-        .empty p { font-size: 1.125rem; color: var(--c-s400); }
-        .empty .empty__sub { font-size: .875rem; color: var(--c-s300); margin-top: .5rem; }
-
-        .modal {
-            position: fixed; inset: 0; background: rgba(0,0,0,.6);
-            display: flex; align-items: center; justify-content: center;
-            padding: 1rem; z-index: 50; animation: fadeIn .2s ease-out;
-        }
-        .modal__dialog {
-            width: 100%; border-radius: 1.25rem; padding: 2.5rem;
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,.25);
+        .chat-window {
+            width: 400px; max-height: 600px;
+            background: #fff; border-radius: 1.25rem;
+            box-shadow: 0 25px 60px -12px rgba(0,0,0,.3);
+            border: 1px solid var(--c-s200);
+            display: none; flex-direction: column;
+            overflow: hidden; margin-bottom: .875rem;
             animation: slideUp .3s ease-out;
         }
-        .modal__dialog--white { max-width: 640px; background: #fff; color: var(--c-s900); }
-        .modal__dialog h3 { font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem; }
+        .chat-window--open { display: flex; }
 
-        .form-group { margin-bottom: 1rem; }
-        .form-group > label {
-            display: block; font-size: .875rem; font-weight: 500;
-            color: var(--c-s700); margin-bottom: .5rem;
+        .chat-header {
+            padding: 1rem 1.25rem;
+            background: linear-gradient(135deg, #0ea5e9, #8b5cf6);
+            color: #fff; display: flex;
+            justify-content: space-between; align-items: center;
+            flex-shrink: 0;
         }
-        .form-input {
-            width: 100%; padding: .75rem 1rem;
-            background: #fff; border: 1px solid var(--c-s300);
-            border-radius: .625rem; font-size: .875rem; color: var(--c-s900);
+        .chat-header__left { display: flex; align-items: center; gap: .75rem; }
+        .chat-header__avatar {
+            width: 38px; height: 38px; border-radius: 50%;
+            background: rgba(255,255,255,.2);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem;
+        }
+        .chat-header__info h4 { font-size: .9375rem; font-weight: 700; }
+        .chat-header__info span {
+            font-size: .7rem; opacity: .85;
+            display: flex; align-items: center; gap: .3rem;
+        }
+        .chat-header__info span::before {
+            content: ''; width: 7px; height: 7px; border-radius: 50%;
+            background: #4ade80; display: inline-block;
+        }
+        .chat-header__close {
+            color: #fff; font-size: 1.5rem;
+            padding: .25rem .5rem; border-radius: .375rem;
+            transition: background .2s; line-height: 1;
+            cursor: pointer; border: none; background: none;
+        }
+        .chat-header__close:hover { background: rgba(255,255,255,.15); }
+
+        .chat-messages {
+            flex: 1; overflow-y: auto; padding: 1rem;
+            display: flex; flex-direction: column; gap: .5rem;
+            max-height: 370px; min-height: 280px;
+            scrollbar-width: thin; scrollbar-color: var(--c-s300) transparent;
+        }
+        .chat-messages::-webkit-scrollbar { width: 5px; }
+        .chat-messages::-webkit-scrollbar-track { background: transparent; }
+        .chat-messages::-webkit-scrollbar-thumb { background: var(--c-s300); border-radius: 3px; }
+
+        .chat-msg { max-width: 88%; animation: slideUp .25s ease-out; }
+        .chat-msg--bot { align-self: flex-start; }
+        .chat-msg--user { align-self: flex-end; }
+        .chat-msg__bubble {
+            padding: .75rem 1rem; border-radius: .875rem;
+            font-size: .8125rem; line-height: 1.65; word-break: break-word;
+        }
+        .chat-msg--bot .chat-msg__bubble {
+            background: var(--c-s100); color: var(--c-s800);
+            border-bottom-left-radius: .25rem;
+        }
+        .chat-msg--user .chat-msg__bubble {
+            background: linear-gradient(135deg, #0ea5e9, #8b5cf6);
+            color: #fff; border-bottom-right-radius: .25rem;
+        }
+        .chat-msg__time {
+            font-size: .65rem; color: var(--c-s400);
+            margin-top: .2rem; padding: 0 .25rem;
+        }
+        .chat-msg--user .chat-msg__time { text-align: right; }
+        .chat-msg__bubble b { font-weight: 600; }
+        .chat-msg__bubble code {
+            background: rgba(0,0,0,.06); padding: .125rem .375rem;
+            border-radius: .25rem; font-size: .75rem;
+        }
+
+        .chat-typing {
+            align-self: flex-start; display: flex; gap: .3rem;
+            padding: .75rem 1rem; animation: fadeIn .3s;
+        }
+        .chat-typing span {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: var(--c-s400); animation: pulse 1.4s infinite;
+        }
+        .chat-typing span:nth-child(2) { animation-delay: .2s; }
+        .chat-typing span:nth-child(3) { animation-delay: .4s; }
+
+        .chat-suggestions {
+            display: flex; flex-wrap: wrap; gap: .375rem;
+            padding: .625rem 1rem;
+            border-top: 1px solid var(--c-s100);
+            background: var(--c-s50); flex-shrink: 0;
+        }
+        .chat-suggest-btn {
+            padding: .375rem .75rem; background: #fff;
+            border: 1px solid var(--c-s200); border-radius: 2rem;
+            font-size: .7rem; color: var(--c-s600); font-weight: 500;
+            transition: all .2s; white-space: nowrap;
+            cursor: pointer;
+        }
+        .chat-suggest-btn:hover {
+            border-color: var(--c-p500); color: var(--c-p500); background: var(--c-p50);
+        }
+
+        .chat-input-area {
+            padding: .75rem; border-top: 1px solid var(--c-s200);
+            display: flex; gap: .5rem; background: #fff; flex-shrink: 0;
+        }
+        .chat-input {
+            flex: 1; padding: .625rem 1rem;
+            border: 1.5px solid var(--c-s200); border-radius: .75rem;
+            font-size: .8125rem; font-family: var(--ff);
+            outline: none; transition: border-color .2s;
+            background: var(--c-s50);
+        }
+        .chat-input:focus { border-color: var(--c-p500); background: #fff; }
+        .chat-send {
+            padding: .625rem 1rem;
+            background: linear-gradient(135deg, #0ea5e9, #8b5cf6);
+            color: #fff; border-radius: .75rem;
+            font-size: .8125rem; font-weight: 600; font-family: var(--ff);
             transition: all .2s;
+            display: flex; align-items: center; gap: .375rem;
+            cursor: pointer; border: none;
         }
-        .form-input::placeholder { color: var(--c-s400); }
-        .form-input:focus { border-color: var(--c-p500); box-shadow: 0 0 0 3px rgba(14,165,233,.15); }
-        textarea.form-input { resize: vertical; min-height: 180px; line-height: 1.7; }
+        .chat-send:hover { box-shadow: 0 4px 12px rgba(139,92,246,.3); transform: translateY(-1px); }
+        .chat-send:disabled { opacity: .5; transform: none; box-shadow: none; cursor: not-allowed; }
+        .chat-send svg { width: 16px; height: 16px; }
 
-        .modal__actions { display: flex; gap: .75rem; margin-top: 1.5rem; }
-        .modal__actions button {
-            flex: 1; padding: .75rem; border-radius: .625rem;
-            font-size: .875rem; font-weight: 600; transition: all .2s;
+        /* Notice card inside chat */
+        .chat-notice-card {
+            background: #fff; border: 1px solid var(--c-s200);
+            border-radius: .625rem; padding: .75rem; margin-top: .5rem;
         }
-        .btn-primary  { background: var(--grad); color: #fff; }
-        .btn-primary:hover { box-shadow: 0 4px 15px rgba(139,92,246,.3); }
-        .btn-secondary { background: var(--c-s200); color: var(--c-s700); }
-        .btn-secondary:hover { background: var(--c-s300); }
-        .btn-danger { background: var(--c-err500); color: #fff; }
+        .chat-notice-card__title { font-size: .8125rem; font-weight: 700; color: var(--c-s900); margin-bottom: .25rem; }
+        .chat-notice-card__content { font-size: .75rem; color: var(--c-s500); line-height: 1.5; }
+        .chat-notice-card__meta { font-size: .65rem; color: var(--c-s400); margin-top: .375rem; display: flex; gap: .5rem; }
+        .chat-notice-card__actions { display: flex; gap: .375rem; margin-top: .5rem; }
+        .chat-notice-card__actions button {
+            padding: .25rem .625rem; border-radius: .375rem;
+            font-size: .7rem; font-weight: 600; transition: all .15s;
+            cursor: pointer; border: none;
+        }
+        .chat-action-edit { background: var(--c-p50); color: var(--c-p600); }
+        .chat-action-edit:hover { background: var(--c-p100); }
+        .chat-action-delete { background: var(--c-err50); color: var(--c-err600); }
+        .chat-action-delete:hover { background: rgba(239,68,68,.15); }
+        .chat-action-view { background: var(--c-s100); color: var(--c-s600); }
+        .chat-action-view:hover { background: var(--c-s200); }
 
-        @media (max-width: 1024px) {
-            .stats-grid { grid-template-columns: 1fr; }
-        }
-        @media (max-width: 768px) {
-            .header__menu { display: block; }
-            .sidebar {
-                position: fixed; top: var(--hh); left: 0; bottom: 0;
-                z-index: 30; transform: translateX(-100%);
-            }
-            .sidebar--open { transform: translateX(0); }
-            .sidebar__overlay--visible { display: block; }
-            .main { padding: 1rem; }
-            .bottom-grid { grid-template-columns: 1fr; }
-            .header__logout-text { display: none; }
-            .login__brand h1 { font-size: 2.25rem; }
-            .login__card { padding: 1.5rem; }
+        @media(max-width:1024px){.stats-grid{grid-template-columns:1fr}}
+        @media(max-width:768px){
+            .header__menu{display:block}
+            .sidebar{position:fixed;top:var(--hh);left:0;bottom:0;z-index:30;transform:translateX(-100%)}
+            .sidebar--open{transform:translateX(0)}
+            .sidebar__overlay--visible{display:block}
+            .main{padding:1rem}
+            .bottom-grid{grid-template-columns:1fr}
+            .header__logout-text{display:none}
+            .login__brand h1{font-size:2.25rem}
+            .login__card{padding:1.5rem}
+            .chat-window{width:calc(100vw - 3rem);max-height:calc(100vh - 120px)}
+            #chatbotContainer{bottom:16px;right:16px}
         }
     </style>
 </head>
@@ -390,7 +451,6 @@
 
     <div class="app-layout">
         <div id="sidebarOverlay" class="sidebar__overlay" onclick="App.ui.closeSidebar()"></div>
-
         <aside id="sidebar" class="sidebar">
             <nav class="sidebar__nav">
                 <button class="sidebar__link sidebar__link--active" data-page="dashboard" onclick="App.router.go('dashboard')">
@@ -401,11 +461,14 @@
                     <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
                     <span>공지사항</span>
                 </button>
+                <button class="sidebar__link" data-page="chatbot" onclick="App.chat.toggle()">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+                    <span>AI 챗봇</span>
+                </button>
             </nav>
         </aside>
 
         <main class="main">
-            <!-- Dashboard -->
             <section id="pageDashboard" class="anim-slide-right">
                 <h2 class="page-title">대시보드</h2>
                 <div class="stats-grid">
@@ -417,7 +480,6 @@
                         <p id="dashNoticeCount" class="stat__value">0</p>
                         <p class="stat__desc">등록된 공지</p>
                     </div></div>
-
                     <div class="card card--hover"><div class="card__body">
                         <div class="stat__header">
                             <h3 class="stat__label">최근 활동</h3>
@@ -427,7 +489,6 @@
                         <p class="stat__desc">마지막 공지 등록일</p>
                     </div></div>
                 </div>
-
                 <div class="bottom-grid">
                     <div class="card"><div class="card__body">
                         <h3 class="recent-title">최근 공지사항</h3>
@@ -435,7 +496,6 @@
                             <div style="padding:2rem;text-align:center;color:var(--c-s400);font-size:.875rem">등록된 공지사항이 없습니다</div>
                         </div>
                     </div></div>
-
                     <div class="quick-panel">
                         <h3>빠른 시작</h3>
                         <button class="quick-btn" onclick="App.router.go('notices')">
@@ -446,11 +506,14 @@
                             <span>새 공지사항 작성</span>
                             <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
                         </button>
+                        <button class="quick-btn" onclick="App.chat.toggle()">
+                            <span>AI 챗봇으로 관리하기</span>
+                            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+                        </button>
                     </div>
                 </div>
             </section>
 
-            <!-- Notices -->
             <section id="pageNotices" hidden>
                 <div class="page-header">
                     <h2 class="page-title">공지사항</h2>
@@ -471,11 +534,11 @@
         <h3 id="noticeModalTitle" style="color:var(--c-s900)">새 공지사항</h3>
         <div class="form-group">
             <label for="noticeTitle">제목</label>
-            <input class="form-input" type="text" id="noticeTitle" placeholder="제목">
+            <input class="form-input" type="text" id="noticeTitle" placeholder="제목을 입력하세요">
         </div>
         <div class="form-group">
             <label for="noticeContent">내용</label>
-            <textarea class="form-input" id="noticeContent" rows="8" placeholder="내용"></textarea>
+            <textarea class="form-input" id="noticeContent" rows="8" placeholder="내용을 입력하세요"></textarea>
         </div>
         <div class="modal__actions">
             <button id="noticeModalSave" class="btn-primary" onclick="App.notices.save()">등록</button>
@@ -495,489 +558,611 @@
     </div>
 </div>
 
+<!-- ===== CHATBOT WIDGET ===== -->
+<div id="chatbotContainer">
+    <!-- Chat Window -->
+    <div id="chatWindow" class="chat-window">
+        <div class="chat-header">
+            <div class="chat-header__left">
+                <div class="chat-header__avatar">🤖</div>
+                <div class="chat-header__info">
+                    <h4>AI 어시스턴트</h4>
+                    <span>온라인</span>
+                </div>
+            </div>
+            <button class="chat-header__close" onclick="App.chat.toggle()">✕</button>
+        </div>
+        <div id="chatMessages" class="chat-messages"></div>
+        <div id="chatSuggestions" class="chat-suggestions">
+            <button class="chat-suggest-btn" onclick="App.chat.quickSend('공지 등록')">📝 공지 등록</button>
+            <button class="chat-suggest-btn" onclick="App.chat.quickSend('공지 목록')">📋 공지 목록</button>
+            <button class="chat-suggest-btn" onclick="App.chat.quickSend('공지 검색')">🔍 공지 검색</button>
+            <button class="chat-suggest-btn" onclick="App.chat.quickSend('도움말')">❓ 도움말</button>
+        </div>
+        <div class="chat-input-area">
+            <input id="chatInput" class="chat-input" type="text" placeholder="메시지를 입력하세요..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();App.chat.send()}">
+            <button id="chatSendBtn" class="chat-send" onclick="App.chat.send()">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                전송
+            </button>
+        </div>
+    </div>
+
+    <!-- FAB Button -->
+    <button class="chatbot-fab" onclick="App.chat.toggle()" id="chatFab">
+        💬
+        <span class="chatbot-fab__badge" id="chatBadge" style="display:none">!</span>
+    </button>
+    <div class="chatbot-fab__tooltip" id="chatTooltip">AI 챗봇으로 공지사항을 관리해보세요!</div>
+</div>
+
 <script>
 const App = (() => {
     'use strict';
 
     const FIREBASE_CONFIG = Object.freeze({
-        apiKey:     'AIzaSyDcHSt46CHlu_LZYnNUU7xwIlMY7xE8KdU',
-        authDomain: 'workhub2.firebaseapp.com',
-        projectId:  'workhub2'
+        apiKey:'AIzaSyDcHSt46CHlu_LZYnNUU7xwIlMY7xE8KdU',
+        authDomain:'workhub2.firebaseapp.com',
+        projectId:'workhub2'
     });
 
-    const GOOGLE_CLIENT_ID = '535238333900-2mtltlntbsan8381tvu77eahkonl9tmt.apps.googleusercontent.com';
     const GIS_SCRIPT_URL = 'https://accounts.google.com/gsi/client';
     const GIS_LOAD_TIMEOUT_MS = 10000;
-    const TOAST_DURATION_MS   = 3500;
-    const TOAST_ERROR_MS      = 5000;
-    const LOCAL_PREFIX         = 'wh_';
+    const TOAST_DURATION_MS = 3500;
+    const TOAST_ERROR_MS = 5000;
+    const LOCAL_PREFIX = 'wh_';
 
     const $ = (id) => document.getElementById(id);
 
     const utils = {
         formatDate(iso) {
-            try { return new Date(iso).toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' }); }
+            try { return new Date(iso).toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric'}); }
             catch { return ''; }
         },
         formatDateTime(iso) {
             try { return new Date(iso).toLocaleString('ko-KR'); }
             catch { return ''; }
         },
-        uid() {
-            return Date.now().toString(36) + Math.random().toString(36).substr(2, 8);
+        formatTime(d) {
+            return new Date(d).toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'});
         },
+        uid() { return Date.now().toString(36)+Math.random().toString(36).substr(2,8); },
         escapeHtml(str) {
-            if (!str) return '';
-            const el = document.createElement('div');
-            el.textContent = str;
-            return el.innerHTML;
+            if(!str)return '';
+            const el=document.createElement('div');el.textContent=str;return el.innerHTML;
         },
-        truncate(str, max = 80) {
-            return (!str || str.length <= max) ? (str || '') : str.substring(0, max) + '…';
-        }
+        truncate(str,max=80) { return(!str||str.length<=max)?(str||''):str.substring(0,max)+'…'; }
     };
 
     const storage = {
-        get(key) {
-            try { const v = localStorage.getItem(LOCAL_PREFIX + key); return v ? JSON.parse(v) : null; }
-            catch { return null; }
-        },
-        set(key, value) {
-            try { localStorage.setItem(LOCAL_PREFIX + key, JSON.stringify(value)); }
-            catch {}
-        },
-        remove(key) {
-            try { localStorage.removeItem(LOCAL_PREFIX + key); }
-            catch {}
-        }
+        get(key){try{const v=localStorage.getItem(LOCAL_PREFIX+key);return v?JSON.parse(v):null;}catch{return null;}},
+        set(key,v){try{localStorage.setItem(LOCAL_PREFIX+key,JSON.stringify(v));}catch{}},
+        remove(key){try{localStorage.removeItem(LOCAL_PREFIX+key);}catch{}}
     };
 
     const state = {
-        user:       null,
-        page:       'dashboard',
-        notices:    [],
-        editId:     null,
-        sidebarOpen: false,
-        firebaseReady: false,
-        gisReady:      false,
-        authListenerAttached: false,
-        loginInProgress:      false
+        user:null,page:'dashboard',notices:[],editId:null,sidebarOpen:false,
+        firebaseReady:false,gisReady:false,authListenerAttached:false,loginInProgress:false,
+        chatContext:null,chatOpen:false
     };
 
+    /* TOAST */
     const toast = {
-        _container: null,
-        init() { this._container = $('toastContainer'); },
-        _show(message, type = 'info', duration = TOAST_DURATION_MS) {
-            const el = document.createElement('div');
-            el.className = `toast toast--${type}`;
-            el.textContent = message;
-            this._container.appendChild(el);
-            setTimeout(() => {
-                el.classList.add('toast--removing');
-                el.addEventListener('animationend', () => el.remove());
-            }, duration);
+        _container:null,
+        init(){this._container=$('toastContainer');},
+        _show(message,type='info',duration=TOAST_DURATION_MS){
+            const el=document.createElement('div');el.className=`toast toast--${type}`;
+            el.textContent=message;this._container.appendChild(el);
+            setTimeout(()=>{el.classList.add('toast--removing');el.addEventListener('animationend',()=>el.remove());},duration);
         },
-        success(msg) { this._show(msg, 'success'); },
-        error(msg)   { this._show(msg, 'error', TOAST_ERROR_MS); },
-        info(msg)    { this._show(msg, 'info'); }
+        success(m){this._show(m,'success');},
+        error(m){this._show(m,'error',TOAST_ERROR_MS);},
+        info(m){this._show(m,'info');}
     };
 
+    /* GIS */
     const gis = {
-        _loadPromise: null,
-        load() {
-            if (this._loadPromise) return this._loadPromise;
-            this._loadPromise = new Promise((resolve, reject) => {
-                if (window.google?.accounts?.id) { state.gisReady = true; resolve(); return; }
-                const existing = document.querySelector(`script[src="${GIS_SCRIPT_URL}"]`);
-                if (existing) {
-                    existing.addEventListener('load', () => { state.gisReady = true; resolve(); });
-                    existing.addEventListener('error', () => reject(new Error('GIS script load failed')));
-                } else {
-                    const script = document.createElement('script');
-                    script.src = GIS_SCRIPT_URL; script.async = true; script.defer = true;
-                    script.onload  = () => { state.gisReady = true; resolve(); };
-                    script.onerror = () => reject(new Error('GIS script load failed'));
-                    document.head.appendChild(script);
-                }
-                setTimeout(() => reject(new Error('GIS load timeout')), GIS_LOAD_TIMEOUT_MS);
+        _loadPromise:null,
+        load(){
+            if(this._loadPromise)return this._loadPromise;
+            this._loadPromise=new Promise((resolve,reject)=>{
+                if(window.google?.accounts?.id){state.gisReady=true;resolve();return;}
+                const s=document.createElement('script');s.src=GIS_SCRIPT_URL;s.async=true;s.defer=true;
+                s.onload=()=>{state.gisReady=true;resolve();};s.onerror=()=>reject(new Error('GIS fail'));
+                document.head.appendChild(s);
+                setTimeout(()=>reject(new Error('GIS timeout')),GIS_LOAD_TIMEOUT_MS);
             });
             return this._loadPromise;
         }
     };
 
+    /* FIREBASE */
     const fb = {
-        _auth: null,
-        _initPromise: null,
-        init() {
-            if (this._initPromise) return this._initPromise;
-            this._initPromise = new Promise((resolve) => {
-                try {
+        _auth:null,_initPromise:null,
+        init(){
+            if(this._initPromise)return this._initPromise;
+            this._initPromise=new Promise((resolve)=>{
+                try{
                     firebase.initializeApp(FIREBASE_CONFIG);
-                    this._auth = firebase.auth();
+                    this._auth=firebase.auth();
                     this._auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
-                    if (!state.authListenerAttached) {
-                        state.authListenerAttached = true;
-                        this._auth.onAuthStateChanged((firebaseUser) => {
-                            this._handleAuthChange(firebaseUser);
-                        });
+                    if(!state.authListenerAttached){
+                        state.authListenerAttached=true;
+                        this._auth.onAuthStateChanged((u)=>{this._handleAuthChange(u);});
                     }
-                    state.firebaseReady = true;
-                    resolve(true);
-                } catch (err) {
-                    console.error('[Firebase] Init failed:', err);
-                    toast.error('시스템 초기화 실패. 새로고침 해주세요.');
-                    resolve(false);
-                }
+                    state.firebaseReady=true;resolve(true);
+                }catch(err){console.error('[FB]',err);toast.error('시스템 초기화 실패');resolve(false);}
             });
             return this._initPromise;
         },
-        _handleAuthChange(firebaseUser) {
-            if (state.loginInProgress) return;
-            if (firebaseUser && !state.user) {
-                state.user = this._mapUser(firebaseUser);
-                storage.set('session', state.user);
-                auth._onLoginSuccess();
+        _handleAuthChange(fu){
+            if(state.loginInProgress)return;
+            if(fu&&!state.user){
+                state.user=this._mapUser(fu);storage.set('session',state.user);auth._onLoginSuccess();
             }
         },
-        _mapUser(firebaseUser) {
-            return Object.freeze({
-                name:     firebaseUser.displayName || firebaseUser.email.split('@')[0],
-                email:    firebaseUser.email,
-                picture:  firebaseUser.photoURL || null,
-                uid:      firebaseUser.uid,
-                provider: 'google'
-            });
-        },
-        getAuth() { return this._auth; }
+        _mapUser(u){return Object.freeze({name:u.displayName||u.email.split('@')[0],email:u.email,picture:u.photoURL||null,uid:u.uid,provider:'google'});},
+        getAuth(){return this._auth;}
     };
 
+    /* AUTH */
     const auth = {
-        async loginGoogle() {
-            if (state.loginInProgress) return;
-            if (!state.firebaseReady) { toast.error('시스템 준비 중입니다.'); return; }
-
-            const btn = $('btnGoogle');
-            const txt = $('btnGoogleText');
-            state.loginInProgress = true;
-            btn.disabled = true;
-            txt.innerHTML = '<span class="spinner"></span> 로그인 중...';
-            ui.hideLoginError();
-
-            try {
-                const provider = new firebase.auth.GoogleAuthProvider();
-                provider.setCustomParameters({ prompt: 'select_account' });
-                const result = await fb.getAuth().signInWithPopup(provider);
-                state.user = fb._mapUser(result.user);
-                storage.set('session', state.user);
-                this._onLoginSuccess();
-            } catch (err) {
-                if (err.code === 'auth/popup-closed-by-user') {
-                    toast.info('로그인이 취소되었습니다.');
-                } else {
-                    ui.showLoginError(`<strong>❌ 로그인 실패</strong><br>${utils.escapeHtml(err.message)}`);
-                    toast.error('로그인에 실패했습니다.');
-                }
-            } finally {
-                this._resetLoginButton();
-            }
+        async loginGoogle(){
+            if(state.loginInProgress)return;
+            if(!state.firebaseReady){toast.error('시스템 준비 중입니다.');return;}
+            const btn=$('btnGoogle'),txt=$('btnGoogleText');
+            state.loginInProgress=true;btn.disabled=true;
+            txt.innerHTML='<span class="spinner"></span> 로그인 중...';ui.hideLoginError();
+            try{
+                const provider=new firebase.auth.GoogleAuthProvider();
+                provider.setCustomParameters({prompt:'select_account'});
+                const result=await fb.getAuth().signInWithPopup(provider);
+                state.user=fb._mapUser(result.user);storage.set('session',state.user);this._onLoginSuccess();
+            }catch(err){
+                if(err.code==='auth/popup-closed-by-user')toast.info('로그인이 취소되었습니다.');
+                else{ui.showLoginError(`<strong>❌ 로그인 실패</strong><br>${utils.escapeHtml(err.message)}`);toast.error('로그인에 실패했습니다.');}
+            }finally{this._resetLoginButton();}
         },
-
-        async _onGoogleCredential(response) {
-            const btn = $('btnGoogle');
-            const txt = $('btnGoogleText');
-            this._removeFallbackButton();
-            btn.disabled = true;
-            txt.innerHTML = '<span class="spinner"></span> 로그인 처리 중...';
-            ui.hideLoginError();
-
-            try {
-                const credential = firebase.auth.GoogleAuthProvider.credential(response.credential);
-                const result = await fb.getAuth().signInWithCredential(credential);
-                state.user = fb._mapUser(result.user);
-                storage.set('session', state.user);
-                this._onLoginSuccess();
-            } catch (err) {
-                const errorMessages = {
-                    'auth/invalid-credential':     '인증 정보가 올바르지 않습니다.',
-                    'auth/user-disabled':          '비활성화된 계정입니다.',
-                    'auth/network-request-failed': '네트워크 연결을 확인해주세요.',
-                    'auth/too-many-requests':      '너무 많은 시도입니다. 잠시 후 다시 시도해주세요.',
-                    'auth/popup-closed-by-user':   '로그인이 취소되었습니다.'
-                };
-                const userMessage = errorMessages[err.code] || `로그인 실패: ${err.message || '알 수 없는 오류'}`;
-                ui.showLoginError(`<strong>❌ 로그인 실패</strong><br>${utils.escapeHtml(userMessage)}`);
-                toast.error('로그인에 실패했습니다.');
-            } finally {
-                this._resetLoginButton();
-            }
-        },
-
-        _onLoginSuccess() {
-            state.loginInProgress = false;
-            ui.hideLoginError();
-            notices._load();
-            ui.showApp();
-            router.go('dashboard');
+        async _onLoginSuccess(){
+            state.loginInProgress=false;ui.hideLoginError();
+            await notices._load();ui.showApp();router.go('dashboard');
             toast.success(`${state.user.name}님, 환영합니다!`);
+            // Init chatbot welcome after login
+            setTimeout(()=>chat._initWelcome(),500);
+            // Show tooltip briefly
+            setTimeout(()=>{
+                const tip=$('chatTooltip');if(tip)tip.style.display='block';
+                setTimeout(()=>{if(tip)tip.style.display='none';},4000);
+            },2000);
         },
-
-        async logout() {
-            try { if (state.firebaseReady && fb.getAuth()) await fb.getAuth().signOut(); } catch {}
-            try { google?.accounts?.id?.disableAutoSelect(); } catch {}
-            state.user    = null;
-            state.notices = [];
-            state.page    = 'dashboard';
+        async logout(){
+            try{if(state.firebaseReady&&fb.getAuth())await fb.getAuth().signOut();}catch{}
+            try{google?.accounts?.id?.disableAutoSelect();}catch{}
+            state.user=null;state.notices=[];state.page='dashboard';state.chatContext=null;state.chatOpen=false;
             storage.remove('session');
-            this._removeFallbackButton();
-            ui.showLogin();
-            toast.info('로그아웃되었습니다.');
+            $('chatWindow').classList.remove('chat-window--open');
+            ui.showLogin();toast.info('로그아웃되었습니다.');
         },
-
-        _renderFallbackButton() {
-            const btn = $('btnGoogle');
-            if (document.getElementById('gsiButtonWrap')) return;
-            const container = document.createElement('div');
-            container.id = 'gsiButtonWrap';
-            container.style.cssText = 'display:flex;justify-content:center;margin-bottom:.5rem';
-            btn.parentNode.insertBefore(container, btn);
-            btn.style.display = 'none';
-            google.accounts.id.renderButton(container, { theme: 'outline', size: 'large', width: 380, text: 'signin_with', locale: 'ko' });
-            ui.showLoginError('<strong>👆 위 Google 버튼을 클릭해주세요</strong>');
-        },
-        _removeFallbackButton() {
-            const wrap = document.getElementById('gsiButtonWrap');
-            if (wrap) { wrap.remove(); $('btnGoogle').style.display = ''; }
-        },
-        _resetLoginButton() {
-            state.loginInProgress = false;
-            const btn = $('btnGoogle');
-            const txt = $('btnGoogleText');
-            if (btn) btn.disabled = false;
-            if (txt) txt.textContent = 'Google 계정으로 로그인';
+        _resetLoginButton(){
+            state.loginInProgress=false;
+            const btn=$('btnGoogle'),txt=$('btnGoogleText');
+            if(btn)btn.disabled=false;if(txt)txt.textContent='Google 계정으로 로그인';
         }
     };
 
-    const PAGES = Object.freeze({
-        dashboard: 'pageDashboard',
-        notices:   'pageNotices'
-    });
-
+    /* ROUTER */
+    const PAGES=Object.freeze({dashboard:'pageDashboard',notices:'pageNotices'});
     const router = {
-        go(page) {
-            if (!PAGES[page]) return;
-            state.page = page;
-            Object.entries(PAGES).forEach(([key, elId]) => {
-                const el = $(elId);
-                if (!el) return;
-                el.hidden = (key !== page);
-                if (key === page) {
-                    el.classList.remove('anim-slide-right');
-                    void el.offsetWidth;
-                    el.classList.add('anim-slide-right');
-                }
+        async go(page){
+            if(!PAGES[page])return;state.page=page;await notices._load();
+            Object.entries(PAGES).forEach(([key,elId])=>{
+                const el=$(elId);if(!el)return;el.hidden=(key!==page);
+                if(key===page){el.classList.remove('anim-slide-right');void el.offsetWidth;el.classList.add('anim-slide-right');}
             });
-            document.querySelectorAll('.sidebar__link').forEach(btn => {
-                btn.classList.toggle('sidebar__link--active', btn.dataset.page === page);
-            });
+            document.querySelectorAll('.sidebar__link').forEach(btn=>{btn.classList.toggle('sidebar__link--active',btn.dataset.page===page);});
             ui.closeSidebar();
-            const renderers = { dashboard: () => ui.renderDashboard(), notices: () => ui.renderNotices() };
-            renderers[page]?.();
+            ({dashboard:()=>ui.renderDashboard(),notices:()=>ui.renderNotices()})[page]?.();
         }
     };
 
+    /* NOTICES */
     const notices = {
-        _key() { return state.user ? `notices_${state.user.email}` : 'notices'; },
-        _load() { state.notices = storage.get(this._key()) || []; },
-        _save() { storage.set(this._key(), state.notices); },
-
-        open(id = null) {
-            state.editId = id;
-            const titleEl = $('noticeTitle');
-            const contentEl = $('noticeContent');
-            if (id) {
-                const notice = state.notices.find(n => n.id === id);
-                if (!notice) return;
-                titleEl.value = notice.title;
-                contentEl.value = notice.content;
-                $('noticeModalTitle').textContent = '공지사항 수정';
-                $('noticeModalSave').textContent = '수정';
-            } else {
-                titleEl.value = '';
-                contentEl.value = '';
-                $('noticeModalTitle').textContent = '새 공지사항';
-                $('noticeModalSave').textContent = '등록';
-            }
-            $('noticeModal').hidden = false;
-            titleEl.focus();
+        _db(){return firebase.firestore().collection('notices');},
+        async _load(){
+            try{const snap=await this._db().orderBy('createdAt','desc').get();state.notices=snap.docs.map(d=>({id:d.id,...d.data()}));}
+            catch(err){console.error('공지 로드 실패:',err);state.notices=[];}
         },
-        close() { $('noticeModal').hidden = true; state.editId = null; },
-
-        save() {
-            const title = $('noticeTitle').value.trim();
-            const content = $('noticeContent').value.trim();
-            if (!title || !content) { toast.error('제목과 내용을 입력해주세요.'); return; }
-
-            if (state.editId) {
-                const idx = state.notices.findIndex(n => n.id === state.editId);
-                if (idx !== -1) {
-                    state.notices[idx] = { ...state.notices[idx], title, content, updatedAt: new Date().toISOString() };
-                }
-                toast.success('수정되었습니다.');
-            } else {
-                state.notices.unshift({
-                    id: utils.uid(), title, content,
-                    author: state.user.name,
-                    createdAt: new Date().toISOString()
-                });
-                toast.success('등록되었습니다.');
-            }
-            this._save();
-            this.close();
-            ui.renderNotices();
+        open(id=null){
+            state.editId=id;const tEl=$('noticeTitle'),cEl=$('noticeContent');
+            if(id){const n=state.notices.find(n=>n.id===id);if(!n)return;tEl.value=n.title;cEl.value=n.content;$('noticeModalTitle').textContent='공지사항 수정';$('noticeModalSave').textContent='수정';}
+            else{tEl.value='';cEl.value='';$('noticeModalTitle').textContent='새 공지사항';$('noticeModalSave').textContent='등록';}
+            $('noticeModal').hidden=false;tEl.focus();
         },
-
-        delete(id) {
-            ui.showConfirm('이 공지사항을 삭제하시겠습니까?', () => {
-                state.notices = state.notices.filter(n => n.id !== id);
-                this._save();
-                ui.renderNotices();
-                toast.success('삭제되었습니다.');
+        close(){$('noticeModal').hidden=true;state.editId=null;},
+        async save(){
+            const title=$('noticeTitle').value.trim(),content=$('noticeContent').value.trim();
+            if(!title||!content){toast.error('제목과 내용을 입력해주세요.');return;}
+            try{
+                if(state.editId){await this._db().doc(state.editId).update({title,content,updatedAt:new Date().toISOString()});toast.success('수정되었습니다.');}
+                else{await this._db().add({title,content,author:state.user.name,authorEmail:state.user.email,createdAt:new Date().toISOString()});toast.success('등록되었습니다.');}
+                await this._load();this.close();ui.renderNotices();ui.renderDashboard();
+            }catch(err){console.error('저장 실패:',err);toast.error('저장에 실패했습니다.');}
+        },
+        delete(id){
+            ui.showConfirm('이 공지사항을 삭제하시겠습니까?',async()=>{
+                try{await this._db().doc(id).delete();await this._load();ui.renderNotices();ui.renderDashboard();toast.success('삭제되었습니다.');}
+                catch{toast.error('삭제에 실패했습니다.');}
             });
         }
     };
 
+    /* SVG ICONS */
     const SVG = {
-        user:  '<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
-        edit:  '<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>',
-        trash: '<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>',
-        bell:  '<svg width="64" height="64" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>'
+        user:'<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
+        edit:'<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>',
+        trash:'<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>',
+        bell:'<svg width="64" height="64" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>'
     };
 
+    /* UI */
     const ui = {
-        showApp() {
-            $('pageLogin').hidden = true;
-            $('appShell').hidden = false;
-            this.renderHeader();
+        showApp(){$('pageLogin').hidden=true;$('appShell').hidden=false;this.renderHeader();$('chatbotContainer').style.display='flex';},
+        showLogin(){$('pageLogin').hidden=false;$('appShell').hidden=true;$('chatbotContainer').style.display='none';},
+        renderHeader(){
+            if(!state.user)return;$('headerName').textContent=state.user.name;
+            const a=$('headerAvatar');a.innerHTML=state.user.picture
+                ?`<img class="header__avatar" src="${utils.escapeHtml(state.user.picture)}" alt="" referrerpolicy="no-referrer">`
+                :`<span class="header__avatar-fb">${SVG.user}</span>`;
         },
-        showLogin() {
-            $('pageLogin').hidden = false;
-            $('appShell').hidden = true;
+        toggleSidebar(){
+            state.sidebarOpen=!state.sidebarOpen;
+            $('sidebar').classList.toggle('sidebar--open',state.sidebarOpen);
+            $('sidebarOverlay').classList.toggle('sidebar__overlay--visible',state.sidebarOpen);
         },
-        renderHeader() {
-            if (!state.user) return;
-            $('headerName').textContent = state.user.name;
-            const avatarEl = $('headerAvatar');
-            avatarEl.innerHTML = state.user.picture
-                ? `<img class="header__avatar" src="${utils.escapeHtml(state.user.picture)}" alt="" referrerpolicy="no-referrer">`
-                : `<span class="header__avatar-fb">${SVG.user}</span>`;
+        closeSidebar(){state.sidebarOpen=false;$('sidebar').classList.remove('sidebar--open');$('sidebarOverlay').classList.remove('sidebar__overlay--visible');},
+        showLoginError(html){const el=$('loginError');el.innerHTML=html;el.classList.add('login__error--visible');},
+        hideLoginError(){const el=$('loginError');el.innerHTML='';el.classList.remove('login__error--visible');},
+        showConfirm(message,callback){$('confirmMessage').textContent=message;$('confirmModal').hidden=false;$('confirmYes').onclick=()=>{$('confirmModal').hidden=true;callback();};},
+        hideConfirm(){$('confirmModal').hidden=true;},
+        renderDashboard(){
+            $('dashNoticeCount').textContent=state.notices.length;
+            $('dashLastActivity').textContent=state.notices.length>0?utils.formatDate(state.notices[0].createdAt):'-';
+            const recentEl=$('dashRecentNotices');const recent=state.notices.slice(0,3);
+            recentEl.innerHTML=recent.length?recent.map(n=>`<div class="recent-item" onclick="App.router.go('notices')"><h4 class="recent-item__title">${utils.escapeHtml(n.title)}</h4><p class="recent-item__body">${utils.escapeHtml(utils.truncate(n.content,100))}</p><p class="recent-item__date">${utils.formatDate(n.createdAt)}</p></div>`).join(''):'<div style="padding:2rem;text-align:center;color:var(--c-s400);font-size:.875rem">등록된 공지사항이 없습니다</div>';
         },
-        toggleSidebar() {
-            state.sidebarOpen = !state.sidebarOpen;
-            $('sidebar').classList.toggle('sidebar--open', state.sidebarOpen);
-            $('sidebarOverlay').classList.toggle('sidebar__overlay--visible', state.sidebarOpen);
-        },
-        closeSidebar() {
-            state.sidebarOpen = false;
-            $('sidebar').classList.remove('sidebar--open');
-            $('sidebarOverlay').classList.remove('sidebar__overlay--visible');
-        },
-        showLoginError(html) {
-            const el = $('loginError');
-            el.innerHTML = html;
-            el.classList.add('login__error--visible');
-        },
-        hideLoginError() {
-            const el = $('loginError');
-            el.innerHTML = '';
-            el.classList.remove('login__error--visible');
-        },
-        showConfirm(message, callback) {
-            $('confirmMessage').textContent = message;
-            $('confirmModal').hidden = false;
-            $('confirmYes').onclick = () => { $('confirmModal').hidden = true; callback(); };
-        },
-        hideConfirm() { $('confirmModal').hidden = true; },
-
-        renderDashboard() {
-            $('dashNoticeCount').textContent = state.notices.length;
-
-            // 마지막 공지 등록일
-            const lastEl = $('dashLastActivity');
-            if (state.notices.length > 0) {
-                lastEl.textContent = utils.formatDate(state.notices[0].createdAt);
-            } else {
-                lastEl.textContent = '-';
-            }
-
-            const recentEl = $('dashRecentNotices');
-            const recent = state.notices.slice(0, 3);
-            recentEl.innerHTML = recent.length
-                ? recent.map(n => `
-                    <div class="recent-item" onclick="App.router.go('notices')">
-                        <h4 class="recent-item__title">${utils.escapeHtml(n.title)}</h4>
-                        <p class="recent-item__body">${utils.escapeHtml(utils.truncate(n.content, 100))}</p>
-                        <p class="recent-item__date">${utils.formatDate(n.createdAt)}</p>
-                    </div>`).join('')
-                : '<div style="padding:2rem;text-align:center;color:var(--c-s400);font-size:.875rem">등록된 공지사항이 없습니다</div>';
-        },
-
-        renderNotices() {
-            const container = $('noticeList');
-            if (!state.notices.length) {
-                container.innerHTML = `
-                    <div class="card"><div class="card__body"><div class="empty">
-                        ${SVG.bell}
-                        <p>등록된 공지사항이 없습니다</p>
-                        <p class="empty__sub">새 공지사항을 등록해보세요</p>
-                    </div></div></div>`;
-                return;
-            }
-            container.innerHTML = state.notices.map(n => `
-                <div class="card card--hover notice"><div class="card__body">
-                    <div class="notice__top">
-                        <div class="notice__info">
-                            <h3 class="notice__title">${utils.escapeHtml(n.title)}</h3>
-                            <p class="notice__content">${utils.escapeHtml(n.content)}</p>
-                        </div>
-                        <div class="notice__actions">
-                            <button class="btn-edit" onclick="App.notices.open('${n.id}')">${SVG.edit}</button>
-                            <button class="btn-del" onclick="App.notices.delete('${n.id}')">${SVG.trash}</button>
-                        </div>
-                    </div>
-                    <div class="notice__meta">
-                        <span>${SVG.user}${utils.escapeHtml(n.author)}</span>
-                        <span>${utils.formatDateTime(n.createdAt)}</span>
-                    </div>
-                </div></div>`).join('');
+        renderNotices(){
+            const c=$('noticeList');
+            if(!state.notices.length){c.innerHTML=`<div class="card"><div class="card__body"><div class="empty">${SVG.bell}<p>등록된 공지사항이 없습니다</p><p class="empty__sub">새 공지사항을 등록해보세요</p></div></div></div>`;return;}
+            c.innerHTML=state.notices.map(n=>`<div class="card card--hover notice"><div class="card__body"><div class="notice__top"><div class="notice__info"><h3 class="notice__title">${utils.escapeHtml(n.title)}</h3><p class="notice__content">${utils.escapeHtml(n.content)}</p></div><div class="notice__actions"><button class="btn-edit" onclick="App.notices.open('${n.id}')">${SVG.edit}</button><button class="btn-del" onclick="App.notices.delete('${n.id}')">${SVG.trash}</button></div></div><div class="notice__meta"><span>${SVG.user}${utils.escapeHtml(n.author)}</span><span>${utils.formatDateTime(n.createdAt)}</span></div></div></div>`).join('');
         }
     };
 
+    /* ===== AI CHATBOT ENGINE ===== */
+    const chat = {
+        toggle() {
+            state.chatOpen = !state.chatOpen;
+            const w = $('chatWindow');
+            if (state.chatOpen) {
+                w.classList.add('chat-window--open');
+                $('chatInput').focus();
+                $('chatBadge').style.display = 'none';
+                $('chatTooltip').style.display = 'none';
+            } else {
+                w.classList.remove('chat-window--open');
+            }
+        },
+
+        _initWelcome() {
+            const container = $('chatMessages');
+            container.innerHTML = '';
+            const name = state.user ? state.user.name : '';
+            this._addBotMessage(
+                `👋 안녕하세요${name ? ', <b>' + utils.escapeHtml(name) + '</b>님' : ''}! AI 어시스턴트입니다.\n\n` +
+                `자연어로 편하게 말씀해주시면 공지사항을 관리해드릴게요.\n\n` +
+                `<b>💡 이런 것들을 할 수 있어요:</b>\n` +
+                `• "회의 안내 공지 올려줘"\n` +
+                `• "공지 목록 보여줘"\n` +
+                `• "회의 관련 공지 검색해줘"\n` +
+                `• "첫 번째 공지 삭제해줘"\n` +
+                `• "2번 공지 수정해줘"\n\n` +
+                `무엇을 도와드릴까요?`
+            );
+            this._updateSuggestions(['📝 공지 등록', '📋 공지 목록', '🔍 공지 검색', '❓ 도움말']);
+
+            // Show badge after a moment
+            setTimeout(() => {
+                if (!state.chatOpen) {
+                    $('chatBadge').style.display = 'flex';
+                }
+            }, 3000);
+        },
+
+        _addMessage(html, isUser) {
+            const container = $('chatMessages');
+            const wrapper = document.createElement('div');
+            wrapper.className = `chat-msg chat-msg--${isUser ? 'user' : 'bot'}`;
+            wrapper.innerHTML = `<div class="chat-msg__bubble">${html.replace(/\n/g, '<br>')}</div><div class="chat-msg__time">${utils.formatTime(new Date())}</div>`;
+            container.appendChild(wrapper);
+            container.scrollTop = container.scrollHeight;
+        },
+        _addBotMessage(html) { this._addMessage(html, false); },
+        _addUserMessage(text) { this._addMessage(utils.escapeHtml(text), true); },
+
+        _showTyping() {
+            const c = $('chatMessages');
+            const el = document.createElement('div');
+            el.className = 'chat-typing'; el.id = 'chatTypingIndicator';
+            el.innerHTML = '<span></span><span></span><span></span>';
+            c.appendChild(el); c.scrollTop = c.scrollHeight;
+        },
+        _hideTyping() { const el = $('chatTypingIndicator'); if (el) el.remove(); },
+
+        _updateSuggestions(items) {
+            $('chatSuggestions').innerHTML = items.map(item => {
+                const clean = item.replace(/^[📝📋🔍❓🗑️✏️#\s]+/, '').trim();
+                return `<button class="chat-suggest-btn" onclick="App.chat.quickSend('${utils.escapeHtml(clean)}')">${item}</button>`;
+            }).join('');
+        },
+
+        quickSend(text) { $('chatInput').value = text; this.send(); },
+
+        async send() {
+            const input = $('chatInput');
+            const text = input.value.trim();
+            if (!text) return;
+            input.value = '';
+            $('chatSendBtn').disabled = true;
+            this._addUserMessage(text);
+            this._showTyping();
+            await new Promise(r => setTimeout(r, 350 + Math.random() * 350));
+            this._hideTyping();
+            const response = await this._processCommand(text);
+            this._addBotMessage(response.message);
+            if (response.suggestions) this._updateSuggestions(response.suggestions);
+            $('chatSendBtn').disabled = false;
+            $('chatInput').focus();
+        },
+
+        _renderNoticeCard(n, index) {
+            return `<div class="chat-notice-card">
+                <div class="chat-notice-card__title">${index !== undefined ? (index + 1) + '. ' : ''}${utils.escapeHtml(n.title)}</div>
+                <div class="chat-notice-card__content">${utils.escapeHtml(utils.truncate(n.content, 80))}</div>
+                <div class="chat-notice-card__meta"><span>👤 ${utils.escapeHtml(n.author)}</span><span>📅 ${utils.formatDate(n.createdAt)}</span></div>
+                <div class="chat-notice-card__actions">
+                    <button class="chat-action-view" onclick="App.router.go('notices')">보기</button>
+                    <button class="chat-action-edit" onclick="App.notices.open('${n.id}')">수정</button>
+                    <button class="chat-action-delete" onclick="App.notices.delete('${n.id}')">삭제</button>
+                </div>
+            </div>`;
+        },
+
+        async _processCommand(text) {
+            const lower = text.replace(/\s+/g, ' ').trim().toLowerCase();
+
+            // ---- MULTI-STEP CONTEXT ----
+            if (state.chatContext) return await this._handleContext(text);
+
+            // ---- REGISTER ----
+            const registerPatterns = [/^공지\s*등록/,/공지.*(?:올려|작성|등록|만들어|써|생성|추가)/,/(?:올려|작성|등록|만들어|써|생성|추가).*공지/,/^(?:새|신규)\s*공지/,/공지.*(?:해줘|해주세요|해 줘|부탁)/];
+            if (registerPatterns.some(p => p.test(lower))) {
+                let cleaned = text.replace(/^공지\s*등록\s*/, '').replace(/공지\s*(?:올려|작성|등록|만들어|써|생성|추가)\s*/g,'').replace(/(?:올려|작성|등록|만들어|써|생성|추가)\s*.*?공지\s*/g,'').replace(/새\s*공지\s*/g,'').replace(/(?:해줘|해주세요|해 줘|부탁|좀)/g,'').trim();
+                if (!cleaned || cleaned.length < 2) {
+                    state.chatContext = { type: 'register', step: 'title' };
+                    return { message: '📝 공지사항을 등록할게요!\n\n먼저 <b>제목</b>을 입력해주세요.', suggestions: ['취소'] };
+                }
+                const si = cleaned.indexOf(' ');
+                if (si === -1) {
+                    state.chatContext = { type: 'register', step: 'content', title: cleaned };
+                    return { message: `📝 제목: <b>${utils.escapeHtml(cleaned)}</b>\n\n이제 <b>내용</b>을 입력해주세요.`, suggestions: ['취소'] };
+                }
+                const title = cleaned.substring(0, si), body = cleaned.substring(si + 1);
+                state.chatContext = { type: 'register', step: 'confirm', title, content: body };
+                return { message: `📝 다음 내용으로 공지를 등록할까요?\n\n<b>제목:</b> ${utils.escapeHtml(title)}\n<b>내용:</b> ${utils.escapeHtml(body)}\n\n"<b>등록</b>" 또는 "<b>취소</b>"를 입력해주세요.`, suggestions: ['✅ 등록', '❌ 취소', '✏️ 수정'] };
+            }
+
+            // ---- LIST ----
+            if ([/^공지\s*목록/,/공지.*(?:보여|확인|조회|리스트|목록|보기|알려)/,/(?:전체|모든|최근)\s*공지/,/공지.*(?:뭐|몇|있|어떤)/].some(p => p.test(lower))) {
+                await notices._load();
+                if (!state.notices.length) return { message: '📋 등록된 공지사항이 없습니다.\n\n새 공지를 등록해보시겠어요?', suggestions: ['📝 공지 등록','❓ 도움말'] };
+                let html = `📋 <b>전체 공지사항 (${state.notices.length}건)</b>\n`;
+                state.notices.slice(0,5).forEach((n,i) => { html += this._renderNoticeCard(n,i); });
+                if (state.notices.length > 5) html += `\n<span style="color:var(--c-s400)">...외 ${state.notices.length-5}건</span>`;
+                const sg = ['📝 공지 등록','🔍 공지 검색']; if (state.notices.length > 0) sg.push('🗑️ 공지 삭제');
+                return { message: html, suggestions: sg };
+            }
+
+            // ---- SEARCH ----
+            if ([/^공지\s*검색/,/공지.*검색/,/검색.*공지/,/공지.*찾아/,/찾아.*공지/].some(p => p.test(lower))) {
+                let kw = text.replace(/공지\s*검색\s*/g,'').replace(/검색\s*/g,'').replace(/공지\s*/g,'').replace(/(?:찾아|줘|주세요|해줘|해주세요|좀)/g,'').trim();
+                if (!kw) { state.chatContext = { type: 'search' }; return { message: '🔍 어떤 키워드로 검색할까요?\n\n검색할 <b>키워드</b>를 입력해주세요.', suggestions: ['취소'] }; }
+                return await this._doSearch(kw);
+            }
+
+            // ---- DELETE ----
+            if ([/^공지\s*삭제/,/공지.*삭제/,/삭제.*공지/,/공지.*(?:지워|없애|제거)/,/(?:지워|없애|제거).*공지/].some(p => p.test(lower))) {
+                await notices._load();
+                const numM = lower.match(/(\d+)/);
+                if (numM) {
+                    const idx = parseInt(numM[1])-1;
+                    if (idx >= 0 && idx < state.notices.length) {
+                        const t = state.notices[idx];
+                        state.chatContext = { type:'delete', step:'confirm', noticeId:t.id, noticeTitle:t.title };
+                        return { message: `🗑️ 다음 공지를 삭제할까요?\n${this._renderNoticeCard(t)}\n\n"<b>삭제</b>" 또는 "<b>취소</b>"`, suggestions: ['✅ 삭제','❌ 취소'] };
+                    }
+                }
+                let kw = text.replace(/공지\s*삭제\s*/g,'').replace(/삭제\s*/g,'').replace(/공지\s*/g,'').replace(/(?:지워|없애|제거|줘|주세요|해줘|좀)/g,'').trim();
+                if (kw) {
+                    const found = state.notices.find(n => n.title.includes(kw));
+                    if (found) { state.chatContext = { type:'delete', step:'confirm', noticeId:found.id, noticeTitle:found.title }; return { message: `🗑️ 다음 공지를 삭제할까요?\n${this._renderNoticeCard(found)}\n\n"<b>삭제</b>" 또는 "<b>취소</b>"`, suggestions: ['✅ 삭제','❌ 취소'] }; }
+                    return { message: `❌ "<b>${utils.escapeHtml(kw)}</b>"가 포함된 공지를 찾을 수 없습니다.`, suggestions: ['📋 공지 목록','🔍 공지 검색'] };
+                }
+                if (!state.notices.length) return { message: '📋 삭제할 공지사항이 없습니다.', suggestions: ['📝 공지 등록'] };
+                let html = '🗑️ 삭제할 공지의 <b>번호</b>를 입력해주세요.\n';
+                state.notices.slice(0,5).forEach((n,i) => { html += this._renderNoticeCard(n,i); });
+                state.chatContext = { type:'delete', step:'select' };
+                return { message: html, suggestions: ['취소'] };
+            }
+
+            // ---- EDIT ----
+            if ([/^공지\s*수정/,/공지.*수정/,/수정.*공지/,/공지.*(?:바꿔|변경|고쳐|편집)/,/(?:바꿔|변경|고쳐|편집).*공지/].some(p => p.test(lower))) {
+                await notices._load();
+                const numM = lower.match(/(\d+)/);
+                if (numM) {
+                    const idx = parseInt(numM[1])-1;
+                    if (idx >= 0 && idx < state.notices.length) { const t = state.notices[idx]; notices.open(t.id); return { message: `✏️ <b>${utils.escapeHtml(t.title)}</b> 수정 창을 열었습니다.`, suggestions: ['📋 공지 목록','📝 공지 등록'] }; }
+                }
+                let kw = text.replace(/공지\s*수정\s*/g,'').replace(/수정\s*/g,'').replace(/공지\s*/g,'').replace(/(?:바꿔|변경|고쳐|편집|줘|주세요|해줘|좀)/g,'').trim();
+                if (kw) {
+                    const found = state.notices.find(n => n.title.includes(kw));
+                    if (found) { notices.open(found.id); return { message: `✏️ <b>${utils.escapeHtml(found.title)}</b> 수정 창을 열었습니다.`, suggestions: ['📋 공지 목록','📝 공지 등록'] }; }
+                    return { message: `❌ "<b>${utils.escapeHtml(kw)}</b>"가 포함된 공지를 찾을 수 없습니다.`, suggestions: ['📋 공지 목록','🔍 공지 검색'] };
+                }
+                if (!state.notices.length) return { message: '📋 수정할 공지사항이 없습니다.', suggestions: ['📝 공지 등록'] };
+                let html = '✏️ 수정할 공지의 <b>번호</b>를 입력해주세요.\n';
+                state.notices.slice(0,5).forEach((n,i) => { html += this._renderNoticeCard(n,i); });
+                state.chatContext = { type:'edit', step:'select' };
+                return { message: html, suggestions: ['취소'] };
+            }
+
+            // ---- HELP ----
+            if (/^(?:도움말|도움|help|\?|명령어|사용법|뭐\s*할\s*수|기능)/.test(lower)) {
+                return { message: `📌 <b>사용 가능한 기능</b>\n\n📝 <b>공지 등록</b> — 새 공지사항 작성\n&nbsp;&nbsp;&nbsp;<code>공지 등록</code> 또는 <code>회의 공지 올려줘</code>\n\n📋 <b>공지 목록</b> — 전체 공지 확인\n&nbsp;&nbsp;&nbsp;<code>공지 목록</code> 또는 <code>공지 보여줘</code>\n\n🔍 <b>공지 검색</b> — 키워드로 공지 찾기\n&nbsp;&nbsp;&nbsp;<code>공지 검색 회의</code>\n\n✏️ <b>공지 수정</b> — 기존 공지 수정\n&nbsp;&nbsp;&nbsp;<code>1번 공지 수정</code>\n\n🗑️ <b>공지 삭제</b> — 공지 삭제\n&nbsp;&nbsp;&nbsp;<code>공지 삭제 회의</code>\n\n📊 <b>현황</b> — 공지사항 통계\n\n💡 자연어로 편하게 말씀해주세요!`, suggestions: ['📝 공지 등록','📋 공지 목록','🔍 공지 검색'] };
+            }
+
+            // ---- GREETING ----
+            if (/안녕|하이|헬로|hello|hi|반가|좋은\s*(?:아침|오후|저녁)/.test(lower)) {
+                return { message: `👋 안녕하세요, <b>${utils.escapeHtml(state.user.name)}</b>님! 무엇을 도와드릴까요?`, suggestions: ['📝 공지 등록','📋 공지 목록','❓ 도움말'] };
+            }
+
+            // ---- THANKS ----
+            if (/고마|감사|땡큐|thank/.test(lower)) {
+                return { message: `😊 도움이 되었다니 기쁩니다! 더 필요한 것이 있으면 말씀해주세요.`, suggestions: ['📝 공지 등록','📋 공지 목록','❓ 도움말'] };
+            }
+
+            // ---- STATS ----
+            if (/현황|통계|상태|요약|몇\s*개|총/.test(lower)) {
+                await notices._load();const c = state.notices.length;
+                return { message: `📊 <b>공지사항 현황</b>\n\n• 전체: <b>${c}건</b>\n• 최근 등록일: <b>${c>0?utils.formatDate(state.notices[0].createdAt):'없음'}</b>\n${c>0?'• 최근 공지: <b>'+utils.escapeHtml(state.notices[0].title)+'</b>':''}`, suggestions: ['📋 공지 목록','📝 공지 등록'] };
+            }
+
+            // ---- FALLBACK ----
+            return { message: `🤖 죄송합니다, 요청을 이해하지 못했어요.\n\n다음과 같이 말씀해보세요:\n• "공지 등록해줘"\n• "공지 목록 보여줘"\n• "회의 공지 검색"\n• "1번 공지 삭제"\n\n<b>도움말</b>을 입력하면 전체 기능을 확인할 수 있어요.`, suggestions: ['📝 공지 등록','📋 공지 목록','🔍 공지 검색','❓ 도움말'] };
+        },
+
+        async _handleContext(text) {
+            const lower = text.trim().toLowerCase();
+            const ctx = state.chatContext;
+
+            if (/^(?:취소|캔슬|cancel|그만|돌아가|뒤로)/.test(lower)) {
+                state.chatContext = null;
+                return { message: '↩️ 작업이 취소되었습니다.', suggestions: ['📝 공지 등록','📋 공지 목록','❓ 도움말'] };
+            }
+
+            // REGISTER
+            if (ctx.type === 'register') {
+                if (ctx.step === 'title') {
+                    state.chatContext = { type:'register', step:'content', title:text.trim() };
+                    return { message: `📝 제목: <b>${utils.escapeHtml(text.trim())}</b>\n\n이제 <b>내용</b>을 입력해주세요.`, suggestions: ['취소'] };
+                }
+                if (ctx.step === 'content') {
+                    state.chatContext = { type:'register', step:'confirm', title:ctx.title, content:text.trim() };
+                    return { message: `📝 다음 내용으로 공지를 등록할까요?\n\n<b>제목:</b> ${utils.escapeHtml(ctx.title)}\n<b>내용:</b> ${utils.escapeHtml(text.trim())}\n\n"<b>등록</b>" 또는 "<b>취소</b>"`, suggestions: ['✅ 등록','❌ 취소','✏️ 제목 다시'] };
+                }
+                if (ctx.step === 'confirm') {
+                    if (/^(?:등록|확인|네|예|yes|ok|ㅇㅇ|ㅇ|응|저장)/.test(lower)) {
+                        try {
+                            await notices._db().add({ title:ctx.title, content:ctx.content, author:state.user.name, authorEmail:state.user.email, createdAt:new Date().toISOString() });
+                            await notices._load(); ui.renderNotices(); ui.renderDashboard();
+                            state.chatContext = null;
+                            return { message: `✅ 공지사항이 등록되었습니다!\n${this._renderNoticeCard(state.notices[0])}`, suggestions: ['📋 공지 목록','📝 공지 등록'] };
+                        } catch { state.chatContext = null; return { message: '❌ 등록에 실패했습니다.', suggestions: ['📝 공지 등록'] }; }
+                    }
+                    if (/^(?:제목|타이틀|다시)/.test(lower)) { state.chatContext = { type:'register', step:'title' }; return { message: '📝 새 <b>제목</b>을 입력해주세요.', suggestions: ['취소'] }; }
+                    if (/^(?:내용|본문)/.test(lower)) { state.chatContext = { ...ctx, step:'content' }; return { message: '📝 새 <b>내용</b>을 입력해주세요.', suggestions: ['취소'] }; }
+                    state.chatContext = null;
+                    return { message: '↩️ 등록이 취소되었습니다.', suggestions: ['📝 공지 등록','📋 공지 목록','❓ 도움말'] };
+                }
+            }
+
+            // DELETE
+            if (ctx.type === 'delete') {
+                if (ctx.step === 'select') {
+                    const num = parseInt(lower);
+                    if (!isNaN(num) && num >= 1 && num <= state.notices.length) {
+                        const t = state.notices[num-1];
+                        state.chatContext = { type:'delete', step:'confirm', noticeId:t.id, noticeTitle:t.title };
+                        return { message: `🗑️ 다음 공지를 삭제할까요?\n${this._renderNoticeCard(t)}\n\n"<b>삭제</b>" 또는 "<b>취소</b>"`, suggestions: ['✅ 삭제','❌ 취소'] };
+                    }
+                    return { message: '❌ 올바른 번호를 입력해주세요.', suggestions: ['취소'] };
+                }
+                if (ctx.step === 'confirm') {
+                    if (/^(?:삭제|확인|네|예|yes|ok|ㅇㅇ|ㅇ|응)/.test(lower)) {
+                        try {
+                            await notices._db().doc(ctx.noticeId).delete(); await notices._load(); ui.renderNotices(); ui.renderDashboard();
+                            state.chatContext = null;
+                            return { message: `✅ "<b>${utils.escapeHtml(ctx.noticeTitle)}</b>" 삭제 완료!`, suggestions: ['📋 공지 목록','📝 공지 등록'] };
+                        } catch { state.chatContext = null; return { message: '❌ 삭제 실패', suggestions: ['📋 공지 목록'] }; }
+                    }
+                    state.chatContext = null;
+                    return { message: '↩️ 삭제가 취소되었습니다.', suggestions: ['📋 공지 목록','📝 공지 등록','❓ 도움말'] };
+                }
+            }
+
+            // EDIT
+            if (ctx.type === 'edit' && ctx.step === 'select') {
+                const num = parseInt(lower);
+                if (!isNaN(num) && num >= 1 && num <= state.notices.length) {
+                    const t = state.notices[num-1]; notices.open(t.id);
+                    state.chatContext = null;
+                    return { message: `✏️ <b>${utils.escapeHtml(t.title)}</b> 수정 창을 열었습니다.`, suggestions: ['📋 공지 목록','📝 공지 등록'] };
+                }
+                return { message: '❌ 올바른 번호를 입력해주세요.', suggestions: ['취소'] };
+            }
+
+            // SEARCH
+            if (ctx.type === 'search') { state.chatContext = null; return await this._doSearch(text.trim()); }
+
+            state.chatContext = null;
+            return await this._processCommand(text);
+        },
+
+        async _doSearch(keyword) {
+            await notices._load();
+            const results = state.notices.filter(n => n.title.toLowerCase().includes(keyword.toLowerCase()) || n.content.toLowerCase().includes(keyword.toLowerCase()));
+            if (!results.length) return { message: `🔍 "<b>${utils.escapeHtml(keyword)}</b>" 검색 결과가 없습니다.`, suggestions: ['📋 공지 목록','📝 공지 등록','🔍 다른 검색'] };
+            let html = `🔍 "<b>${utils.escapeHtml(keyword)}</b>" 검색 결과 (${results.length}건)\n`;
+            results.slice(0,5).forEach((n,i) => { html += this._renderNoticeCard(n,i); });
+            if (results.length > 5) html += `\n<span style="color:var(--c-s400)">...외 ${results.length-5}건</span>`;
+            return { message: html, suggestions: ['📋 공지 목록','📝 공지 등록','🔍 다른 검색'] };
+        }
+    };
+
+    /* ---- INIT ---- */
     async function init() {
         toast.init();
+        // Hide chatbot initially (show after login)
+        $('chatbotContainer').style.display = 'none';
+        $('chatTooltip').style.display = 'none';
+
         await fb.init();
-        gis.load().catch(err => console.warn('[GIS] Preload failed:', err));
+        gis.load().catch(e => console.warn('[GIS]', e));
 
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 $('noticeModal').hidden = true;
                 $('confirmModal').hidden = true;
+                if (state.chatOpen) chat.toggle();
             }
         });
-
-        ['noticeModal', 'confirmModal'].forEach(id => {
-            $(id).addEventListener('click', (e) => {
-                if (e.target === e.currentTarget) e.currentTarget.hidden = true;
-            });
+        ['noticeModal','confirmModal'].forEach(id => {
+            $(id).addEventListener('click', (e) => { if (e.target === e.currentTarget) e.currentTarget.hidden = true; });
         });
     }
 
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
-    } else {
-        init();
-    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+    else init();
 
-    return Object.freeze({ auth, router, notices, ui });
+    return Object.freeze({ auth, router, notices, ui, chat });
 })();
 </script>
 </body>
