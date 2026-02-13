@@ -13,57 +13,30 @@
     <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
 
     <style>
-        /* ══════════════════════════════════════
-           1. Design Tokens (CSS Variables)
-           ══════════════════════════════════════ */
         :root {
-            /* Primary */
-            --c-p50:  #f0f9ff;
-            --c-p100: #e0f2fe;
-            --c-p500: #0ea5e9;
-            --c-p600: #0284c7;
-
-            /* Accent */
-            --c-a500: #8b5cf6;
-            --c-a600: #7c3aed;
-
-            /* Semantic */
-            --c-ok100: #dcfce7;  --c-ok500: #22c55e;
-            --c-ok600: #16a34a;  --c-ok800: #166534;
-            --c-w100:  #fef3c7;  --c-w800:  #92400e;
-            --c-err50: #fef2f2;  --c-err500:#ef4444;
+            --c-p50:  #f0f9ff; --c-p100: #e0f2fe;
+            --c-p500: #0ea5e9; --c-p600: #0284c7;
+            --c-a500: #8b5cf6; --c-a600: #7c3aed;
+            --c-ok100: #dcfce7; --c-ok500: #22c55e;
+            --c-ok600: #16a34a; --c-ok800: #166534;
+            --c-w100:  #fef3c7; --c-w800:  #92400e;
+            --c-err50: #fef2f2; --c-err500:#ef4444;
             --c-err600:#dc2626;
             --c-or500: #f97316;
-
-            /* Slate scale */
-            --c-s50:  #f8fafc;  --c-s100: #f1f5f9;
-            --c-s200: #e2e8f0;  --c-s300: #cbd5e1;
-            --c-s400: #94a3b8;  --c-s500: #64748b;
-            --c-s600: #475569;  --c-s700: #334155;
-            --c-s800: #1e293b;  --c-s900: #0f172a;
-
-            /* Gradients */
+            --c-s50:  #f8fafc; --c-s100: #f1f5f9;
+            --c-s200: #e2e8f0; --c-s300: #cbd5e1;
+            --c-s400: #94a3b8; --c-s500: #64748b;
+            --c-s600: #475569; --c-s700: #334155;
+            --c-s800: #1e293b; --c-s900: #0f172a;
             --grad:     linear-gradient(135deg, var(--c-p500), var(--c-a500));
-            --grad-ok:  linear-gradient(135deg, #10b981, #14b8a6);
-            --grad-err: linear-gradient(135deg, var(--c-or500), var(--c-err500));
-
-            /* Typography */
             --ff: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
             --fd: 'Playfair Display', Georgia, serif;
-
-            /* Layout */
-            --hh: 64px;
-            --sw: 256px;
-
-            /* Transitions */
+            --hh: 64px; --sw: 256px;
             --ease-out: cubic-bezier(.4, 0, .2, 1);
         }
 
-        /* ══════════════════════════════════════
-           2. CSS Reset & Base
-           ══════════════════════════════════════ */
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-        html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+        html { -webkit-font-smoothing: antialiased; }
         body {
             font-family: var(--ff); font-size: 1rem; color: var(--c-s800);
             background: var(--c-s50); line-height: 1.6;
@@ -75,9 +48,6 @@
         [hidden] { display: none !important; }
         .logo { font-family: var(--fd); }
 
-        /* ══════════════════════════════════════
-           3. Keyframe Animations
-           ══════════════════════════════════════ */
         @keyframes slideUp   { from { opacity:0; transform:translateY(24px) } to { opacity:1; transform:translateY(0) } }
         @keyframes slideRight { from { opacity:0; transform:translateX(24px)} to { opacity:1; transform:translateX(0) } }
         @keyframes fadeIn     { from { opacity:0 } to { opacity:1 } }
@@ -88,9 +58,6 @@
         .anim-slide-up    { animation: slideUp   .5s ease-out both; }
         .anim-slide-right { animation: slideRight .4s ease-out both; }
 
-        /* ══════════════════════════════════════
-           4. Toast Notifications
-           ══════════════════════════════════════ */
         .toast-container {
             position: fixed; top: 1rem; right: 1rem; z-index: 9999;
             display: flex; flex-direction: column; gap: .5rem; pointer-events: none;
@@ -107,9 +74,6 @@
         .toast--error     { background: var(--c-err600); color: #fff; }
         .toast--info      { background: var(--c-s800);   color: #fff; }
 
-        /* ══════════════════════════════════════
-           5. Login Page
-           ══════════════════════════════════════ */
         .login {
             min-height: 100vh;
             background: linear-gradient(135deg, var(--c-s900), var(--c-s800), var(--c-s900));
@@ -136,7 +100,6 @@
         }
         .login__card h2 { font-size: 1.5rem; font-weight: 700; color: #fff; margin-bottom: 1.5rem; }
 
-        /* Google button */
         .btn-google {
             width: 100%; padding: .75rem 1rem; background: #fff; border-radius: .625rem;
             font-size: .9375rem; font-weight: 500; color: var(--c-s700);
@@ -164,14 +127,8 @@
         }
         .login__error--visible { display: block; }
         .login__error strong { color: #fff; font-weight: 600; }
+        .login__footer { text-align: center; font-size: .75rem; color: var(--c-s500); margin-top: 1.5rem; }
 
-        .login__footer {
-            text-align: center; font-size: .75rem; color: var(--c-s500); margin-top: 1.5rem;
-        }
-
-        /* ══════════════════════════════════════
-           6. App Shell — Header
-           ══════════════════════════════════════ */
         .header {
             background: #fff; border-bottom: 1px solid var(--c-s200);
             position: sticky; top: 0; z-index: 20;
@@ -209,9 +166,6 @@
         .header__logout:hover { background: var(--c-s100); color: var(--c-s800); }
         .header__logout svg   { width: 16px; height: 16px; }
 
-        /* ══════════════════════════════════════
-           7. App Layout — Sidebar + Main
-           ══════════════════════════════════════ */
         .app-layout { display: flex; }
 
         .sidebar {
@@ -238,12 +192,7 @@
 
         .main { flex: 1; padding: 2rem; max-width: 1024px; min-width: 0; }
 
-        /* ══════════════════════════════════════
-           8. Page Titles & Cards
-           ══════════════════════════════════════ */
-        .page-title {
-            font-size: 1.875rem; font-weight: 700; color: var(--c-s900); margin-bottom: 2rem;
-        }
+        .page-title { font-size: 1.875rem; font-weight: 700; color: var(--c-s900); margin-bottom: 2rem; }
         .page-header {
             display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;
         }
@@ -260,11 +209,8 @@
         }
         .card__body { padding: 1.5rem; }
 
-        /* ══════════════════════════════════════
-           9. Dashboard
-           ══════════════════════════════════════ */
         .stats-grid {
-            display: grid; grid-template-columns: repeat(3, 1fr);
+            display: grid; grid-template-columns: repeat(2, 1fr);
             gap: 1.5rem; margin-bottom: 2rem;
         }
         .stat__header {
@@ -274,8 +220,6 @@
         .stat__icon svg { width: 32px; height: 32px; }
         .stat__value  { font-size: 1.75rem; font-weight: 700; color: var(--c-s900); }
         .stat__desc   { font-size: .875rem; color: var(--c-s400); margin-top: .25rem; }
-        .stat__text   { font-size: .875rem; color: var(--c-s500); line-height: 1.8; }
-        .stat__text strong { color: var(--c-s900); font-weight: 600; }
 
         .bottom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
 
@@ -308,9 +252,6 @@
         .quick-btn:hover { background: rgba(255,255,255,.22); }
         .quick-btn svg { width: 20px; height: 20px; }
 
-        /* ══════════════════════════════════════
-           10. Notices
-           ══════════════════════════════════════ */
         .btn-add {
             display: inline-flex; align-items: center; gap: .5rem;
             padding: .75rem 1.25rem; background: var(--grad);
@@ -338,74 +279,11 @@
         .notice__meta span { display: inline-flex; align-items: center; gap: .25rem; }
         .notice__meta svg  { width: 14px; height: 14px; }
 
-        /* ══════════════════════════════════════
-           11. Attendance
-           ══════════════════════════════════════ */
-        .att-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem; }
-        .att-btn {
-            padding: 2.5rem; border-radius: .875rem; font-size: 1.125rem; font-weight: 700;
-            text-align: center; transition: all .3s var(--ease-out);
-        }
-        .att-btn svg { width: 48px; height: 48px; margin: 0 auto .75rem; display: block; }
-        .att-btn__sub { font-size: .875rem; font-weight: 400; margin-top: .5rem; opacity: .9; }
-        .att-btn--in {
-            background: var(--grad-ok); color: #fff;
-            box-shadow: 0 8px 20px rgba(16,185,129,.3);
-        }
-        .att-btn--in:hover:not(:disabled) {
-            transform: translateY(-2px); box-shadow: 0 12px 28px rgba(16,185,129,.4);
-        }
-        .att-btn--out {
-            background: var(--grad-err); color: #fff;
-            box-shadow: 0 8px 20px rgba(249,115,22,.3);
-        }
-        .att-btn--out:hover:not(:disabled) {
-            transform: translateY(-2px); box-shadow: 0 12px 28px rgba(249,115,22,.4);
-        }
-        .att-btn:disabled {
-            background: var(--c-s200); color: var(--c-s400);
-            cursor: not-allowed; box-shadow: none;
-        }
-        .att-btn:disabled:hover { transform: none; }
-
-        .att-table-header {
-            padding: 1.5rem; border-bottom: 1px solid var(--c-s200);
-            background: var(--c-s50); border-radius: .875rem .875rem 0 0;
-        }
-        .att-table-header h3 { font-size: 1.25rem; font-weight: 700; color: var(--c-s900); }
-
-        table { width: 100%; border-collapse: collapse; }
-        table thead { background: var(--c-s50); }
-        table th {
-            padding: .75rem 1.5rem; text-align: left;
-            font-size: .75rem; font-weight: 600; color: var(--c-s500);
-            text-transform: uppercase; letter-spacing: .05em;
-        }
-        table td {
-            padding: 1rem 1.5rem; font-size: .875rem;
-            color: var(--c-s800); border-top: 1px solid var(--c-s100);
-        }
-        table tbody tr { transition: background .15s; }
-        table tbody tr:hover { background: var(--c-s50); }
-
-        .badge {
-            display: inline-block; padding: .25rem .75rem;
-            border-radius: 9999px; font-size: .75rem; font-weight: 600;
-        }
-        .badge--ok { background: var(--c-ok100); color: var(--c-ok800); }
-        .badge--warn { background: var(--c-w100); color: var(--c-w800); }
-
-        /* ══════════════════════════════════════
-           12. Empty State
-           ══════════════════════════════════════ */
         .empty { text-align: center; padding: 4rem 2rem; }
         .empty svg { width: 64px; height: 64px; color: var(--c-s300); margin: 0 auto 1rem; }
         .empty p { font-size: 1.125rem; color: var(--c-s400); }
         .empty .empty__sub { font-size: .875rem; color: var(--c-s300); margin-top: .5rem; }
 
-        /* ══════════════════════════════════════
-           13. Modals
-           ══════════════════════════════════════ */
         .modal {
             position: fixed; inset: 0; background: rgba(0,0,0,.6);
             display: flex; align-items: center; justify-content: center;
@@ -445,12 +323,8 @@
         .btn-secondary:hover { background: var(--c-s300); }
         .btn-danger { background: var(--c-err500); color: #fff; }
 
-        /* ══════════════════════════════════════
-           14. Responsive
-           ══════════════════════════════════════ */
         @media (max-width: 1024px) {
-            .stats-grid { grid-template-columns: repeat(2, 1fr); }
-            .stats-grid .card:last-child { grid-column: span 2; }
+            .stats-grid { grid-template-columns: 1fr; }
         }
         @media (max-width: 768px) {
             .header__menu { display: block; }
@@ -461,10 +335,7 @@
             .sidebar--open { transform: translateX(0); }
             .sidebar__overlay--visible { display: block; }
             .main { padding: 1rem; }
-            .stats-grid { grid-template-columns: 1fr; }
-            .stats-grid .card:last-child { grid-column: span 1; }
             .bottom-grid { grid-template-columns: 1fr; }
-            .att-buttons { grid-template-columns: 1fr; }
             .header__logout-text { display: none; }
             .login__brand h1 { font-size: 2.25rem; }
             .login__card { padding: 1.5rem; }
@@ -473,12 +344,9 @@
 </head>
 <body>
 
-<!-- Toast Container -->
 <div id="toastContainer" class="toast-container" aria-live="polite"></div>
 
-<!-- ════════════════════════════════════════
-     LOGIN PAGE
-     ════════════════════════════════════════ -->
+<!-- LOGIN PAGE -->
 <div id="pageLogin" class="login">
     <div class="login__wrapper anim-slide-up">
         <div class="login__brand">
@@ -487,24 +355,18 @@
         </div>
         <div class="login__card">
             <h2>로그인</h2>
-
             <button id="btnGoogle" class="btn-google" onclick="App.auth.loginGoogle()">
                 <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
                 <span id="btnGoogleText">Google 계정으로 로그인</span>
             </button>
-
             <div id="loginError" class="login__error"></div>
             <p class="login__footer">Google 계정으로 안전하게 로그인하세요</p>
         </div>
     </div>
 </div>
 
-<!-- ════════════════════════════════════════
-     APP SHELL
-     ════════════════════════════════════════ -->
+<!-- APP SHELL -->
 <div id="appShell" hidden>
-
-    <!-- Header -->
     <header class="header">
         <div class="header__inner">
             <div class="header__left">
@@ -526,11 +388,9 @@
         </div>
     </header>
 
-    <!-- Layout -->
     <div class="app-layout">
         <div id="sidebarOverlay" class="sidebar__overlay" onclick="App.ui.closeSidebar()"></div>
 
-        <!-- Sidebar -->
         <aside id="sidebar" class="sidebar">
             <nav class="sidebar__nav">
                 <button class="sidebar__link sidebar__link--active" data-page="dashboard" onclick="App.router.go('dashboard')">
@@ -541,28 +401,14 @@
                     <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
                     <span>공지사항</span>
                 </button>
-                <button class="sidebar__link" data-page="attendance" onclick="App.router.go('attendance')">
-                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                    <span>근태관리</span>
-                </button>
             </nav>
         </aside>
 
-        <!-- Main Content -->
         <main class="main">
-
             <!-- Dashboard -->
             <section id="pageDashboard" class="anim-slide-right">
                 <h2 class="page-title">대시보드</h2>
                 <div class="stats-grid">
-                    <div class="card card--hover"><div class="card__body">
-                        <div class="stat__header">
-                            <h3 class="stat__label">오늘의 근태</h3>
-                            <span class="stat__icon" style="color:var(--c-p500)"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
-                        </div>
-                        <div id="dashAttendance" class="stat__text"><span style="color:var(--c-s400)">아직 출근 기록이 없습니다</span></div>
-                    </div></div>
-
                     <div class="card card--hover"><div class="card__body">
                         <div class="stat__header">
                             <h3 class="stat__label">전체 공지사항</h3>
@@ -574,11 +420,11 @@
 
                     <div class="card card--hover"><div class="card__body">
                         <div class="stat__header">
-                            <h3 class="stat__label">이번 달 근무</h3>
-                            <span class="stat__icon" style="color:var(--c-ok500)"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
+                            <h3 class="stat__label">최근 활동</h3>
+                            <span class="stat__icon" style="color:var(--c-p500)"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
                         </div>
-                        <p id="dashMonthDays" class="stat__value">0일</p>
-                        <p class="stat__desc">출근 일수</p>
+                        <p id="dashLastActivity" class="stat__value">-</p>
+                        <p class="stat__desc">마지막 공지 등록일</p>
                     </div></div>
                 </div>
 
@@ -596,8 +442,8 @@
                             <span>공지사항 확인하기</span>
                             <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
                         </button>
-                        <button class="quick-btn" onclick="App.router.go('attendance')">
-                            <span>근태 관리하기</span>
+                        <button class="quick-btn" onclick="App.notices.open()">
+                            <span>새 공지사항 작성</span>
                             <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
                         </button>
                     </div>
@@ -615,34 +461,11 @@
                 </div>
                 <div id="noticeList"></div>
             </section>
-
-            <!-- Attendance -->
-            <section id="pageAttendance" hidden>
-                <h2 class="page-title">근태관리</h2>
-                <div class="att-buttons">
-                    <button id="btnCheckIn" class="att-btn att-btn--in" onclick="App.attendance.checkIn()">
-                        <svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                        <div>출근하기</div>
-                        <div id="statusIn" class="att-btn__sub"></div>
-                    </button>
-                    <button id="btnCheckOut" class="att-btn att-btn--out" disabled onclick="App.attendance.checkOut()">
-                        <svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                        <div>퇴근하기</div>
-                        <div id="statusOut" class="att-btn__sub"></div>
-                    </button>
-                </div>
-                <div class="card">
-                    <div class="att-table-header"><h3>근태 기록</h3></div>
-                    <div id="attTable"></div>
-                </div>
-            </section>
         </main>
     </div>
 </div>
 
-<!-- ════════════════════════════════════════
-     NOTICE MODAL
-     ════════════════════════════════════════ -->
+<!-- NOTICE MODAL -->
 <div id="noticeModal" class="modal" hidden>
     <div class="modal__dialog modal__dialog--white anim-slide-up">
         <h3 id="noticeModalTitle" style="color:var(--c-s900)">새 공지사항</h3>
@@ -661,9 +484,7 @@
     </div>
 </div>
 
-<!-- ════════════════════════════════════════
-     CONFIRM MODAL
-     ════════════════════════════════════════ -->
+<!-- CONFIRM MODAL -->
 <div id="confirmModal" class="modal" hidden>
     <div class="modal__dialog modal__dialog--white anim-slide-up" style="max-width:400px;padding:2rem">
         <h3 style="color:var(--c-s900);font-size:1.125rem" id="confirmMessage"></h3>
@@ -674,16 +495,10 @@
     </div>
 </div>
 
-<!-- ════════════════════════════════════════
-     APPLICATION SCRIPT
-     ════════════════════════════════════════ -->
 <script>
 const App = (() => {
     'use strict';
 
-    /* ──────────────────────────────────────
-       0. Constants & Configuration
-       ────────────────────────────────────── */
     const FIREBASE_CONFIG = Object.freeze({
         apiKey:     'AIzaSyDcHSt46CHlu_LZYnNUU7xwIlMY7xE8KdU',
         authDomain: 'workhub2.firebaseapp.com',
@@ -691,16 +506,12 @@ const App = (() => {
     });
 
     const GOOGLE_CLIENT_ID = '535238333900-2mtltlntbsan8381tvu77eahkonl9tmt.apps.googleusercontent.com';
-
     const GIS_SCRIPT_URL = 'https://accounts.google.com/gsi/client';
     const GIS_LOAD_TIMEOUT_MS = 10000;
     const TOAST_DURATION_MS   = 3500;
     const TOAST_ERROR_MS      = 5000;
     const LOCAL_PREFIX         = 'wh_';
 
-    /* ──────────────────────────────────────
-       1. Utility Functions
-       ────────────────────────────────────── */
     const $ = (id) => document.getElementById(id);
 
     const utils = {
@@ -711,18 +522,6 @@ const App = (() => {
         formatDateTime(iso) {
             try { return new Date(iso).toLocaleString('ko-KR'); }
             catch { return ''; }
-        },
-        formatTime() {
-            return new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
-        },
-        isSameDay(a, b) {
-            return a.getFullYear() === b.getFullYear() &&
-                   a.getMonth()    === b.getMonth() &&
-                   a.getDate()     === b.getDate();
-        },
-        isCurrentMonth(iso) {
-            const d = new Date(iso), n = new Date();
-            return d.getMonth() === n.getMonth() && d.getFullYear() === n.getFullYear();
         },
         uid() {
             return Date.now().toString(36) + Math.random().toString(36).substr(2, 8);
@@ -738,9 +537,6 @@ const App = (() => {
         }
     };
 
-    /* ──────────────────────────────────────
-       2. Local Storage Wrapper
-       ────────────────────────────────────── */
     const storage = {
         get(key) {
             try { const v = localStorage.getItem(LOCAL_PREFIX + key); return v ? JSON.parse(v) : null; }
@@ -748,23 +544,18 @@ const App = (() => {
         },
         set(key, value) {
             try { localStorage.setItem(LOCAL_PREFIX + key, JSON.stringify(value)); }
-            catch { /* quota exceeded — silent fail */ }
+            catch {}
         },
         remove(key) {
             try { localStorage.removeItem(LOCAL_PREFIX + key); }
-            catch { /* silent */ }
+            catch {}
         }
     };
 
-    /* ──────────────────────────────────────
-       3. Application State (Single Source of Truth)
-       ────────────────────────────────────── */
     const state = {
         user:       null,
         page:       'dashboard',
         notices:    [],
-        attendance: [],
-        today:      null,
         editId:     null,
         sidebarOpen: false,
         firebaseReady: false,
@@ -773,14 +564,9 @@ const App = (() => {
         loginInProgress:      false
     };
 
-    /* ──────────────────────────────────────
-       4. Toast Notification System
-       ────────────────────────────────────── */
     const toast = {
         _container: null,
-
         init() { this._container = $('toastContainer'); },
-
         _show(message, type = 'info', duration = TOAST_DURATION_MS) {
             const el = document.createElement('div');
             el.className = `toast toast--${type}`;
@@ -796,77 +582,46 @@ const App = (() => {
         info(msg)    { this._show(msg, 'info'); }
     };
 
-    /* ──────────────────────────────────────
-       5. Google Identity Services Loader
-          — 스크립트 로드를 Promise로 래핑하여
-            로드 완료 전 로그인 시도 시 안전하게 대기
-       ────────────────────────────────────── */
     const gis = {
         _loadPromise: null,
-
         load() {
             if (this._loadPromise) return this._loadPromise;
-
             this._loadPromise = new Promise((resolve, reject) => {
-                // 이미 로드됨
-                if (window.google?.accounts?.id) {
-                    state.gisReady = true;
-                    resolve();
-                    return;
-                }
-
-                // 이미 script 태그가 있는지 확인
+                if (window.google?.accounts?.id) { state.gisReady = true; resolve(); return; }
                 const existing = document.querySelector(`script[src="${GIS_SCRIPT_URL}"]`);
                 if (existing) {
-                    // 로드 완료 대기
                     existing.addEventListener('load', () => { state.gisReady = true; resolve(); });
                     existing.addEventListener('error', () => reject(new Error('GIS script load failed')));
                 } else {
                     const script = document.createElement('script');
-                    script.src = GIS_SCRIPT_URL;
-                    script.async = true;
-                    script.defer = true;
+                    script.src = GIS_SCRIPT_URL; script.async = true; script.defer = true;
                     script.onload  = () => { state.gisReady = true; resolve(); };
                     script.onerror = () => reject(new Error('GIS script load failed'));
                     document.head.appendChild(script);
                 }
-
-                // Timeout safety
                 setTimeout(() => reject(new Error('GIS load timeout')), GIS_LOAD_TIMEOUT_MS);
             });
-
             return this._loadPromise;
         }
     };
 
-    /* ──────────────────────────────────────
-       6. Firebase Module
-          — 초기화 + Auth 상태 리스너
-          — onAuthStateChanged는 반드시 한 번만 등록
-       ────────────────────────────────────── */
     const fb = {
         _auth: null,
         _initPromise: null,
-
         init() {
             if (this._initPromise) return this._initPromise;
-
             this._initPromise = new Promise((resolve) => {
                 try {
                     firebase.initializeApp(FIREBASE_CONFIG);
                     this._auth = firebase.auth();
                     this._auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
-
-                    // onAuthStateChanged — 최초 1회만 등록
                     if (!state.authListenerAttached) {
                         state.authListenerAttached = true;
                         this._auth.onAuthStateChanged((firebaseUser) => {
                             this._handleAuthChange(firebaseUser);
                         });
                     }
-
                     state.firebaseReady = true;
-                    console.log('[Firebase] Initialized');
                     resolve(true);
                 } catch (err) {
                     console.error('[Firebase] Init failed:', err);
@@ -874,25 +629,16 @@ const App = (() => {
                     resolve(false);
                 }
             });
-
             return this._initPromise;
         },
-
-        /** Firebase Auth 상태 변경 핸들러 */
         _handleAuthChange(firebaseUser) {
-            // 로그인 진행 중이면 무시 (loginGoogle에서 직접 처리)
             if (state.loginInProgress) return;
-
             if (firebaseUser && !state.user) {
-                // 자동 세션 복원 (브라우저 재시작 후)
                 state.user = this._mapUser(firebaseUser);
                 storage.set('session', state.user);
                 auth._onLoginSuccess();
-                console.log('[Auth] Session restored for:', state.user.email);
             }
         },
-
-        /** Firebase User → App User 매핑 */
         _mapUser(firebaseUser) {
             return Object.freeze({
                 name:     firebaseUser.displayName || firebaseUser.email.split('@')[0],
@@ -902,20 +648,13 @@ const App = (() => {
                 provider: 'google'
             });
         },
-
         getAuth() { return this._auth; }
     };
 
-    /* ──────────────────────────────────────
-       7. Authentication Module
-       ────────────────────────────────────── */
     const auth = {
         async loginGoogle() {
             if (state.loginInProgress) return;
-            if (!state.firebaseReady) {
-                toast.error('시스템 준비 중입니다. 잠시 후 다시 시도해주세요.');
-                return;
-            }
+            if (!state.firebaseReady) { toast.error('시스템 준비 중입니다.'); return; }
 
             const btn = $('btnGoogle');
             const txt = $('btnGoogleText');
@@ -925,17 +664,13 @@ const App = (() => {
             ui.hideLoginError();
 
             try {
-                // GIS 로드 대기
                 await gis.load();
-
-                if (!window.google?.accounts?.id) {
-                    throw new Error('Google 로그인 라이브러리를 불러올 수 없습니다.');
-                }
+                if (!window.google?.accounts?.id) throw new Error('Google 로그인 라이브러리를 불러올 수 없습니다.');
 
                 google.accounts.id.initialize({
-                    client_id:             GOOGLE_CLIENT_ID,
-                    callback:              (resp) => this._onGoogleCredential(resp),
-                    auto_select:           false,
+                    client_id: GOOGLE_CLIENT_ID,
+                    callback: (resp) => this._onGoogleCredential(resp),
+                    auto_select: false,
                     cancel_on_tap_outside: true
                 });
 
@@ -949,20 +684,16 @@ const App = (() => {
                         }
                     }
                 });
-
             } catch (err) {
-                console.error('[Auth] Login error:', err);
                 ui.showLoginError(`<strong>❌ 오류 발생</strong><br>${utils.escapeHtml(err.message)}`);
                 toast.error('로그인 중 오류가 발생했습니다.');
                 this._resetLoginButton();
             }
         },
 
-        /** GIS에서 ID 토큰 받은 후 Firebase 인증 */
         async _onGoogleCredential(response) {
             const btn = $('btnGoogle');
             const txt = $('btnGoogleText');
-
             this._removeFallbackButton();
             btn.disabled = true;
             txt.innerHTML = '<span class="spinner"></span> 로그인 처리 중...';
@@ -971,22 +702,17 @@ const App = (() => {
             try {
                 const credential = firebase.auth.GoogleAuthProvider.credential(response.credential);
                 const result = await fb.getAuth().signInWithCredential(credential);
-
                 state.user = fb._mapUser(result.user);
                 storage.set('session', state.user);
                 this._onLoginSuccess();
-
             } catch (err) {
-                console.error('[Auth] Firebase credential error:', err);
-
                 const errorMessages = {
-                    'auth/invalid-credential':       '인증 정보가 올바르지 않습니다. 다시 시도해주세요.',
-                    'auth/user-disabled':            '비활성화된 계정입니다. 관리자에게 문의하세요.',
-                    'auth/network-request-failed':   '네트워크 연결을 확인해주세요.',
-                    'auth/too-many-requests':        '너무 많은 시도가 있었습니다. 잠시 후 다시 시도해주세요.',
-                    'auth/popup-closed-by-user':     '로그인이 취소되었습니다.'
+                    'auth/invalid-credential':     '인증 정보가 올바르지 않습니다.',
+                    'auth/user-disabled':          '비활성화된 계정입니다.',
+                    'auth/network-request-failed': '네트워크 연결을 확인해주세요.',
+                    'auth/too-many-requests':      '너무 많은 시도입니다. 잠시 후 다시 시도해주세요.',
+                    'auth/popup-closed-by-user':   '로그인이 취소되었습니다.'
                 };
-
                 const userMessage = errorMessages[err.code] || `로그인 실패: ${err.message || '알 수 없는 오류'}`;
                 ui.showLoginError(`<strong>❌ 로그인 실패</strong><br>${utils.escapeHtml(userMessage)}`);
                 toast.error('로그인에 실패했습니다.');
@@ -995,73 +721,42 @@ const App = (() => {
             }
         },
 
-        /** 로그인 성공 후 공통 처리 */
         _onLoginSuccess() {
             state.loginInProgress = false;
             ui.hideLoginError();
             notices._load();
-            attendance._load();
-            attendance._findToday();
             ui.showApp();
             router.go('dashboard');
             toast.success(`${state.user.name}님, 환영합니다!`);
         },
 
-        /** 로그아웃 */
         async logout() {
-            try {
-                if (state.firebaseReady && fb.getAuth()) {
-                    await fb.getAuth().signOut();
-                }
-            } catch (err) {
-                console.warn('[Auth] Sign out error:', err);
-            }
-
-            // Google 자동 선택 해제
+            try { if (state.firebaseReady && fb.getAuth()) await fb.getAuth().signOut(); } catch {}
             try { google?.accounts?.id?.disableAutoSelect(); } catch {}
-
-            // 상태 초기화
-            state.user       = null;
-            state.notices    = [];
-            state.attendance = [];
-            state.today      = null;
-            state.page       = 'dashboard';
+            state.user    = null;
+            state.notices = [];
+            state.page    = 'dashboard';
             storage.remove('session');
-
             this._removeFallbackButton();
             ui.showLogin();
             toast.info('로그아웃되었습니다.');
         },
 
-        /** GIS prompt 실패 시 공식 버튼 렌더링 */
         _renderFallbackButton() {
             const btn = $('btnGoogle');
             if (document.getElementById('gsiButtonWrap')) return;
-
             const container = document.createElement('div');
             container.id = 'gsiButtonWrap';
             container.style.cssText = 'display:flex;justify-content:center;margin-bottom:.5rem';
             btn.parentNode.insertBefore(container, btn);
             btn.style.display = 'none';
-
-            google.accounts.id.renderButton(container, {
-                theme: 'outline', size: 'large', width: 380,
-                text: 'signin_with', locale: 'ko'
-            });
-
+            google.accounts.id.renderButton(container, { theme: 'outline', size: 'large', width: 380, text: 'signin_with', locale: 'ko' });
             ui.showLoginError('<strong>👆 위 Google 버튼을 클릭해주세요</strong>');
         },
-
-        /** 폴백 버튼 제거 */
         _removeFallbackButton() {
             const wrap = document.getElementById('gsiButtonWrap');
-            if (wrap) {
-                wrap.remove();
-                $('btnGoogle').style.display = '';
-            }
+            if (wrap) { wrap.remove(); $('btnGoogle').style.display = ''; }
         },
-
-        /** 로그인 버튼 상태 초기화 */
         _resetLoginButton() {
             state.loginInProgress = false;
             const btn = $('btnGoogle');
@@ -1071,110 +766,79 @@ const App = (() => {
         }
     };
 
-    /* ──────────────────────────────────────
-       8. Router
-       ────────────────────────────────────── */
     const PAGES = Object.freeze({
-        dashboard:  'pageDashboard',
-        notices:    'pageNotices',
-        attendance: 'pageAttendance'
+        dashboard: 'pageDashboard',
+        notices:   'pageNotices'
     });
 
     const router = {
         go(page) {
             if (!PAGES[page]) return;
             state.page = page;
-
             Object.entries(PAGES).forEach(([key, elId]) => {
                 const el = $(elId);
                 if (!el) return;
                 el.hidden = (key !== page);
                 if (key === page) {
                     el.classList.remove('anim-slide-right');
-                    void el.offsetWidth; // reflow trigger
+                    void el.offsetWidth;
                     el.classList.add('anim-slide-right');
                 }
             });
-
             document.querySelectorAll('.sidebar__link').forEach(btn => {
                 btn.classList.toggle('sidebar__link--active', btn.dataset.page === page);
             });
-
             ui.closeSidebar();
-
-            const renderers = {
-                dashboard:  () => ui.renderDashboard(),
-                notices:    () => ui.renderNotices(),
-                attendance: () => ui.renderAttendance()
-            };
+            const renderers = { dashboard: () => ui.renderDashboard(), notices: () => ui.renderNotices() };
             renderers[page]?.();
         }
     };
 
-    /* ──────────────────────────────────────
-       9. Notices Module
-       ────────────────────────────────────── */
     const notices = {
         _load() { state.notices = storage.get('notices') || []; },
         _save() { storage.set('notices', state.notices); },
 
         open(id = null) {
             state.editId = id;
-            const titleEl   = $('noticeTitle');
+            const titleEl = $('noticeTitle');
             const contentEl = $('noticeContent');
-
             if (id) {
                 const notice = state.notices.find(n => n.id === id);
                 if (!notice) return;
-                titleEl.value   = notice.title;
+                titleEl.value = notice.title;
                 contentEl.value = notice.content;
                 $('noticeModalTitle').textContent = '공지사항 수정';
-                $('noticeModalSave').textContent  = '수정';
+                $('noticeModalSave').textContent = '수정';
             } else {
                 titleEl.value = '';
                 contentEl.value = '';
                 $('noticeModalTitle').textContent = '새 공지사항';
-                $('noticeModalSave').textContent  = '등록';
+                $('noticeModalSave').textContent = '등록';
             }
-
             $('noticeModal').hidden = false;
             titleEl.focus();
         },
-
-        close() {
-            $('noticeModal').hidden = true;
-            state.editId = null;
-        },
+        close() { $('noticeModal').hidden = true; state.editId = null; },
 
         save() {
-            const title   = $('noticeTitle').value.trim();
+            const title = $('noticeTitle').value.trim();
             const content = $('noticeContent').value.trim();
-
-            if (!title || !content) {
-                toast.error('제목과 내용을 입력해주세요.');
-                return;
-            }
+            if (!title || !content) { toast.error('제목과 내용을 입력해주세요.'); return; }
 
             if (state.editId) {
                 const idx = state.notices.findIndex(n => n.id === state.editId);
                 if (idx !== -1) {
-                    state.notices[idx] = {
-                        ...state.notices[idx],
-                        title, content,
-                        updatedAt: new Date().toISOString()
-                    };
+                    state.notices[idx] = { ...state.notices[idx], title, content, updatedAt: new Date().toISOString() };
                 }
                 toast.success('수정되었습니다.');
             } else {
                 state.notices.unshift({
-                    id:        utils.uid(),
-                    title, content,
-                    author:    state.user.name,
+                    id: utils.uid(), title, content,
+                    author: state.user.name,
                     createdAt: new Date().toISOString()
                 });
                 toast.success('등록되었습니다.');
             }
-
             this._save();
             this.close();
             ui.renderNotices();
@@ -1190,76 +854,23 @@ const App = (() => {
         }
     };
 
-    /* ──────────────────────────────────────
-       10. Attendance Module
-       ────────────────────────────────────── */
-    const attendance = {
-        _storageKey() {
-            return state.user ? `att_${state.user.email}` : null;
-        },
-        _load() {
-            const key = this._storageKey();
-            state.attendance = key ? (storage.get(key) || []) : [];
-        },
-        _save() {
-            const key = this._storageKey();
-            if (key) storage.set(key, state.attendance);
-        },
-        _findToday() {
-            const now = new Date();
-            state.today = state.attendance.find(a => utils.isSameDay(new Date(a.date), now)) || null;
-        },
-
-        checkIn() {
-            if (state.today) { toast.error('오늘 이미 출근 기록이 있습니다.'); return; }
-            const record = {
-                id:       utils.uid(),
-                date:     new Date().toISOString(),
-                checkIn:  utils.formatTime(),
-                checkOut: null
-            };
-            state.attendance.unshift(record);
-            state.today = record;
-            this._save();
-            ui.renderAttendance();
-            ui.renderDashboard();
-            toast.success('출근이 기록되었습니다.');
-        },
-
-        checkOut() {
-            if (!state.today) { toast.error('출근 기록이 없습니다.'); return; }
-            if (state.today.checkOut) { toast.error('이미 퇴근 처리되었습니다.'); return; }
-            state.today.checkOut = utils.formatTime();
-            this._save();
-            ui.renderAttendance();
-            ui.renderDashboard();
-            toast.success('퇴근 기록 완료!');
-        }
-    };
-
-    /* ──────────────────────────────────────
-       11. UI Module
-       ────────────────────────────────────── */
     const SVG = {
-        user:     '<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
-        edit:     '<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>',
-        trash:    '<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>',
-        bell:     '<svg width="64" height="64" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>',
-        calendar: '<svg width="64" height="64" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>',
-        chevron:  '<svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>'
+        user:  '<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
+        edit:  '<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>',
+        trash: '<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>',
+        bell:  '<svg width="64" height="64" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>'
     };
 
     const ui = {
         showApp() {
             $('pageLogin').hidden = true;
-            $('appShell').hidden  = false;
+            $('appShell').hidden = false;
             this.renderHeader();
         },
         showLogin() {
             $('pageLogin').hidden = false;
-            $('appShell').hidden  = true;
+            $('appShell').hidden = true;
         },
-
         renderHeader() {
             if (!state.user) return;
             $('headerName').textContent = state.user.name;
@@ -1268,7 +879,6 @@ const App = (() => {
                 ? `<img class="header__avatar" src="${utils.escapeHtml(state.user.picture)}" alt="" referrerpolicy="no-referrer">`
                 : `<span class="header__avatar-fb">${SVG.user}</span>`;
         },
-
         toggleSidebar() {
             state.sidebarOpen = !state.sidebarOpen;
             $('sidebar').classList.toggle('sidebar--open', state.sidebarOpen);
@@ -1279,7 +889,6 @@ const App = (() => {
             $('sidebar').classList.remove('sidebar--open');
             $('sidebarOverlay').classList.remove('sidebar__overlay--visible');
         },
-
         showLoginError(html) {
             const el = $('loginError');
             el.innerHTML = html;
@@ -1290,36 +899,26 @@ const App = (() => {
             el.innerHTML = '';
             el.classList.remove('login__error--visible');
         },
-
         showConfirm(message, callback) {
             $('confirmMessage').textContent = message;
             $('confirmModal').hidden = false;
-            $('confirmYes').onclick = () => {
-                $('confirmModal').hidden = true;
-                callback();
-            };
+            $('confirmYes').onclick = () => { $('confirmModal').hidden = true; callback(); };
         },
         hideConfirm() { $('confirmModal').hidden = true; },
 
-        /* ── Page Renderers ── */
         renderDashboard() {
-            // 오늘 근태
-            const attEl = $('dashAttendance');
-            if (state.today) {
-                let html = `출근: <strong>${utils.escapeHtml(state.today.checkIn)}</strong>`;
-                if (state.today.checkOut) html += `<br>퇴근: <strong>${utils.escapeHtml(state.today.checkOut)}</strong>`;
-                attEl.innerHTML = html;
+            $('dashNoticeCount').textContent = state.notices.length;
+
+            // 마지막 공지 등록일
+            const lastEl = $('dashLastActivity');
+            if (state.notices.length > 0) {
+                lastEl.textContent = utils.formatDate(state.notices[0].createdAt);
             } else {
-                attEl.innerHTML = '<span style="color:var(--c-s400)">아직 출근 기록이 없습니다</span>';
+                lastEl.textContent = '-';
             }
 
-            // 통계
-            $('dashNoticeCount').textContent = state.notices.length;
-            $('dashMonthDays').textContent   = state.attendance.filter(a => utils.isCurrentMonth(a.date)).length + '일';
-
-            // 최근 공지
             const recentEl = $('dashRecentNotices');
-            const recent   = state.notices.slice(0, 3);
+            const recent = state.notices.slice(0, 3);
             recentEl.innerHTML = recent.length
                 ? recent.map(n => `
                     <div class="recent-item" onclick="App.router.go('notices')">
@@ -1341,7 +940,6 @@ const App = (() => {
                     </div></div></div>`;
                 return;
             }
-
             container.innerHTML = state.notices.map(n => `
                 <div class="card card--hover notice"><div class="card__body">
                     <div class="notice__top">
@@ -1359,75 +957,17 @@ const App = (() => {
                         <span>${utils.formatDateTime(n.createdAt)}</span>
                     </div>
                 </div></div>`).join('');
-        },
-
-        renderAttendance() {
-            const t  = state.today;
-            const bi = $('btnCheckIn');
-            const bo = $('btnCheckOut');
-            const si = $('statusIn');
-            const so = $('statusOut');
-
-            if (t) {
-                bi.disabled = true;
-                si.textContent = '출근: ' + t.checkIn;
-                if (t.checkOut) {
-                    bo.disabled = true;
-                    so.textContent = '퇴근: ' + t.checkOut;
-                } else {
-                    bo.disabled = false;
-                    so.textContent = '';
-                }
-            } else {
-                bi.disabled = false;
-                bo.disabled = true;
-                si.textContent = '';
-                so.textContent = '';
-            }
-
-            const container = $('attTable');
-            if (!state.attendance.length) {
-                container.innerHTML = `
-                    <div class="empty">
-                        ${SVG.calendar}
-                        <p>근태 기록이 없습니다</p>
-                        <p class="empty__sub">출근 버튼을 눌러 등록하세요</p>
-                    </div>`;
-                return;
-            }
-
-            container.innerHTML = `
-                <div style="overflow-x:auto">
-                <table><thead><tr>
-                    <th>날짜</th><th>출근</th><th>퇴근</th><th>상태</th>
-                </tr></thead><tbody>
-                ${state.attendance.map(r => `
-                    <tr>
-                        <td>${utils.formatDate(r.date)}</td>
-                        <td>${utils.escapeHtml(r.checkIn)}</td>
-                        <td>${r.checkOut ? utils.escapeHtml(r.checkOut) : '—'}</td>
-                        <td><span class="badge ${r.checkOut ? 'badge--ok' : 'badge--warn'}">${r.checkOut ? '퇴근 완료' : '근무 중'}</span></td>
-                    </tr>`).join('')}
-                </tbody></table></div>`;
         }
     };
 
-    /* ──────────────────────────────────────
-       12. Initialization
-       ────────────────────────────────────── */
     async function init() {
         toast.init();
-
-        // Firebase 초기화 (최우선)
         await fb.init();
-
-        // GIS 사전 로드 (백그라운드 — 실패해도 앱 시작에 영향 없음)
         gis.load().catch(err => console.warn('[GIS] Preload failed:', err));
 
-        // 키보드 & 모달 이벤트
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
-                $('noticeModal').hidden  = true;
+                $('noticeModal').hidden = true;
                 $('confirmModal').hidden = true;
             }
         });
@@ -1437,31 +977,16 @@ const App = (() => {
                 if (e.target === e.currentTarget) e.currentTarget.hidden = true;
             });
         });
-
-        console.log('[WorkHub] Ready');
     }
 
-    // DOM 준비 후 초기화
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', init);
     } else {
         init();
     }
 
-    /* ──────────────────────────────────────
-       13. Public API
-       ────────────────────────────────────── */
-    return Object.freeze({
-        auth,
-        router,
-        notices,
-        attendance,
-        ui
-    });
-
+    return Object.freeze({ auth, router, notices, ui });
 })();
 </script>
 </body>
 </html>
-
-<h1>테스트</h1> 추가
