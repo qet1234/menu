@@ -7,560 +7,1460 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+
+    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
+
     <style>
-        :root{
-            --c-p50:#f0f9ff;--c-p500:#0ea5e9;--c-p600:#0284c7;
-            --c-a500:#8b5cf6;--c-a600:#7c3aed;
-            --c-ok100:#dcfce7;--c-ok500:#22c55e;--c-ok600:#16a34a;--c-ok800:#166534;
-            --c-w100:#fef3c7;--c-w800:#92400e;
-            --c-err50:#fef2f2;--c-err500:#ef4444;--c-err600:#dc2626;
-            --c-or500:#f97316;
-            --c-s50:#f8fafc;--c-s100:#f1f5f9;--c-s200:#e2e8f0;--c-s300:#cbd5e1;
-            --c-s400:#94a3b8;--c-s500:#64748b;--c-s600:#475569;--c-s700:#334155;
-            --c-s800:#1e293b;--c-s900:#0f172a;
-            --grad:linear-gradient(135deg,var(--c-p500),var(--c-a500));
-            --grad-ok:linear-gradient(135deg,#10b981,#14b8a6);
-            --grad-err:linear-gradient(135deg,var(--c-or500),var(--c-err500));
-            --ff:'Noto Sans KR',-apple-system,BlinkMacSystemFont,sans-serif;
-            --fd:'Playfair Display',Georgia,serif;
-            --hh:64px;--sw:256px;
+        /* ══════════════════════════════════════
+           1. Design Tokens (CSS Variables)
+           ══════════════════════════════════════ */
+        :root {
+            /* Primary */
+            --c-p50:  #f0f9ff;
+            --c-p100: #e0f2fe;
+            --c-p500: #0ea5e9;
+            --c-p600: #0284c7;
+
+            /* Accent */
+            --c-a500: #8b5cf6;
+            --c-a600: #7c3aed;
+
+            /* Semantic */
+            --c-ok100: #dcfce7;  --c-ok500: #22c55e;
+            --c-ok600: #16a34a;  --c-ok800: #166534;
+            --c-w100:  #fef3c7;  --c-w800:  #92400e;
+            --c-err50: #fef2f2;  --c-err500:#ef4444;
+            --c-err600:#dc2626;
+            --c-or500: #f97316;
+
+            /* Slate scale */
+            --c-s50:  #f8fafc;  --c-s100: #f1f5f9;
+            --c-s200: #e2e8f0;  --c-s300: #cbd5e1;
+            --c-s400: #94a3b8;  --c-s500: #64748b;
+            --c-s600: #475569;  --c-s700: #334155;
+            --c-s800: #1e293b;  --c-s900: #0f172a;
+
+            /* Gradients */
+            --grad:     linear-gradient(135deg, var(--c-p500), var(--c-a500));
+            --grad-ok:  linear-gradient(135deg, #10b981, #14b8a6);
+            --grad-err: linear-gradient(135deg, var(--c-or500), var(--c-err500));
+
+            /* Typography */
+            --ff: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+            --fd: 'Playfair Display', Georgia, serif;
+
+            /* Layout */
+            --hh: 64px;
+            --sw: 256px;
+
+            /* Transitions */
+            --ease-out: cubic-bezier(.4, 0, .2, 1);
         }
-        *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-        html{-webkit-font-smoothing:antialiased}
-        body{font-family:var(--ff);font-size:1rem;color:var(--c-s800);background:var(--c-s50);line-height:1.6;min-height:100vh;overflow-x:hidden}
-        button{font-family:var(--ff);cursor:pointer;border:none;background:none}
-        input,textarea{font-family:var(--ff);border:none;outline:none}
-        img{max-width:100%;display:block}[hidden]{display:none!important}
-        .logo{font-family:var(--fd)}
 
-        @keyframes su{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
-        @keyframes sr{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:translateX(0)}}
-        @keyframes fi{from{opacity:0}to{opacity:1}}
-        @keyframes ti{from{opacity:0;transform:translateY(-12px) scale(.95)}to{opacity:1;transform:translateY(0) scale(1)}}
-        @keyframes to2{from{opacity:1}to{opacity:0;transform:translateY(-12px) scale(.95)}}
-        @keyframes sp{to{transform:rotate(360deg)}}
-        .asu{animation:su .5s ease-out both}.asr{animation:sr .4s ease-out both}
+        /* ══════════════════════════════════════
+           2. CSS Reset & Base
+           ══════════════════════════════════════ */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+        body {
+            font-family: var(--ff); font-size: 1rem; color: var(--c-s800);
+            background: var(--c-s50); line-height: 1.6;
+            min-height: 100vh; overflow-x: hidden;
+        }
+        button { font-family: var(--ff); cursor: pointer; border: none; background: none; }
+        input, textarea { font-family: var(--ff); border: none; outline: none; }
+        img { max-width: 100%; display: block; }
+        [hidden] { display: none !important; }
+        .logo { font-family: var(--fd); }
 
-        .tc{position:fixed;top:1rem;right:1rem;z-index:70;display:flex;flex-direction:column;gap:.5rem;pointer-events:none}
-        .tt{pointer-events:auto;display:flex;align-items:center;gap:.75rem;padding:.75rem 1.25rem;border-radius:.625rem;font-size:.875rem;font-weight:500;box-shadow:0 20px 25px -5px rgba(0,0,0,.1);animation:ti .3s ease-out both;max-width:420px}
-        .tt.rm{animation:to2 .25s ease-in both}
-        .tt.ok{background:var(--c-ok600);color:#fff}
-        .tt.er{background:var(--c-err600);color:#fff}
-        .tt.inf{background:var(--c-s800);color:#fff}
+        /* ══════════════════════════════════════
+           3. Keyframe Animations
+           ══════════════════════════════════════ */
+        @keyframes slideUp   { from { opacity:0; transform:translateY(24px) } to { opacity:1; transform:translateY(0) } }
+        @keyframes slideRight { from { opacity:0; transform:translateX(24px)} to { opacity:1; transform:translateX(0) } }
+        @keyframes fadeIn     { from { opacity:0 } to { opacity:1 } }
+        @keyframes toastIn   { from { opacity:0; transform:translateY(-12px) scale(.95) } to { opacity:1; transform:translateY(0) scale(1) } }
+        @keyframes toastOut  { from { opacity:1 } to { opacity:0; transform:translateY(-12px) scale(.95) } }
+        @keyframes spin      { to { transform: rotate(360deg) } }
 
-        .pg-login{min-height:100vh;background:linear-gradient(135deg,var(--c-s900),var(--c-s800),var(--c-s900));display:flex;align-items:center;justify-content:center;padding:1rem;position:relative;overflow:hidden}
-        .pg-login::before{content:'';position:absolute;inset:-50%;width:200%;height:200%;background:radial-gradient(ellipse at 25% 15%,rgba(14,165,233,.07),transparent 50%),radial-gradient(ellipse at 75% 85%,rgba(139,92,246,.07),transparent 50%);pointer-events:none}
-        .lw{width:100%;max-width:440px;position:relative;z-index:1}
-        .lb{text-align:center;margin-bottom:2rem}
-        .lb h1{font-size:3rem;font-weight:900;color:#fff;letter-spacing:-1px}
-        .lb p{color:var(--c-s400);font-size:.875rem;letter-spacing:2px;margin-top:.5rem}
-        .lc{background:rgba(255,255,255,.04);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,.08);border-radius:1.25rem;padding:2.5rem;box-shadow:0 25px 50px -12px rgba(0,0,0,.25)}
-        .lc h2{font-size:1.5rem;font-weight:700;color:#fff;margin-bottom:1.5rem}
+        .anim-slide-up    { animation: slideUp   .5s ease-out both; }
+        .anim-slide-right { animation: slideRight .4s ease-out both; }
 
-        .gbtn{width:100%;padding:.75rem 1rem;background:#fff;border-radius:.625rem;font-size:.9375rem;font-weight:500;color:var(--c-s700);display:flex;align-items:center;justify-content:center;gap:.75rem;transition:all .2s}
-        .gbtn:hover:not(:disabled){background:var(--c-s50);box-shadow:0 8px 24px rgba(0,0,0,.2);transform:translateY(-1px)}
-        .gbtn:disabled{opacity:.6;cursor:wait}
-        .gbtn svg{width:20px;height:20px;flex-shrink:0}
-        .spinner{display:inline-block;width:20px;height:20px;border:2.5px solid var(--c-s300);border-top-color:var(--c-p500);border-radius:50%;animation:sp .6s linear infinite}
+        /* ══════════════════════════════════════
+           4. Toast Notifications
+           ══════════════════════════════════════ */
+        .toast-container {
+            position: fixed; top: 1rem; right: 1rem; z-index: 9999;
+            display: flex; flex-direction: column; gap: .5rem; pointer-events: none;
+        }
+        .toast {
+            pointer-events: auto; display: flex; align-items: center; gap: .75rem;
+            padding: .75rem 1.25rem; border-radius: .625rem;
+            font-size: .875rem; font-weight: 500; max-width: 420px;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,.1);
+            animation: toastIn .3s ease-out both;
+        }
+        .toast--removing { animation: toastOut .25s ease-in both; }
+        .toast--success   { background: var(--c-ok600);  color: #fff; }
+        .toast--error     { background: var(--c-err600); color: #fff; }
+        .toast--info      { background: var(--c-s800);   color: #fff; }
 
-        .err-box{margin-top:.75rem;padding:.75rem 1rem;background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);border-radius:.625rem;font-size:.75rem;color:#fca5a5;line-height:1.7;display:none}
-        .err-box.show{display:block}
-        .err-box strong{color:#fff;font-weight:600}
-        .err-box a{color:var(--c-p500);text-decoration:underline;cursor:pointer}
+        /* ══════════════════════════════════════
+           5. Login Page
+           ══════════════════════════════════════ */
+        .login {
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--c-s900), var(--c-s800), var(--c-s900));
+            display: flex; align-items: center; justify-content: center;
+            padding: 1rem; position: relative; overflow: hidden;
+        }
+        .login::before {
+            content: ''; position: absolute; inset: -50%; width: 200%; height: 200%;
+            background:
+                radial-gradient(ellipse at 25% 15%, rgba(14,165,233,.07), transparent 50%),
+                radial-gradient(ellipse at 75% 85%, rgba(139,92,246,.07), transparent 50%);
+            pointer-events: none;
+        }
+        .login__wrapper   { width: 100%; max-width: 440px; position: relative; z-index: 1; }
+        .login__brand     { text-align: center; margin-bottom: 2rem; }
+        .login__brand h1  { font-size: 3rem; font-weight: 900; color: #fff; letter-spacing: -1px; }
+        .login__brand p   { color: var(--c-s400); font-size: .875rem; letter-spacing: 2px; margin-top: .5rem; }
+        .login__card {
+            background: rgba(255,255,255,.04);
+            backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255,255,255,.08);
+            border-radius: 1.25rem; padding: 2.5rem;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,.25);
+        }
+        .login__card h2 { font-size: 1.5rem; font-weight: 700; color: #fff; margin-bottom: 1.5rem; }
 
-        .fbs{margin-top:1.25rem;text-align:center;font-size:.75rem;cursor:pointer;text-decoration:underline;transition:color .2s}
+        /* Google button */
+        .btn-google {
+            width: 100%; padding: .75rem 1rem; background: #fff; border-radius: .625rem;
+            font-size: .9375rem; font-weight: 500; color: var(--c-s700);
+            display: flex; align-items: center; justify-content: center; gap: .75rem;
+            transition: all .2s var(--ease-out);
+        }
+        .btn-google:hover:not(:disabled) {
+            background: var(--c-s50); box-shadow: 0 8px 24px rgba(0,0,0,.2);
+            transform: translateY(-1px);
+        }
+        .btn-google:disabled { opacity: .6; cursor: wait; }
+        .btn-google svg { width: 20px; height: 20px; flex-shrink: 0; }
 
-        .ff{margin-bottom:1rem}
-        .ff>label{display:block;font-size:.875rem;font-weight:500;color:var(--c-s300);margin-bottom:.5rem}
-        .fi2{width:100%;padding:.75rem 1rem;background:rgba(51,65,85,.5);border:1px solid var(--c-s600);border-radius:.625rem;font-size:.875rem;color:#fff;transition:all .2s}
-        .fi2::placeholder{color:var(--c-s400)}
-        .fi2:focus{border-color:var(--c-p500);box-shadow:0 0 0 3px rgba(14,165,233,.2)}
-        .fi2w{background:#fff;border:1px solid var(--c-s300);color:var(--c-s900)}
-        .fi2w::placeholder{color:var(--c-s400)}
-        .fi2w:focus{border-color:var(--c-p500);box-shadow:0 0 0 3px rgba(14,165,233,.15)}
-        textarea.fi2{resize:vertical;min-height:180px;line-height:1.7}
-        .lfooter{text-align:center;font-size:.75rem;color:var(--c-s500);margin-top:1.5rem}
+        .spinner {
+            display: inline-block; width: 20px; height: 20px;
+            border: 2.5px solid var(--c-s300); border-top-color: var(--c-p500);
+            border-radius: 50%; animation: spin .6s linear infinite;
+        }
 
-        .mb{position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;padding:1rem;z-index:50;animation:fi .2s ease-out}
-        .md{width:100%;border-radius:1.25rem;padding:2.5rem;box-shadow:0 25px 50px -12px rgba(0,0,0,.25);animation:su .3s ease-out}
-        .mdg{max-width:560px;background:rgba(30,41,59,.97);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,.08);color:#fff}
-        .mdw{max-width:640px;background:#fff;color:var(--c-s900)}
-        .md h3{font-size:1.5rem;font-weight:700;margin-bottom:1rem}
-        .md p.desc{font-size:.875rem;color:var(--c-s300);margin-bottom:1.5rem;line-height:1.6}
+        .login__error {
+            margin-top: .75rem; padding: .75rem 1rem;
+            background: rgba(239,68,68,.15); border: 1px solid rgba(239,68,68,.3);
+            border-radius: .625rem; font-size: .75rem; color: #fca5a5;
+            line-height: 1.7; display: none;
+        }
+        .login__error--visible { display: block; }
+        .login__error strong { color: #fff; font-weight: 600; }
 
-        .guide{background:rgba(30,41,59,.5);border:1px solid var(--c-s600);border-radius:.625rem;padding:1rem;margin-bottom:1.25rem}
-        .guide .gt{font-size:.875rem;font-weight:600;color:var(--c-s300);margin-bottom:.75rem}
-        .guide ol{font-size:.75rem;color:var(--c-s400);padding-left:1.25rem;line-height:2.2}
-        .guide ol a{color:var(--c-p500)}.guide ol a:hover{text-decoration:underline}
-        .guide ol strong{color:var(--c-s200)}
-        .guide ol code{background:rgba(255,255,255,.1);padding:1px 6px;border-radius:4px;font-size:.7rem;color:var(--c-p500)}
+        .login__footer {
+            text-align: center; font-size: .75rem; color: var(--c-s500); margin-top: 1.5rem;
+        }
 
-        .cfs{display:flex;flex-direction:column;gap:.75rem}
-        .cfs label{font-size:.75rem;font-weight:600;color:var(--c-s300)}
-        .cfs input{width:100%;padding:.5rem .75rem;background:rgba(51,65,85,.5);border:1px solid var(--c-s600);border-radius:.375rem;font-size:.75rem;color:#fff;font-family:monospace}
-        .cfs input:focus{border-color:var(--c-p500);outline:none;box-shadow:0 0 0 2px rgba(14,165,233,.2)}
-        .cfs input::placeholder{color:var(--c-s500)}
-        .domain-info{margin-top:.75rem;padding:.625rem .75rem;background:rgba(14,165,233,.1);border:1px solid rgba(14,165,233,.2);border-radius:.5rem;font-size:.7rem;color:var(--c-p500);line-height:1.6}
-        .domain-info code{background:rgba(255,255,255,.1);padding:1px 4px;border-radius:3px}
-        .ma{display:flex;gap:.75rem;margin-top:1.5rem}
-        .ma button{flex:1;padding:.75rem;border-radius:.625rem;font-size:.875rem;font-weight:600;transition:all .2s}
-        .bp{background:var(--grad);color:#fff}.bp:hover{box-shadow:0 4px 15px rgba(139,92,246,.3)}
-        .bs{background:var(--c-s600);color:#fff}.bs:hover{background:var(--c-s500)}
-        .bsw{background:var(--c-s200);color:var(--c-s700)}.bsw:hover{background:var(--c-s300)}
-        .mtip{text-align:center;font-size:.75rem;color:var(--c-s400);margin-top:1.25rem}
+        /* ══════════════════════════════════════
+           6. App Shell — Header
+           ══════════════════════════════════════ */
+        .header {
+            background: #fff; border-bottom: 1px solid var(--c-s200);
+            position: sticky; top: 0; z-index: 20;
+            box-shadow: 0 1px 2px rgba(0,0,0,.05); height: var(--hh);
+        }
+        .header__inner {
+            max-width: 1280px; margin: 0 auto; padding: 0 1rem;
+            display: flex; justify-content: space-between; align-items: center; height: 100%;
+        }
+        .header__left  { display: flex; align-items: center; gap: 1rem; }
+        .header__menu  { display: none; padding: .5rem; border-radius: .5rem; color: var(--c-s600); }
+        .header__menu:hover { background: var(--c-s100); }
+        .header__logo {
+            font-size: 1.5rem; font-weight: 900;
+            background: var(--grad); -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .header__right { display: flex; align-items: center; gap: .75rem; }
+        .header__user  {
+            display: flex; align-items: center; gap: .75rem;
+            padding: .5rem 1rem; background: var(--c-s50); border-radius: .625rem;
+        }
+        .header__avatar     { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; }
+        .header__avatar-fb  {
+            width: 32px; height: 32px; border-radius: 50%; background: var(--c-s200);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .header__avatar-fb svg { width: 16px; height: 16px; color: var(--c-s500); }
+        .header__name { font-size: .875rem; font-weight: 500; color: var(--c-s600); }
+        .header__logout {
+            display: flex; align-items: center; gap: .5rem;
+            padding: .5rem 1rem; font-size: .875rem; font-weight: 500;
+            color: var(--c-s500); border-radius: .625rem; transition: all .2s;
+        }
+        .header__logout:hover { background: var(--c-s100); color: var(--c-s800); }
+        .header__logout svg   { width: 16px; height: 16px; }
 
-        .ah{background:#fff;border-bottom:1px solid var(--c-s200);position:sticky;top:0;z-index:20;box-shadow:0 1px 2px rgba(0,0,0,.05);height:var(--hh)}
-        .ahi{max-width:1280px;margin:0 auto;padding:0 1rem;display:flex;justify-content:space-between;align-items:center;height:100%}
-        .ahl{display:flex;align-items:center;gap:1rem}
-        .ahm{display:none;padding:.5rem;border-radius:.5rem;color:var(--c-s600)}.ahm:hover{background:var(--c-s100)}
-        .ahlogo{font-size:1.5rem;font-weight:900;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-        .ahr{display:flex;align-items:center;gap:.75rem}
-        .ahu{display:flex;align-items:center;gap:.75rem;padding:.5rem 1rem;background:var(--c-s50);border-radius:.625rem}
-        .ahav{width:32px;height:32px;border-radius:50%;object-fit:cover}
-        .ahaf{width:32px;height:32px;border-radius:50%;background:var(--c-s200);display:flex;align-items:center;justify-content:center}
-        .ahaf svg{width:16px;height:16px;color:var(--c-s500)}
-        .ahun{font-size:.875rem;font-weight:500;color:var(--c-s600)}
-        .ahlo{display:flex;align-items:center;gap:.5rem;padding:.5rem 1rem;font-size:.875rem;font-weight:500;color:var(--c-s500);border-radius:.625rem;transition:all .2s}
-        .ahlo:hover{background:var(--c-s100);color:var(--c-s800)}.ahlo svg{width:16px;height:16px}
+        /* ══════════════════════════════════════
+           7. App Layout — Sidebar + Main
+           ══════════════════════════════════════ */
+        .app-layout { display: flex; }
 
-        .al{display:flex}
-        .sb{width:var(--sw);background:#fff;border-right:1px solid var(--c-s200);min-height:calc(100vh - var(--hh));padding:1rem;flex-shrink:0;transition:transform .3s cubic-bezier(.4,0,.2,1)}
-        .sbn{display:flex;flex-direction:column;gap:.25rem}
-        .sbl{width:100%;display:flex;align-items:center;gap:.75rem;padding:.75rem 1rem;border-radius:.625rem;font-size:.875rem;font-weight:500;color:var(--c-s500);transition:all .2s}
-        .sbl:hover{background:var(--c-s50);color:var(--c-s800)}
-        .sbl.on{background:var(--grad);color:#fff;box-shadow:0 4px 15px rgba(139,92,246,.3)}
-        .sbl svg{width:20px;height:20px;flex-shrink:0}
-        .sbo{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:29}
+        .sidebar {
+            width: var(--sw); background: #fff; border-right: 1px solid var(--c-s200);
+            min-height: calc(100vh - var(--hh)); padding: 1rem; flex-shrink: 0;
+            transition: transform .3s var(--ease-out);
+        }
+        .sidebar__nav { display: flex; flex-direction: column; gap: .25rem; }
+        .sidebar__link {
+            width: 100%; display: flex; align-items: center; gap: .75rem;
+            padding: .75rem 1rem; border-radius: .625rem;
+            font-size: .875rem; font-weight: 500; color: var(--c-s500); transition: all .2s;
+        }
+        .sidebar__link:hover { background: var(--c-s50); color: var(--c-s800); }
+        .sidebar__link--active {
+            background: var(--grad); color: #fff;
+            box-shadow: 0 4px 15px rgba(139,92,246,.3);
+        }
+        .sidebar__link svg { width: 20px; height: 20px; flex-shrink: 0; }
+        .sidebar__overlay {
+            display: none; position: fixed; inset: 0;
+            background: rgba(0,0,0,.4); z-index: 29;
+        }
 
-        .mn{flex:1;padding:2rem;max-width:1024px;min-width:0}
-        .mt2{font-size:1.875rem;font-weight:700;color:var(--c-s900);margin-bottom:2rem}
-        .mh{display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem}.mh .mt2{margin-bottom:0}
-        .cd{background:#fff;border-radius:.875rem;border:1px solid var(--c-s200);box-shadow:0 1px 2px rgba(0,0,0,.05);transition:all .3s cubic-bezier(.4,0,.2,1)}
-        .cd.hv:hover{transform:translateY(-3px);box-shadow:0 10px 15px -3px rgba(0,0,0,.08)}
-        .cb{padding:1.5rem}
-        .sg{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-bottom:2rem}
-        .sh{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
-        .sl2{font-size:1rem;font-weight:600;color:var(--c-s900)}
-        .si svg{width:32px;height:32px}
-        .sv{font-size:1.75rem;font-weight:700;color:var(--c-s900)}
-        .sd2{font-size:.875rem;color:var(--c-s400);margin-top:.25rem}
-        .sd{font-size:.875rem;color:var(--c-s500);line-height:1.8}.sd strong{color:var(--c-s900);font-weight:600}
-        .bg{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
-        .rt2{font-size:1.25rem;font-weight:700;color:var(--c-s900);margin-bottom:1rem}
-        .ri{padding:1rem;background:var(--c-s50);border-radius:.625rem;margin-bottom:.75rem;cursor:pointer;transition:background .2s}
-        .ri:last-child{margin-bottom:0}.ri:hover{background:var(--c-s100)}
-        .rit{font-size:.875rem;font-weight:600;color:var(--c-s900);margin-bottom:.25rem}
-        .rib{font-size:.75rem;color:var(--c-s500);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-        .rid{font-size:.75rem;color:var(--c-s400);margin-top:.5rem}
-        .qp{background:var(--grad);border-radius:.875rem;padding:1.5rem;color:#fff;box-shadow:0 8px 25px rgba(139,92,246,.35)}
-        .qp h3{font-size:1.25rem;font-weight:700;margin-bottom:1rem}
-        .qb{width:100%;display:flex;align-items:center;justify-content:space-between;padding:1rem;background:rgba(255,255,255,.12);border-radius:.625rem;color:#fff;font-size:.875rem;font-weight:500;backdrop-filter:blur(4px);margin-bottom:.75rem;transition:background .2s}
-        .qb:last-child{margin-bottom:0}.qb:hover{background:rgba(255,255,255,.22)}.qb svg{width:20px;height:20px}
-        .ba{display:inline-flex;align-items:center;gap:.5rem;padding:.75rem 1.25rem;background:var(--grad);border-radius:.625rem;color:#fff;font-size:.875rem;font-weight:600;box-shadow:0 4px 15px rgba(139,92,246,.3);transition:all .2s}
-        .ba:hover{transform:translateY(-1px);box-shadow:0 8px 25px rgba(139,92,246,.35)}.ba svg{width:18px;height:18px}
-        .nc{margin-bottom:1rem}
-        .nct{display:flex;justify-content:space-between;align-items:flex-start}
-        .nci{flex:1;min-width:0}
-        .ncti{font-size:1.25rem;font-weight:700;color:var(--c-s900);margin-bottom:.5rem}
-        .ncc{font-size:.875rem;color:var(--c-s600);white-space:pre-wrap;line-height:1.7}
-        .nca{display:flex;gap:.25rem;flex-shrink:0;margin-left:1rem}
-        .nca button{padding:.5rem;border-radius:.375rem;transition:all .2s}.nca button svg{width:16px;height:16px}
-        .ae{color:var(--c-p500)}.ae:hover{background:var(--c-p50)}
-        .ad2{color:var(--c-err500)}.ad2:hover{background:var(--c-err50)}
-        .ncm{display:flex;align-items:center;gap:1rem;font-size:.75rem;color:var(--c-s400);margin-top:1rem;padding-top:1rem;border-top:1px solid var(--c-s100)}
-        .ncm span{display:inline-flex;align-items:center;gap:.25rem}.ncm svg{width:14px;height:14px}
-        .em{text-align:center;padding:4rem 2rem}.em svg{width:64px;height:64px;color:var(--c-s300);margin:0 auto 1rem}
-        .em p{font-size:1.125rem;color:var(--c-s400)}.em .es{font-size:.875rem;color:var(--c-s300);margin-top:.5rem}
-        .atb{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:2rem}
-        .abt{padding:2.5rem;border-radius:.875rem;font-size:1.125rem;font-weight:700;text-align:center;transition:all .3s cubic-bezier(.4,0,.2,1)}
-        .abt svg{width:48px;height:48px;margin:0 auto .75rem;display:block}
-        .abt .as{font-size:.875rem;font-weight:400;margin-top:.5rem;opacity:.9}
-        .abt.ain{background:var(--grad-ok);color:#fff;box-shadow:0 8px 20px rgba(16,185,129,.3)}
-        .abt.ain:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 12px 28px rgba(16,185,129,.4)}
-        .abt.aout{background:var(--grad-err);color:#fff;box-shadow:0 8px 20px rgba(249,115,22,.3)}
-        .abt.aout:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 12px 28px rgba(249,115,22,.4)}
-        .abt:disabled{background:var(--c-s200);color:var(--c-s400);cursor:not-allowed;box-shadow:none}.abt:disabled:hover{transform:none}
-        .ath{padding:1.5rem;border-bottom:1px solid var(--c-s200);background:var(--c-s50);border-radius:.875rem .875rem 0 0}
-        .ath h3{font-size:1.25rem;font-weight:700;color:var(--c-s900)}
-        table{width:100%;border-collapse:collapse}table thead{background:var(--c-s50)}
-        table th{padding:.75rem 1.5rem;text-align:left;font-size:.75rem;font-weight:600;color:var(--c-s500);text-transform:uppercase;letter-spacing:.05em}
-        table td{padding:1rem 1.5rem;font-size:.875rem;color:var(--c-s800);border-top:1px solid var(--c-s100)}
-        table tbody tr{transition:background .15s}table tbody tr:hover{background:var(--c-s50)}
-        .bdg{display:inline-block;padding:.25rem .75rem;border-radius:9999px;font-size:.75rem;font-weight:600}
-        .bdg.bok{background:var(--c-ok100);color:var(--c-ok800)}.bdg.bwn{background:var(--c-w100);color:var(--c-w800)}
+        .main { flex: 1; padding: 2rem; max-width: 1024px; min-width: 0; }
 
-        @media(max-width:1024px){.sg{grid-template-columns:repeat(2,1fr)}.sg .cd:last-child{grid-column:span 2}}
-        @media(max-width:768px){
-            .ahm{display:block}.sb{position:fixed;top:var(--hh);left:0;bottom:0;z-index:30;transform:translateX(-100%)}
-            .sb.op{transform:translateX(0)}.sbo.vi{display:block}.mn{padding:1rem}
-            .sg{grid-template-columns:1fr}.sg .cd:last-child{grid-column:span 1}
-            .bg{grid-template-columns:1fr}.atb{grid-template-columns:1fr}.lt{display:none}
-            .lb h1{font-size:2.25rem}.lc{padding:1.5rem}
+        /* ══════════════════════════════════════
+           8. Page Titles & Cards
+           ══════════════════════════════════════ */
+        .page-title {
+            font-size: 1.875rem; font-weight: 700; color: var(--c-s900); margin-bottom: 2rem;
+        }
+        .page-header {
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;
+        }
+        .page-header .page-title { margin-bottom: 0; }
+
+        .card {
+            background: #fff; border-radius: .875rem;
+            border: 1px solid var(--c-s200); box-shadow: 0 1px 2px rgba(0,0,0,.05);
+            transition: all .3s var(--ease-out);
+        }
+        .card--hover:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,.08);
+        }
+        .card__body { padding: 1.5rem; }
+
+        /* ══════════════════════════════════════
+           9. Dashboard
+           ══════════════════════════════════════ */
+        .stats-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem; margin-bottom: 2rem;
+        }
+        .stat__header {
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;
+        }
+        .stat__label  { font-size: 1rem; font-weight: 600; color: var(--c-s900); }
+        .stat__icon svg { width: 32px; height: 32px; }
+        .stat__value  { font-size: 1.75rem; font-weight: 700; color: var(--c-s900); }
+        .stat__desc   { font-size: .875rem; color: var(--c-s400); margin-top: .25rem; }
+        .stat__text   { font-size: .875rem; color: var(--c-s500); line-height: 1.8; }
+        .stat__text strong { color: var(--c-s900); font-weight: 600; }
+
+        .bottom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+
+        .recent-title { font-size: 1.25rem; font-weight: 700; color: var(--c-s900); margin-bottom: 1rem; }
+        .recent-item {
+            padding: 1rem; background: var(--c-s50); border-radius: .625rem;
+            margin-bottom: .75rem; cursor: pointer; transition: background .2s;
+        }
+        .recent-item:last-child { margin-bottom: 0; }
+        .recent-item:hover { background: var(--c-s100); }
+        .recent-item__title { font-size: .875rem; font-weight: 600; color: var(--c-s900); margin-bottom: .25rem; }
+        .recent-item__body {
+            font-size: .75rem; color: var(--c-s500);
+            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+        }
+        .recent-item__date { font-size: .75rem; color: var(--c-s400); margin-top: .5rem; }
+
+        .quick-panel {
+            background: var(--grad); border-radius: .875rem; padding: 1.5rem;
+            color: #fff; box-shadow: 0 8px 25px rgba(139,92,246,.35);
+        }
+        .quick-panel h3 { font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem; }
+        .quick-btn {
+            width: 100%; display: flex; align-items: center; justify-content: space-between;
+            padding: 1rem; background: rgba(255,255,255,.12); border-radius: .625rem;
+            color: #fff; font-size: .875rem; font-weight: 500;
+            backdrop-filter: blur(4px); margin-bottom: .75rem; transition: background .2s;
+        }
+        .quick-btn:last-child { margin-bottom: 0; }
+        .quick-btn:hover { background: rgba(255,255,255,.22); }
+        .quick-btn svg { width: 20px; height: 20px; }
+
+        /* ══════════════════════════════════════
+           10. Notices
+           ══════════════════════════════════════ */
+        .btn-add {
+            display: inline-flex; align-items: center; gap: .5rem;
+            padding: .75rem 1.25rem; background: var(--grad);
+            border-radius: .625rem; color: #fff; font-size: .875rem; font-weight: 600;
+            box-shadow: 0 4px 15px rgba(139,92,246,.3); transition: all .2s;
+        }
+        .btn-add:hover { transform: translateY(-1px); box-shadow: 0 8px 25px rgba(139,92,246,.35); }
+        .btn-add svg { width: 18px; height: 18px; }
+
+        .notice { margin-bottom: 1rem; }
+        .notice__top { display: flex; justify-content: space-between; align-items: flex-start; }
+        .notice__info { flex: 1; min-width: 0; }
+        .notice__title { font-size: 1.25rem; font-weight: 700; color: var(--c-s900); margin-bottom: .5rem; }
+        .notice__content { font-size: .875rem; color: var(--c-s600); white-space: pre-wrap; line-height: 1.7; }
+        .notice__actions { display: flex; gap: .25rem; flex-shrink: 0; margin-left: 1rem; }
+        .notice__actions button { padding: .5rem; border-radius: .375rem; transition: all .2s; }
+        .notice__actions button svg { width: 16px; height: 16px; }
+        .btn-edit { color: var(--c-p500); }  .btn-edit:hover { background: var(--c-p50); }
+        .btn-del  { color: var(--c-err500); } .btn-del:hover  { background: var(--c-err50); }
+        .notice__meta {
+            display: flex; align-items: center; gap: 1rem;
+            font-size: .75rem; color: var(--c-s400);
+            margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--c-s100);
+        }
+        .notice__meta span { display: inline-flex; align-items: center; gap: .25rem; }
+        .notice__meta svg  { width: 14px; height: 14px; }
+
+        /* ══════════════════════════════════════
+           11. Attendance
+           ══════════════════════════════════════ */
+        .att-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem; }
+        .att-btn {
+            padding: 2.5rem; border-radius: .875rem; font-size: 1.125rem; font-weight: 700;
+            text-align: center; transition: all .3s var(--ease-out);
+        }
+        .att-btn svg { width: 48px; height: 48px; margin: 0 auto .75rem; display: block; }
+        .att-btn__sub { font-size: .875rem; font-weight: 400; margin-top: .5rem; opacity: .9; }
+        .att-btn--in {
+            background: var(--grad-ok); color: #fff;
+            box-shadow: 0 8px 20px rgba(16,185,129,.3);
+        }
+        .att-btn--in:hover:not(:disabled) {
+            transform: translateY(-2px); box-shadow: 0 12px 28px rgba(16,185,129,.4);
+        }
+        .att-btn--out {
+            background: var(--grad-err); color: #fff;
+            box-shadow: 0 8px 20px rgba(249,115,22,.3);
+        }
+        .att-btn--out:hover:not(:disabled) {
+            transform: translateY(-2px); box-shadow: 0 12px 28px rgba(249,115,22,.4);
+        }
+        .att-btn:disabled {
+            background: var(--c-s200); color: var(--c-s400);
+            cursor: not-allowed; box-shadow: none;
+        }
+        .att-btn:disabled:hover { transform: none; }
+
+        .att-table-header {
+            padding: 1.5rem; border-bottom: 1px solid var(--c-s200);
+            background: var(--c-s50); border-radius: .875rem .875rem 0 0;
+        }
+        .att-table-header h3 { font-size: 1.25rem; font-weight: 700; color: var(--c-s900); }
+
+        table { width: 100%; border-collapse: collapse; }
+        table thead { background: var(--c-s50); }
+        table th {
+            padding: .75rem 1.5rem; text-align: left;
+            font-size: .75rem; font-weight: 600; color: var(--c-s500);
+            text-transform: uppercase; letter-spacing: .05em;
+        }
+        table td {
+            padding: 1rem 1.5rem; font-size: .875rem;
+            color: var(--c-s800); border-top: 1px solid var(--c-s100);
+        }
+        table tbody tr { transition: background .15s; }
+        table tbody tr:hover { background: var(--c-s50); }
+
+        .badge {
+            display: inline-block; padding: .25rem .75rem;
+            border-radius: 9999px; font-size: .75rem; font-weight: 600;
+        }
+        .badge--ok { background: var(--c-ok100); color: var(--c-ok800); }
+        .badge--warn { background: var(--c-w100); color: var(--c-w800); }
+
+        /* ══════════════════════════════════════
+           12. Empty State
+           ══════════════════════════════════════ */
+        .empty { text-align: center; padding: 4rem 2rem; }
+        .empty svg { width: 64px; height: 64px; color: var(--c-s300); margin: 0 auto 1rem; }
+        .empty p { font-size: 1.125rem; color: var(--c-s400); }
+        .empty .empty__sub { font-size: .875rem; color: var(--c-s300); margin-top: .5rem; }
+
+        /* ══════════════════════════════════════
+           13. Modals
+           ══════════════════════════════════════ */
+        .modal {
+            position: fixed; inset: 0; background: rgba(0,0,0,.6);
+            display: flex; align-items: center; justify-content: center;
+            padding: 1rem; z-index: 50; animation: fadeIn .2s ease-out;
+        }
+        .modal__dialog {
+            width: 100%; border-radius: 1.25rem; padding: 2.5rem;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,.25);
+            animation: slideUp .3s ease-out;
+        }
+        .modal__dialog--white { max-width: 640px; background: #fff; color: var(--c-s900); }
+        .modal__dialog h3 { font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem; }
+
+        .form-group { margin-bottom: 1rem; }
+        .form-group > label {
+            display: block; font-size: .875rem; font-weight: 500;
+            color: var(--c-s700); margin-bottom: .5rem;
+        }
+        .form-input {
+            width: 100%; padding: .75rem 1rem;
+            background: #fff; border: 1px solid var(--c-s300);
+            border-radius: .625rem; font-size: .875rem; color: var(--c-s900);
+            transition: all .2s;
+        }
+        .form-input::placeholder { color: var(--c-s400); }
+        .form-input:focus { border-color: var(--c-p500); box-shadow: 0 0 0 3px rgba(14,165,233,.15); }
+        textarea.form-input { resize: vertical; min-height: 180px; line-height: 1.7; }
+
+        .modal__actions { display: flex; gap: .75rem; margin-top: 1.5rem; }
+        .modal__actions button {
+            flex: 1; padding: .75rem; border-radius: .625rem;
+            font-size: .875rem; font-weight: 600; transition: all .2s;
+        }
+        .btn-primary  { background: var(--grad); color: #fff; }
+        .btn-primary:hover { box-shadow: 0 4px 15px rgba(139,92,246,.3); }
+        .btn-secondary { background: var(--c-s200); color: var(--c-s700); }
+        .btn-secondary:hover { background: var(--c-s300); }
+        .btn-danger { background: var(--c-err500); color: #fff; }
+
+        /* ══════════════════════════════════════
+           14. Responsive
+           ══════════════════════════════════════ */
+        @media (max-width: 1024px) {
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .stats-grid .card:last-child { grid-column: span 2; }
+        }
+        @media (max-width: 768px) {
+            .header__menu { display: block; }
+            .sidebar {
+                position: fixed; top: var(--hh); left: 0; bottom: 0;
+                z-index: 30; transform: translateX(-100%);
+            }
+            .sidebar--open { transform: translateX(0); }
+            .sidebar__overlay--visible { display: block; }
+            .main { padding: 1rem; }
+            .stats-grid { grid-template-columns: 1fr; }
+            .stats-grid .card:last-child { grid-column: span 1; }
+            .bottom-grid { grid-template-columns: 1fr; }
+            .att-buttons { grid-template-columns: 1fr; }
+            .header__logout-text { display: none; }
+            .login__brand h1 { font-size: 2.25rem; }
+            .login__card { padding: 1.5rem; }
         }
     </style>
 </head>
 <body>
-<div id="tc" class="tc" aria-live="polite"></div>
 
-<!-- LOGIN -->
-<div id="pgLogin" class="pg-login">
-<div class="lw asu">
-    <div class="lb"><h1 class="logo">WorkHub</h1><p>기업을 위한 스마트 그룹웨어</p></div>
-    <div class="lc">
-        <h2>로그인</h2>
-        <button id="gBtn" class="gbtn" onclick="App.auth.loginGoogle()">
-            <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-            <span id="gBtnTxt">Google 계정으로 로그인</span>
-        </button>
-        <div id="errBox" class="err-box"></div>
-        <p id="fbStat" class="fbs" style="color:var(--c-s400)" onclick="App.ui.showFbModal()">⚙️ Firebase 설정 — 클릭하여 설정</p>
-        <p class="lfooter">Google 계정으로 안전하게 로그인하세요</p>
-    </div>
-</div>
-</div>
+<!-- Toast Container -->
+<div id="toastContainer" class="toast-container" aria-live="polite"></div>
 
-<!-- FIREBASE MODAL -->
-<div id="fbModal" class="mb" hidden>
-<div class="md mdg asu">
-    <h3>Firebase 프로젝트 설정</h3>
-    <p class="desc">Google 로그인을 사용하려면 Firebase 프로젝트와 Google Cloud OAuth Client ID가 필요합니다.</p>
-    <div class="guide">
-        <p class="gt">📋 설정 가이드:</p>
-        <ol>
-            <li><a href="https://console.firebase.google.com/" target="_blank">Firebase Console</a> → <strong>프로젝트 추가</strong></li>
-            <li><strong>Authentication → 시작하기</strong> → Sign-in method → <strong>Google 사용 설정</strong></li>
-            <li>프로젝트 설정(⚙️) → <strong>웹 앱 추가</strong>(<code>&lt;/&gt;</code>) → config 값 복사</li>
-            <li><a href="https://console.cloud.google.com/apis/credentials" target="_blank">Google Cloud Console</a> → 사용자 인증 정보 → <strong>OAuth 2.0 클라이언트 ID</strong> 복사</li>
-        </ol>
-    </div>
-    <div class="domain-info">
-        📌 Google Cloud Console → OAuth 클라이언트 → <strong>승인된 JavaScript 원본</strong>에<br>
-        현재 주소 <code id="curOrigin"></code> 을(를) 반드시 추가하세요!
-    </div>
-    <div class="cfs" style="margin-top:1rem">
-        <div><label>Firebase API Key</label><input type="text" id="cfgKey" placeholder="AIzaSy..."></div>
-        <div><label>Firebase Auth Domain</label><input type="text" id="cfgDomain" placeholder="my-app.firebaseapp.com"></div>
-        <div><label>Firebase Project ID</label><input type="text" id="cfgProject" placeholder="my-app-12345"></div>
-        <div style="margin-top:.5rem;padding-top:.75rem;border-top:1px solid var(--c-s600)">
-            <label>Google OAuth Client ID <span style="color:var(--c-err500)">*필수</span></label>
-            <input type="text" id="cfgClientId" placeholder="123456789-abc.apps.googleusercontent.com">
+<!-- ════════════════════════════════════════
+     LOGIN PAGE
+     ════════════════════════════════════════ -->
+<div id="pageLogin" class="login">
+    <div class="login__wrapper anim-slide-up">
+        <div class="login__brand">
+            <h1 class="logo">WorkHub</h1>
+            <p>기업을 위한 스마트 그룹웨어</p>
+        </div>
+        <div class="login__card">
+            <h2>로그인</h2>
+
+            <button id="btnGoogle" class="btn-google" onclick="App.auth.loginGoogle()">
+                <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+                <span id="btnGoogleText">Google 계정으로 로그인</span>
+            </button>
+
+            <div id="loginError" class="login__error"></div>
+            <p class="login__footer">Google 계정으로 안전하게 로그인하세요</p>
         </div>
     </div>
-    <div class="ma"><button class="bp" onclick="App.fb.save()">설정 완료</button><button class="bs" onclick="App.ui.hideFbModal()">취소</button></div>
-</div>
 </div>
 
-<!-- APP -->
-<div id="app" hidden>
-<header class="ah"><div class="ahi">
-    <div class="ahl">
-        <button class="ahm" onclick="App.ui.toggleSb()" aria-label="메뉴"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
-        <span class="ahlogo logo">WorkHub</span>
+<!-- ════════════════════════════════════════
+     APP SHELL
+     ════════════════════════════════════════ -->
+<div id="appShell" hidden>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header__inner">
+            <div class="header__left">
+                <button class="header__menu" onclick="App.ui.toggleSidebar()" aria-label="메뉴">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                </button>
+                <span class="header__logo logo">WorkHub</span>
+            </div>
+            <div class="header__right">
+                <div class="header__user">
+                    <span id="headerAvatar"></span>
+                    <span id="headerName" class="header__name"></span>
+                </div>
+                <button class="header__logout" onclick="App.auth.logout()">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                    <span class="header__logout-text">로그아웃</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Layout -->
+    <div class="app-layout">
+        <div id="sidebarOverlay" class="sidebar__overlay" onclick="App.ui.closeSidebar()"></div>
+
+        <!-- Sidebar -->
+        <aside id="sidebar" class="sidebar">
+            <nav class="sidebar__nav">
+                <button class="sidebar__link sidebar__link--active" data-page="dashboard" onclick="App.router.go('dashboard')">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                    <span>대시보드</span>
+                </button>
+                <button class="sidebar__link" data-page="notices" onclick="App.router.go('notices')">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+                    <span>공지사항</span>
+                </button>
+                <button class="sidebar__link" data-page="attendance" onclick="App.router.go('attendance')">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    <span>근태관리</span>
+                </button>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main">
+
+            <!-- Dashboard -->
+            <section id="pageDashboard" class="anim-slide-right">
+                <h2 class="page-title">대시보드</h2>
+                <div class="stats-grid">
+                    <div class="card card--hover"><div class="card__body">
+                        <div class="stat__header">
+                            <h3 class="stat__label">오늘의 근태</h3>
+                            <span class="stat__icon" style="color:var(--c-p500)"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
+                        </div>
+                        <div id="dashAttendance" class="stat__text"><span style="color:var(--c-s400)">아직 출근 기록이 없습니다</span></div>
+                    </div></div>
+
+                    <div class="card card--hover"><div class="card__body">
+                        <div class="stat__header">
+                            <h3 class="stat__label">전체 공지사항</h3>
+                            <span class="stat__icon" style="color:var(--c-a500)"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg></span>
+                        </div>
+                        <p id="dashNoticeCount" class="stat__value">0</p>
+                        <p class="stat__desc">등록된 공지</p>
+                    </div></div>
+
+                    <div class="card card--hover"><div class="card__body">
+                        <div class="stat__header">
+                            <h3 class="stat__label">이번 달 근무</h3>
+                            <span class="stat__icon" style="color:var(--c-ok500)"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
+                        </div>
+                        <p id="dashMonthDays" class="stat__value">0일</p>
+                        <p class="stat__desc">출근 일수</p>
+                    </div></div>
+                </div>
+
+                <div class="bottom-grid">
+                    <div class="card"><div class="card__body">
+                        <h3 class="recent-title">최근 공지사항</h3>
+                        <div id="dashRecentNotices">
+                            <div style="padding:2rem;text-align:center;color:var(--c-s400);font-size:.875rem">등록된 공지사항이 없습니다</div>
+                        </div>
+                    </div></div>
+
+                    <div class="quick-panel">
+                        <h3>빠른 시작</h3>
+                        <button class="quick-btn" onclick="App.router.go('notices')">
+                            <span>공지사항 확인하기</span>
+                            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+                        </button>
+                        <button class="quick-btn" onclick="App.router.go('attendance')">
+                            <span>근태 관리하기</span>
+                            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Notices -->
+            <section id="pageNotices" hidden>
+                <div class="page-header">
+                    <h2 class="page-title">공지사항</h2>
+                    <button class="btn-add" onclick="App.notices.open()">
+                        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        <span>새 공지사항</span>
+                    </button>
+                </div>
+                <div id="noticeList"></div>
+            </section>
+
+            <!-- Attendance -->
+            <section id="pageAttendance" hidden>
+                <h2 class="page-title">근태관리</h2>
+                <div class="att-buttons">
+                    <button id="btnCheckIn" class="att-btn att-btn--in" onclick="App.attendance.checkIn()">
+                        <svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        <div>출근하기</div>
+                        <div id="statusIn" class="att-btn__sub"></div>
+                    </button>
+                    <button id="btnCheckOut" class="att-btn att-btn--out" disabled onclick="App.attendance.checkOut()">
+                        <svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        <div>퇴근하기</div>
+                        <div id="statusOut" class="att-btn__sub"></div>
+                    </button>
+                </div>
+                <div class="card">
+                    <div class="att-table-header"><h3>근태 기록</h3></div>
+                    <div id="attTable"></div>
+                </div>
+            </section>
+        </main>
     </div>
-    <div class="ahr">
-        <div class="ahu"><span id="hAv"></span><span id="hNm" class="ahun"></span></div>
-        <button class="ahlo" onclick="App.auth.logout()"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg><span class="lt">로그아웃</span></button>
+</div>
+
+<!-- ════════════════════════════════════════
+     NOTICE MODAL
+     ════════════════════════════════════════ -->
+<div id="noticeModal" class="modal" hidden>
+    <div class="modal__dialog modal__dialog--white anim-slide-up">
+        <h3 id="noticeModalTitle" style="color:var(--c-s900)">새 공지사항</h3>
+        <div class="form-group">
+            <label for="noticeTitle">제목</label>
+            <input class="form-input" type="text" id="noticeTitle" placeholder="제목">
+        </div>
+        <div class="form-group">
+            <label for="noticeContent">내용</label>
+            <textarea class="form-input" id="noticeContent" rows="8" placeholder="내용"></textarea>
+        </div>
+        <div class="modal__actions">
+            <button id="noticeModalSave" class="btn-primary" onclick="App.notices.save()">등록</button>
+            <button class="btn-secondary" onclick="App.notices.close()">취소</button>
+        </div>
     </div>
-</div></header>
-<div class="al">
-    <div id="sbOv" class="sbo" onclick="App.ui.closeSb()"></div>
-    <aside id="sb2" class="sb"><nav class="sbn">
-        <button class="sbl on" data-p="dashboard" onclick="App.rt.go('dashboard')"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>대시보드</span></button>
-        <button class="sbl" data-p="notices" onclick="App.rt.go('notices')"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg><span>공지사항</span></button>
-        <button class="sbl" data-p="attendance" onclick="App.rt.go('attendance')"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>근태관리</span></button>
-    </nav></aside>
-    <main class="mn">
-        <section id="pgDash" class="asr">
-            <h2 class="mt2">대시보드</h2>
-            <div class="sg">
-                <div class="cd hv"><div class="cb"><div class="sh"><h3 class="sl2">오늘의 근태</h3><span class="si" style="color:var(--c-p500)"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span></div><div id="dAtt" class="sd"><span style="color:var(--c-s400)">아직 출근 기록이 없습니다</span></div></div></div>
-                <div class="cd hv"><div class="cb"><div class="sh"><h3 class="sl2">전체 공지사항</h3><span class="si" style="color:var(--c-a500)"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg></span></div><p id="dNC" class="sv">0</p><p class="sd2">등록된 공지</p></div></div>
-                <div class="cd hv"><div class="cb"><div class="sh"><h3 class="sl2">이번 달 근무</h3><span class="si" style="color:var(--c-ok500)"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span></div><p id="dMD" class="sv">0일</p><p class="sd2">출근 일수</p></div></div>
-            </div>
-            <div class="bg">
-                <div class="cd"><div class="cb"><h3 class="rt2">최근 공지사항</h3><div id="dRN"><div style="padding:2rem;text-align:center;color:var(--c-s400);font-size:.875rem">등록된 공지사항이 없습니다</div></div></div></div>
-                <div class="qp"><h3>빠른 시작</h3><button class="qb" onclick="App.rt.go('notices')"><span>공지사항 확인하기</span><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button><button class="qb" onclick="App.rt.go('attendance')"><span>근태 관리하기</span><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button></div>
-            </div>
-        </section>
-        <section id="pgNot" hidden><div class="mh"><h2 class="mt2">공지사항</h2><button class="ba" onclick="App.nt.open()"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span>새 공지사항</span></button></div><div id="nList"></div></section>
-        <section id="pgAtt" hidden>
-            <h2 class="mt2">근태관리</h2>
-            <div class="atb">
-                <button id="bIn" class="abt ain" onclick="App.at.checkIn()"><svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><div>출근하기</div><div id="sIn" class="as"></div></button>
-                <button id="bOut" class="abt aout" disabled onclick="App.at.checkOut()"><svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><div>퇴근하기</div><div id="sOut" class="as"></div></button>
-            </div>
-            <div class="cd"><div class="ath"><h3>근태 기록</h3></div><div id="aTab"></div></div>
-        </section>
-    </main>
-</div>
 </div>
 
-<div id="nModal" class="mb" hidden><div class="md mdw asu">
-    <h3 id="nmT" style="color:var(--c-s900)">새 공지사항</h3>
-    <div class="ff"><label for="nTi" style="color:var(--c-s700)">제목</label><input class="fi2 fi2w" type="text" id="nTi" placeholder="제목"></div>
-    <div class="ff"><label for="nCo" style="color:var(--c-s700)">내용</label><textarea class="fi2 fi2w" id="nCo" rows="8" placeholder="내용"></textarea></div>
-    <div class="ma"><button id="nmS" class="bp" onclick="App.nt.save()">등록</button><button class="bsw" onclick="App.nt.close()">취소</button></div>
-</div></div>
+<!-- ════════════════════════════════════════
+     CONFIRM MODAL
+     ════════════════════════════════════════ -->
+<div id="confirmModal" class="modal" hidden>
+    <div class="modal__dialog modal__dialog--white anim-slide-up" style="max-width:400px;padding:2rem">
+        <h3 style="color:var(--c-s900);font-size:1.125rem" id="confirmMessage"></h3>
+        <div class="modal__actions">
+            <button class="btn-danger" id="confirmYes">삭제</button>
+            <button class="btn-secondary" onclick="App.ui.hideConfirm()">취소</button>
+        </div>
+    </div>
+</div>
 
-<div id="cfmD" class="mb" hidden><div class="md mdw asu" style="max-width:400px;padding:2rem">
-    <h3 style="color:var(--c-s900);font-size:1.125rem" id="cfmM"></h3>
-    <div class="ma"><button class="bp" id="cfmY" style="background:var(--c-err500)">삭제</button><button class="bsw" onclick="App.ui.hideCfm()">취소</button></div>
-</div></div>
-
+<!-- ════════════════════════════════════════
+     APPLICATION SCRIPT
+     ════════════════════════════════════════ -->
 <script>
-const App=(()=>{
-'use strict';
-const $=id=>document.getElementById(id);
+const App = (() => {
+    'use strict';
 
-const U={
-    fmtD(s){try{return new Date(s).toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric'})}catch{return''}},
-    fmtDT(s){try{return new Date(s).toLocaleString('ko-KR')}catch{return''}},
-    fmtT(){return new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false})},
-    sameDay(a,b){return a.getFullYear()===b.getFullYear()&&a.getMonth()===b.getMonth()&&a.getDate()===b.getDate()},
-    curMonth(s){const d=new Date(s),n=new Date();return d.getMonth()===n.getMonth()&&d.getFullYear()===n.getFullYear()},
-    uid(){return Date.now().toString(36)+Math.random().toString(36).substr(2,8)},
-    esc(s){if(!s)return'';const d=document.createElement('div');d.textContent=s;return d.innerHTML},
-    trunc(s,m=80){return(!s||s.length<=m)?s||'':s.substring(0,m)+'…'}
-};
+    /* ──────────────────────────────────────
+       0. Constants & Configuration
+       ────────────────────────────────────── */
+    const FIREBASE_CONFIG = Object.freeze({
+        apiKey:     'AIzaSyDcHSt46CHlu_LZYnNUU7xwIlMY7xE8KdU',
+        authDomain: 'workhub2.firebaseapp.com',
+        projectId:  'workhub2'
+    });
 
-const LS={_p:'wh_',get(k){try{const v=localStorage.getItem(this._p+k);return v?JSON.parse(v):null}catch{return null}},set(k,v){try{localStorage.setItem(this._p+k,JSON.stringify(v))}catch{}},rm(k){try{localStorage.removeItem(this._p+k)}catch{}}};
+    const GOOGLE_CLIENT_ID = '535238333900-2mtltlntbsan8381tvu77eahkonl9tmt.apps.googleusercontent.com';
 
-const S={user:null,pg:'dashboard',notices:[],att:[],today:null,editId:null,sbOpen:false,fbReady:false,clientId:''};
+    const GIS_SCRIPT_URL = 'https://accounts.google.com/gsi/client';
+    const GIS_LOAD_TIMEOUT_MS = 10000;
+    const TOAST_DURATION_MS   = 3500;
+    const TOAST_ERROR_MS      = 5000;
+    const LOCAL_PREFIX         = 'wh_';
 
-const T={init(){this._c=$('tc')},show(m,t='inf',d=3500){const e=document.createElement('div');e.className=`tt ${t}`;e.textContent=m;this._c.appendChild(e);setTimeout(()=>{e.classList.add('rm');e.addEventListener('animationend',()=>e.remove())},d)},ok(m){this.show(m,'ok')},er(m){this.show(m,'er',5000)},inf(m){this.show(m,'inf')}};
+    /* ──────────────────────────────────────
+       1. Utility Functions
+       ────────────────────────────────────── */
+    const $ = (id) => document.getElementById(id);
 
-const FB={
-    _auth:null,
-    load(){
-        const c=LS.get('fb_cfg2');
-        if(c&&c.apiKey&&c.authDomain&&c.projectId&&c.clientId){
-            S.clientId=c.clientId;
-            return this._init(c);
+    const utils = {
+        formatDate(iso) {
+            try { return new Date(iso).toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' }); }
+            catch { return ''; }
+        },
+        formatDateTime(iso) {
+            try { return new Date(iso).toLocaleString('ko-KR'); }
+            catch { return ''; }
+        },
+        formatTime() {
+            return new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+        },
+        isSameDay(a, b) {
+            return a.getFullYear() === b.getFullYear() &&
+                   a.getMonth()    === b.getMonth() &&
+                   a.getDate()     === b.getDate();
+        },
+        isCurrentMonth(iso) {
+            const d = new Date(iso), n = new Date();
+            return d.getMonth() === n.getMonth() && d.getFullYear() === n.getFullYear();
+        },
+        uid() {
+            return Date.now().toString(36) + Math.random().toString(36).substr(2, 8);
+        },
+        escapeHtml(str) {
+            if (!str) return '';
+            const el = document.createElement('div');
+            el.textContent = str;
+            return el.innerHTML;
+        },
+        truncate(str, max = 80) {
+            return (!str || str.length <= max) ? (str || '') : str.substring(0, max) + '…';
         }
-        return false;
-    },
-    save(){
-        const apiKey=$('cfgKey').value.trim(),
-              authDomain=$('cfgDomain').value.trim(),
-              projectId=$('cfgProject').value.trim(),
-              clientId=$('cfgClientId').value.trim();
-        if(!apiKey||!authDomain||!projectId||!clientId){T.er('모든 필드를 입력해주세요.');return}
-        const c={apiKey,authDomain,projectId,clientId};
-        LS.set('fb_cfg2',c);
-        S.clientId=clientId;
-        if(this._init(c)){UI.hideFbModal();T.ok('설정 완료! Google 로그인을 사용할 수 있습니다.')}
-    },
-    _init(c){
-        try{
-            try{firebase.app().delete().catch(()=>{})}catch{}
-            firebase.initializeApp({apiKey:c.apiKey,authDomain:c.authDomain,projectId:c.projectId});
-            this._auth=firebase.auth();
-            this._auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
-            this._auth.onAuthStateChanged(user=>{
-                if(user&&!S.user){
-                    S.user={name:user.displayName||user.email.split('@')[0],email:user.email,picture:user.photoURL||null,uid:user.uid,provider:'google'};
-                    LS.set('sess',S.user);
-                    AUTH._onLogin();
+    };
+
+    /* ──────────────────────────────────────
+       2. Local Storage Wrapper
+       ────────────────────────────────────── */
+    const storage = {
+        get(key) {
+            try { const v = localStorage.getItem(LOCAL_PREFIX + key); return v ? JSON.parse(v) : null; }
+            catch { return null; }
+        },
+        set(key, value) {
+            try { localStorage.setItem(LOCAL_PREFIX + key, JSON.stringify(value)); }
+            catch { /* quota exceeded — silent fail */ }
+        },
+        remove(key) {
+            try { localStorage.removeItem(LOCAL_PREFIX + key); }
+            catch { /* silent */ }
+        }
+    };
+
+    /* ──────────────────────────────────────
+       3. Application State (Single Source of Truth)
+       ────────────────────────────────────── */
+    const state = {
+        user:       null,
+        page:       'dashboard',
+        notices:    [],
+        attendance: [],
+        today:      null,
+        editId:     null,
+        sidebarOpen: false,
+        firebaseReady: false,
+        gisReady:      false,
+        authListenerAttached: false,
+        loginInProgress:      false
+    };
+
+    /* ──────────────────────────────────────
+       4. Toast Notification System
+       ────────────────────────────────────── */
+    const toast = {
+        _container: null,
+
+        init() { this._container = $('toastContainer'); },
+
+        _show(message, type = 'info', duration = TOAST_DURATION_MS) {
+            const el = document.createElement('div');
+            el.className = `toast toast--${type}`;
+            el.textContent = message;
+            this._container.appendChild(el);
+            setTimeout(() => {
+                el.classList.add('toast--removing');
+                el.addEventListener('animationend', () => el.remove());
+            }, duration);
+        },
+        success(msg) { this._show(msg, 'success'); },
+        error(msg)   { this._show(msg, 'error', TOAST_ERROR_MS); },
+        info(msg)    { this._show(msg, 'info'); }
+    };
+
+    /* ──────────────────────────────────────
+       5. Google Identity Services Loader
+          — 스크립트 로드를 Promise로 래핑하여
+            로드 완료 전 로그인 시도 시 안전하게 대기
+       ────────────────────────────────────── */
+    const gis = {
+        _loadPromise: null,
+
+        load() {
+            if (this._loadPromise) return this._loadPromise;
+
+            this._loadPromise = new Promise((resolve, reject) => {
+                // 이미 로드됨
+                if (window.google?.accounts?.id) {
+                    state.gisReady = true;
+                    resolve();
+                    return;
+                }
+
+                // 이미 script 태그가 있는지 확인
+                const existing = document.querySelector(`script[src="${GIS_SCRIPT_URL}"]`);
+                if (existing) {
+                    // 로드 완료 대기
+                    existing.addEventListener('load', () => { state.gisReady = true; resolve(); });
+                    existing.addEventListener('error', () => reject(new Error('GIS script load failed')));
+                } else {
+                    const script = document.createElement('script');
+                    script.src = GIS_SCRIPT_URL;
+                    script.async = true;
+                    script.defer = true;
+                    script.onload  = () => { state.gisReady = true; resolve(); };
+                    script.onerror = () => reject(new Error('GIS script load failed'));
+                    document.head.appendChild(script);
+                }
+
+                // Timeout safety
+                setTimeout(() => reject(new Error('GIS load timeout')), GIS_LOAD_TIMEOUT_MS);
+            });
+
+            return this._loadPromise;
+        }
+    };
+
+    /* ──────────────────────────────────────
+       6. Firebase Module
+          — 초기화 + Auth 상태 리스너
+          — onAuthStateChanged는 반드시 한 번만 등록
+       ────────────────────────────────────── */
+    const fb = {
+        _auth: null,
+        _initPromise: null,
+
+        init() {
+            if (this._initPromise) return this._initPromise;
+
+            this._initPromise = new Promise((resolve) => {
+                try {
+                    firebase.initializeApp(FIREBASE_CONFIG);
+                    this._auth = firebase.auth();
+                    this._auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+
+                    // onAuthStateChanged — 최초 1회만 등록
+                    if (!state.authListenerAttached) {
+                        state.authListenerAttached = true;
+                        this._auth.onAuthStateChanged((firebaseUser) => {
+                            this._handleAuthChange(firebaseUser);
+                        });
+                    }
+
+                    state.firebaseReady = true;
+                    console.log('[Firebase] Initialized');
+                    resolve(true);
+                } catch (err) {
+                    console.error('[Firebase] Init failed:', err);
+                    toast.error('시스템 초기화 실패. 새로고침 해주세요.');
+                    resolve(false);
                 }
             });
-            S.fbReady=true;
-            UI.updateFbStat(true);
-            return true;
-        }catch(e){
-            console.error('[FB]',e);
-            T.er('Firebase 초기화 실패 — 설정을 확인해주세요.');
-            S.fbReady=false;
-            UI.updateFbStat(false);
-            return false;
-        }
-    }
-};
 
-const AUTH={
-    loginGoogle(){
-        if(!S.fbReady||!S.clientId){T.inf('먼저 Firebase 설정이 필요합니다.');UI.showFbModal();return}
-        const btn=$('gBtn'),txt=$('gBtnTxt');
-        btn.disabled=true;
-        txt.innerHTML='<span class="spinner"></span> Google 로그인 준비 중...';
-        UI.hideErrBox();
-        try{
-            if(!window.google||!window.google.accounts){
-                UI.showErrBox('<strong>⚠️ Google 라이브러리 로드 실패</strong><br>페이지를 새로고침해주세요.');
-                btn.disabled=false;txt.textContent='Google 계정으로 로그인';
+            return this._initPromise;
+        },
+
+        /** Firebase Auth 상태 변경 핸들러 */
+        _handleAuthChange(firebaseUser) {
+            // 로그인 진행 중이면 무시 (loginGoogle에서 직접 처리)
+            if (state.loginInProgress) return;
+
+            if (firebaseUser && !state.user) {
+                // 자동 세션 복원 (브라우저 재시작 후)
+                state.user = this._mapUser(firebaseUser);
+                storage.set('session', state.user);
+                auth._onLoginSuccess();
+                console.log('[Auth] Session restored for:', state.user.email);
+            }
+        },
+
+        /** Firebase User → App User 매핑 */
+        _mapUser(firebaseUser) {
+            return Object.freeze({
+                name:     firebaseUser.displayName || firebaseUser.email.split('@')[0],
+                email:    firebaseUser.email,
+                picture:  firebaseUser.photoURL || null,
+                uid:      firebaseUser.uid,
+                provider: 'google'
+            });
+        },
+
+        getAuth() { return this._auth; }
+    };
+
+    /* ──────────────────────────────────────
+       7. Authentication Module
+       ────────────────────────────────────── */
+    const auth = {
+        async loginGoogle() {
+            if (state.loginInProgress) return;
+            if (!state.firebaseReady) {
+                toast.error('시스템 준비 중입니다. 잠시 후 다시 시도해주세요.');
                 return;
             }
-            google.accounts.id.initialize({
-                client_id:S.clientId,
-                callback:(response)=>this._handleGoogleCredential(response),
-                auto_select:false,
-                cancel_on_tap_outside:true,
-            });
-            google.accounts.id.prompt((notification)=>{
-                if(notification.isNotDisplayed()){
-                    this._fallbackRenderButton();
-                }else if(notification.isSkippedMoment()){
-                    this._fallbackRenderButton();
-                }else if(notification.isDismissedMoment()){
-                    btn.disabled=false;
-                    txt.textContent='Google 계정으로 로그인';
-                    if(notification.getDismissedReason()!=='credential_returned'){
-                        T.inf('로그인이 취소되었습니다.');
+
+            const btn = $('btnGoogle');
+            const txt = $('btnGoogleText');
+            state.loginInProgress = true;
+            btn.disabled = true;
+            txt.innerHTML = '<span class="spinner"></span> 로그인 준비 중...';
+            ui.hideLoginError();
+
+            try {
+                // GIS 로드 대기
+                await gis.load();
+
+                if (!window.google?.accounts?.id) {
+                    throw new Error('Google 로그인 라이브러리를 불러올 수 없습니다.');
+                }
+
+                google.accounts.id.initialize({
+                    client_id:             GOOGLE_CLIENT_ID,
+                    callback:              (resp) => this._onGoogleCredential(resp),
+                    auto_select:           false,
+                    cancel_on_tap_outside: true
+                });
+
+                google.accounts.id.prompt((notification) => {
+                    if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+                        this._renderFallbackButton();
+                    } else if (notification.isDismissedMoment()) {
+                        if (notification.getDismissedReason() !== 'credential_returned') {
+                            toast.info('로그인이 취소되었습니다.');
+                            this._resetLoginButton();
+                        }
                     }
+                });
+
+            } catch (err) {
+                console.error('[Auth] Login error:', err);
+                ui.showLoginError(`<strong>❌ 오류 발생</strong><br>${utils.escapeHtml(err.message)}`);
+                toast.error('로그인 중 오류가 발생했습니다.');
+                this._resetLoginButton();
+            }
+        },
+
+        /** GIS에서 ID 토큰 받은 후 Firebase 인증 */
+        async _onGoogleCredential(response) {
+            const btn = $('btnGoogle');
+            const txt = $('btnGoogleText');
+
+            this._removeFallbackButton();
+            btn.disabled = true;
+            txt.innerHTML = '<span class="spinner"></span> 로그인 처리 중...';
+            ui.hideLoginError();
+
+            try {
+                const credential = firebase.auth.GoogleAuthProvider.credential(response.credential);
+                const result = await fb.getAuth().signInWithCredential(credential);
+
+                state.user = fb._mapUser(result.user);
+                storage.set('session', state.user);
+                this._onLoginSuccess();
+
+            } catch (err) {
+                console.error('[Auth] Firebase credential error:', err);
+
+                const errorMessages = {
+                    'auth/invalid-credential':       '인증 정보가 올바르지 않습니다. 다시 시도해주세요.',
+                    'auth/user-disabled':            '비활성화된 계정입니다. 관리자에게 문의하세요.',
+                    'auth/network-request-failed':   '네트워크 연결을 확인해주세요.',
+                    'auth/too-many-requests':        '너무 많은 시도가 있었습니다. 잠시 후 다시 시도해주세요.',
+                    'auth/popup-closed-by-user':     '로그인이 취소되었습니다.'
+                };
+
+                const userMessage = errorMessages[err.code] || `로그인 실패: ${err.message || '알 수 없는 오류'}`;
+                ui.showLoginError(`<strong>❌ 로그인 실패</strong><br>${utils.escapeHtml(userMessage)}`);
+                toast.error('로그인에 실패했습니다.');
+            } finally {
+                this._resetLoginButton();
+            }
+        },
+
+        /** 로그인 성공 후 공통 처리 */
+        _onLoginSuccess() {
+            state.loginInProgress = false;
+            ui.hideLoginError();
+            notices._load();
+            attendance._load();
+            attendance._findToday();
+            ui.showApp();
+            router.go('dashboard');
+            toast.success(`${state.user.name}님, 환영합니다!`);
+        },
+
+        /** 로그아웃 */
+        async logout() {
+            try {
+                if (state.firebaseReady && fb.getAuth()) {
+                    await fb.getAuth().signOut();
+                }
+            } catch (err) {
+                console.warn('[Auth] Sign out error:', err);
+            }
+
+            // Google 자동 선택 해제
+            try { google?.accounts?.id?.disableAutoSelect(); } catch {}
+
+            // 상태 초기화
+            state.user       = null;
+            state.notices    = [];
+            state.attendance = [];
+            state.today      = null;
+            state.page       = 'dashboard';
+            storage.remove('session');
+
+            this._removeFallbackButton();
+            ui.showLogin();
+            toast.info('로그아웃되었습니다.');
+        },
+
+        /** GIS prompt 실패 시 공식 버튼 렌더링 */
+        _renderFallbackButton() {
+            const btn = $('btnGoogle');
+            if (document.getElementById('gsiButtonWrap')) return;
+
+            const container = document.createElement('div');
+            container.id = 'gsiButtonWrap';
+            container.style.cssText = 'display:flex;justify-content:center;margin-bottom:.5rem';
+            btn.parentNode.insertBefore(container, btn);
+            btn.style.display = 'none';
+
+            google.accounts.id.renderButton(container, {
+                theme: 'outline', size: 'large', width: 380,
+                text: 'signin_with', locale: 'ko'
+            });
+
+            ui.showLoginError('<strong>👆 위 Google 버튼을 클릭해주세요</strong>');
+        },
+
+        /** 폴백 버튼 제거 */
+        _removeFallbackButton() {
+            const wrap = document.getElementById('gsiButtonWrap');
+            if (wrap) {
+                wrap.remove();
+                $('btnGoogle').style.display = '';
+            }
+        },
+
+        /** 로그인 버튼 상태 초기화 */
+        _resetLoginButton() {
+            state.loginInProgress = false;
+            const btn = $('btnGoogle');
+            const txt = $('btnGoogleText');
+            if (btn) btn.disabled = false;
+            if (txt) txt.textContent = 'Google 계정으로 로그인';
+        }
+    };
+
+    /* ──────────────────────────────────────
+       8. Router
+       ────────────────────────────────────── */
+    const PAGES = Object.freeze({
+        dashboard:  'pageDashboard',
+        notices:    'pageNotices',
+        attendance: 'pageAttendance'
+    });
+
+    const router = {
+        go(page) {
+            if (!PAGES[page]) return;
+            state.page = page;
+
+            Object.entries(PAGES).forEach(([key, elId]) => {
+                const el = $(elId);
+                if (!el) return;
+                el.hidden = (key !== page);
+                if (key === page) {
+                    el.classList.remove('anim-slide-right');
+                    void el.offsetWidth; // reflow trigger
+                    el.classList.add('anim-slide-right');
                 }
             });
-        }catch(e){
-            console.error('[Auth]',e);
-            UI.showErrBox(`<strong>❌ 오류 발생</strong><br>${U.esc(e.message)}`);
-            T.er('오류가 발생했습니다.');
-            btn.disabled=false;txt.textContent='Google 계정으로 로그인';
+
+            document.querySelectorAll('.sidebar__link').forEach(btn => {
+                btn.classList.toggle('sidebar__link--active', btn.dataset.page === page);
+            });
+
+            ui.closeSidebar();
+
+            const renderers = {
+                dashboard:  () => ui.renderDashboard(),
+                notices:    () => ui.renderNotices(),
+                attendance: () => ui.renderAttendance()
+            };
+            renderers[page]?.();
         }
-    },
+    };
 
-    _fallbackRenderButton(){
-        const btn=$('gBtn');
-        const container=document.createElement('div');
-        container.id='gsiButtonWrap';
-        container.style.cssText='display:flex;justify-content:center;margin-bottom:.5rem';
-        btn.parentNode.insertBefore(container,btn);
-        btn.style.display='none';
-        google.accounts.id.renderButton(container,{
-            theme:'outline',size:'large',width:380,text:'signin_with',locale:'ko'
-        });
-        UI.showErrBox('<strong>👆 위 Google 버튼을 클릭해주세요</strong><br>현재 환경에서는 Google 공식 로그인 버튼을 사용해야 합니다.');
-    },
+    /* ──────────────────────────────────────
+       9. Notices Module
+       ────────────────────────────────────── */
+    const notices = {
+        _load() { state.notices = storage.get('notices') || []; },
+        _save() { storage.set('notices', state.notices); },
 
-    async _handleGoogleCredential(response){
-        const btn=$('gBtn'),txt=$('gBtnTxt');
-        const wrap=document.getElementById('gsiButtonWrap');
-        if(wrap){wrap.remove();btn.style.display='';}
-        btn.disabled=true;
-        txt.innerHTML='<span class="spinner"></span> 로그인 처리 중...';
-        UI.hideErrBox();
-        try{
-            const idToken=response.credential;
-            const credential=firebase.auth.GoogleAuthProvider.credential(idToken);
-            const result=await FB._auth.signInWithCredential(credential);
-            const u=result.user;
-            S.user={name:u.displayName||u.email.split('@')[0],email:u.email,picture:u.photoURL||null,uid:u.uid,provider:'google'};
-            LS.set('sess',S.user);
-            this._onLogin();
-        }catch(e){
-            console.error('[Auth]',e);
-            let html=`<strong>❌ Firebase 인증 실패</strong><br><br>오류: ${U.esc(e.code||'')}<br>${U.esc(e.message||'')}`;
-            if(e.code==='auth/invalid-api-key'){
-                html+=`<br><br><a onclick="App.ui.showFbModal()">Firebase 설정 다시 하기</a>`;
+        open(id = null) {
+            state.editId = id;
+            const titleEl   = $('noticeTitle');
+            const contentEl = $('noticeContent');
+
+            if (id) {
+                const notice = state.notices.find(n => n.id === id);
+                if (!notice) return;
+                titleEl.value   = notice.title;
+                contentEl.value = notice.content;
+                $('noticeModalTitle').textContent = '공지사항 수정';
+                $('noticeModalSave').textContent  = '수정';
+            } else {
+                titleEl.value = '';
+                contentEl.value = '';
+                $('noticeModalTitle').textContent = '새 공지사항';
+                $('noticeModalSave').textContent  = '등록';
             }
-            UI.showErrBox(html);
-            T.er('Firebase 인증에 실패했습니다.');
-        }finally{
-            btn.disabled=false;
-            txt.textContent='Google 계정으로 로그인';
+
+            $('noticeModal').hidden = false;
+            titleEl.focus();
+        },
+
+        close() {
+            $('noticeModal').hidden = true;
+            state.editId = null;
+        },
+
+        save() {
+            const title   = $('noticeTitle').value.trim();
+            const content = $('noticeContent').value.trim();
+
+            if (!title || !content) {
+                toast.error('제목과 내용을 입력해주세요.');
+                return;
+            }
+
+            if (state.editId) {
+                const idx = state.notices.findIndex(n => n.id === state.editId);
+                if (idx !== -1) {
+                    state.notices[idx] = {
+                        ...state.notices[idx],
+                        title, content,
+                        updatedAt: new Date().toISOString()
+                    };
+                }
+                toast.success('수정되었습니다.');
+            } else {
+                state.notices.unshift({
+                    id:        utils.uid(),
+                    title, content,
+                    author:    state.user.name,
+                    createdAt: new Date().toISOString()
+                });
+                toast.success('등록되었습니다.');
+            }
+
+            this._save();
+            this.close();
+            ui.renderNotices();
+        },
+
+        delete(id) {
+            ui.showConfirm('이 공지사항을 삭제하시겠습니까?', () => {
+                state.notices = state.notices.filter(n => n.id !== id);
+                this._save();
+                ui.renderNotices();
+                toast.success('삭제되었습니다.');
+            });
         }
-    },
+    };
 
-    _onLogin(){
-        UI.hideErrBox();
-        NT._load();AT._load();AT._findToday();
-        UI.showApp();RT.go('dashboard');
-        T.ok(`${S.user.name}님, 환영합니다!`);
-    },
+    /* ──────────────────────────────────────
+       10. Attendance Module
+       ────────────────────────────────────── */
+    const attendance = {
+        _storageKey() {
+            return state.user ? `att_${state.user.email}` : null;
+        },
+        _load() {
+            const key = this._storageKey();
+            state.attendance = key ? (storage.get(key) || []) : [];
+        },
+        _save() {
+            const key = this._storageKey();
+            if (key) storage.set(key, state.attendance);
+        },
+        _findToday() {
+            const now = new Date();
+            state.today = state.attendance.find(a => utils.isSameDay(new Date(a.date), now)) || null;
+        },
 
-    async logout(){
-        if(S.fbReady&&FB._auth){try{await FB._auth.signOut()}catch{}}
-        if(window.google&&window.google.accounts){
-            try{google.accounts.id.disableAutoSelect()}catch{}
+        checkIn() {
+            if (state.today) { toast.error('오늘 이미 출근 기록이 있습니다.'); return; }
+            const record = {
+                id:       utils.uid(),
+                date:     new Date().toISOString(),
+                checkIn:  utils.formatTime(),
+                checkOut: null
+            };
+            state.attendance.unshift(record);
+            state.today = record;
+            this._save();
+            ui.renderAttendance();
+            ui.renderDashboard();
+            toast.success('출근이 기록되었습니다.');
+        },
+
+        checkOut() {
+            if (!state.today) { toast.error('출근 기록이 없습니다.'); return; }
+            if (state.today.checkOut) { toast.error('이미 퇴근 처리되었습니다.'); return; }
+            state.today.checkOut = utils.formatTime();
+            this._save();
+            ui.renderAttendance();
+            ui.renderDashboard();
+            toast.success('퇴근 기록 완료!');
         }
-        S.user=null;S.notices=[];S.att=[];S.today=null;S.pg='dashboard';
-        LS.rm('sess');
-        const wrap=document.getElementById('gsiButtonWrap');
-        if(wrap){wrap.remove();$('gBtn').style.display='';}
-        UI.showLogin();T.inf('로그아웃되었습니다.');
+    };
+
+    /* ──────────────────────────────────────
+       11. UI Module
+       ────────────────────────────────────── */
+    const SVG = {
+        user:     '<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
+        edit:     '<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>',
+        trash:    '<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>',
+        bell:     '<svg width="64" height="64" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>',
+        calendar: '<svg width="64" height="64" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>',
+        chevron:  '<svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>'
+    };
+
+    const ui = {
+        showApp() {
+            $('pageLogin').hidden = true;
+            $('appShell').hidden  = false;
+            this.renderHeader();
+        },
+        showLogin() {
+            $('pageLogin').hidden = false;
+            $('appShell').hidden  = true;
+        },
+
+        renderHeader() {
+            if (!state.user) return;
+            $('headerName').textContent = state.user.name;
+            const avatarEl = $('headerAvatar');
+            avatarEl.innerHTML = state.user.picture
+                ? `<img class="header__avatar" src="${utils.escapeHtml(state.user.picture)}" alt="" referrerpolicy="no-referrer">`
+                : `<span class="header__avatar-fb">${SVG.user}</span>`;
+        },
+
+        toggleSidebar() {
+            state.sidebarOpen = !state.sidebarOpen;
+            $('sidebar').classList.toggle('sidebar--open', state.sidebarOpen);
+            $('sidebarOverlay').classList.toggle('sidebar__overlay--visible', state.sidebarOpen);
+        },
+        closeSidebar() {
+            state.sidebarOpen = false;
+            $('sidebar').classList.remove('sidebar--open');
+            $('sidebarOverlay').classList.remove('sidebar__overlay--visible');
+        },
+
+        showLoginError(html) {
+            const el = $('loginError');
+            el.innerHTML = html;
+            el.classList.add('login__error--visible');
+        },
+        hideLoginError() {
+            const el = $('loginError');
+            el.innerHTML = '';
+            el.classList.remove('login__error--visible');
+        },
+
+        showConfirm(message, callback) {
+            $('confirmMessage').textContent = message;
+            $('confirmModal').hidden = false;
+            $('confirmYes').onclick = () => {
+                $('confirmModal').hidden = true;
+                callback();
+            };
+        },
+        hideConfirm() { $('confirmModal').hidden = true; },
+
+        /* ── Page Renderers ── */
+        renderDashboard() {
+            // 오늘 근태
+            const attEl = $('dashAttendance');
+            if (state.today) {
+                let html = `출근: <strong>${utils.escapeHtml(state.today.checkIn)}</strong>`;
+                if (state.today.checkOut) html += `<br>퇴근: <strong>${utils.escapeHtml(state.today.checkOut)}</strong>`;
+                attEl.innerHTML = html;
+            } else {
+                attEl.innerHTML = '<span style="color:var(--c-s400)">아직 출근 기록이 없습니다</span>';
+            }
+
+            // 통계
+            $('dashNoticeCount').textContent = state.notices.length;
+            $('dashMonthDays').textContent   = state.attendance.filter(a => utils.isCurrentMonth(a.date)).length + '일';
+
+            // 최근 공지
+            const recentEl = $('dashRecentNotices');
+            const recent   = state.notices.slice(0, 3);
+            recentEl.innerHTML = recent.length
+                ? recent.map(n => `
+                    <div class="recent-item" onclick="App.router.go('notices')">
+                        <h4 class="recent-item__title">${utils.escapeHtml(n.title)}</h4>
+                        <p class="recent-item__body">${utils.escapeHtml(utils.truncate(n.content, 100))}</p>
+                        <p class="recent-item__date">${utils.formatDate(n.createdAt)}</p>
+                    </div>`).join('')
+                : '<div style="padding:2rem;text-align:center;color:var(--c-s400);font-size:.875rem">등록된 공지사항이 없습니다</div>';
+        },
+
+        renderNotices() {
+            const container = $('noticeList');
+            if (!state.notices.length) {
+                container.innerHTML = `
+                    <div class="card"><div class="card__body"><div class="empty">
+                        ${SVG.bell}
+                        <p>등록된 공지사항이 없습니다</p>
+                        <p class="empty__sub">새 공지사항을 등록해보세요</p>
+                    </div></div></div>`;
+                return;
+            }
+
+            container.innerHTML = state.notices.map(n => `
+                <div class="card card--hover notice"><div class="card__body">
+                    <div class="notice__top">
+                        <div class="notice__info">
+                            <h3 class="notice__title">${utils.escapeHtml(n.title)}</h3>
+                            <p class="notice__content">${utils.escapeHtml(n.content)}</p>
+                        </div>
+                        <div class="notice__actions">
+                            <button class="btn-edit" onclick="App.notices.open('${n.id}')">${SVG.edit}</button>
+                            <button class="btn-del" onclick="App.notices.delete('${n.id}')">${SVG.trash}</button>
+                        </div>
+                    </div>
+                    <div class="notice__meta">
+                        <span>${SVG.user}${utils.escapeHtml(n.author)}</span>
+                        <span>${utils.formatDateTime(n.createdAt)}</span>
+                    </div>
+                </div></div>`).join('');
+        },
+
+        renderAttendance() {
+            const t  = state.today;
+            const bi = $('btnCheckIn');
+            const bo = $('btnCheckOut');
+            const si = $('statusIn');
+            const so = $('statusOut');
+
+            if (t) {
+                bi.disabled = true;
+                si.textContent = '출근: ' + t.checkIn;
+                if (t.checkOut) {
+                    bo.disabled = true;
+                    so.textContent = '퇴근: ' + t.checkOut;
+                } else {
+                    bo.disabled = false;
+                    so.textContent = '';
+                }
+            } else {
+                bi.disabled = false;
+                bo.disabled = true;
+                si.textContent = '';
+                so.textContent = '';
+            }
+
+            const container = $('attTable');
+            if (!state.attendance.length) {
+                container.innerHTML = `
+                    <div class="empty">
+                        ${SVG.calendar}
+                        <p>근태 기록이 없습니다</p>
+                        <p class="empty__sub">출근 버튼을 눌러 등록하세요</p>
+                    </div>`;
+                return;
+            }
+
+            container.innerHTML = `
+                <div style="overflow-x:auto">
+                <table><thead><tr>
+                    <th>날짜</th><th>출근</th><th>퇴근</th><th>상태</th>
+                </tr></thead><tbody>
+                ${state.attendance.map(r => `
+                    <tr>
+                        <td>${utils.formatDate(r.date)}</td>
+                        <td>${utils.escapeHtml(r.checkIn)}</td>
+                        <td>${r.checkOut ? utils.escapeHtml(r.checkOut) : '—'}</td>
+                        <td><span class="badge ${r.checkOut ? 'badge--ok' : 'badge--warn'}">${r.checkOut ? '퇴근 완료' : '근무 중'}</span></td>
+                    </tr>`).join('')}
+                </tbody></table></div>`;
+        }
+    };
+
+    /* ──────────────────────────────────────
+       12. Initialization
+       ────────────────────────────────────── */
+    async function init() {
+        toast.init();
+
+        // Firebase 초기화 (최우선)
+        await fb.init();
+
+        // GIS 사전 로드 (백그라운드 — 실패해도 앱 시작에 영향 없음)
+        gis.load().catch(err => console.warn('[GIS] Preload failed:', err));
+
+        // 키보드 & 모달 이벤트
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                $('noticeModal').hidden  = true;
+                $('confirmModal').hidden = true;
+            }
+        });
+
+        ['noticeModal', 'confirmModal'].forEach(id => {
+            $(id).addEventListener('click', (e) => {
+                if (e.target === e.currentTarget) e.currentTarget.hidden = true;
+            });
+        });
+
+        console.log('[WorkHub] Ready');
     }
-};
 
-const RT={
-    _p:['dashboard','notices','attendance'],
-    _el:{dashboard:'pgDash',notices:'pgNot',attendance:'pgAtt'},
-    go(p){
-        if(!this._p.includes(p))return;S.pg=p;
-        this._p.forEach(x=>{const el=$(this._el[x]);if(el){el.hidden=(x!==p);if(x===p){el.classList.remove('asr');void el.offsetWidth;el.classList.add('asr')}}});
-        document.querySelectorAll('.sbl').forEach(b=>b.classList.toggle('on',b.dataset.p===p));
-        UI.closeSb();
-        ({dashboard:()=>UI.rDash(),notices:()=>UI.rNot(),attendance:()=>UI.rAtt()})[p]();
+    // DOM 준비 후 초기화
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
     }
-};
 
-const NT={
-    _load(){S.notices=LS.get('notices')||[]},_save(){LS.set('notices',S.notices)},
-    open(id=null){S.editId=id;const t=$('nTi'),c=$('nCo');if(id){const n=S.notices.find(x=>x.id===id);if(!n)return;t.value=n.title;c.value=n.content;$('nmT').textContent='공지사항 수정';$('nmS').textContent='수정'}else{t.value='';c.value='';$('nmT').textContent='새 공지사항';$('nmS').textContent='등록'}$('nModal').hidden=false;t.focus()},
-    close(){$('nModal').hidden=true;S.editId=null},
-    save(){const t=$('nTi').value.trim(),c=$('nCo').value.trim();if(!t||!c){T.er('제목과 내용을 입력해주세요.');return}if(S.editId){const i=S.notices.findIndex(n=>n.id===S.editId);if(i!==-1)S.notices[i]={...S.notices[i],title:t,content:c,updatedAt:new Date().toISOString()};T.ok('수정되었습니다.')}else{S.notices.unshift({id:U.uid(),title:t,content:c,author:S.user.name,createdAt:new Date().toISOString()});T.ok('등록되었습니다.')}this._save();this.close();UI.rNot()},
-    del(id){UI.showCfm('이 공지사항을 삭제하시겠습니까?',()=>{S.notices=S.notices.filter(n=>n.id!==id);this._save();UI.rNot();T.ok('삭제되었습니다.')})}
-};
+    /* ──────────────────────────────────────
+       13. Public API
+       ────────────────────────────────────── */
+    return Object.freeze({
+        auth,
+        router,
+        notices,
+        attendance,
+        ui
+    });
 
-const AT={
-    _k(){return S.user?`att_${S.user.email}`:null},
-    _load(){const k=this._k();S.att=k?(LS.get(k)||[]):[]},
-    _save(){const k=this._k();if(k)LS.set(k,S.att)},
-    _findToday(){const n=new Date();S.today=S.att.find(a=>U.sameDay(new Date(a.date),n))||null},
-    checkIn(){if(S.today){T.er('오늘 이미 출근 기록이 있습니다.');return}const r={id:U.uid(),date:new Date().toISOString(),checkIn:U.fmtT(),checkOut:null};S.att.unshift(r);S.today=r;this._save();UI.rAtt();UI.rDash();T.ok('출근이 기록되었습니다.')},
-    checkOut(){if(!S.today){T.er('출근 기록이 없습니다.');return}if(S.today.checkOut){T.er('이미 퇴근 처리되었습니다.');return}S.today.checkOut=U.fmtT();this._save();UI.rAtt();UI.rDash();T.ok('퇴근 기록 완료!')}
-};
-
-const UI={
-    showApp(){$('pgLogin').hidden=true;$('app').hidden=false;this.rHeader()},
-    showLogin(){$('pgLogin').hidden=false;$('app').hidden=true},
-    rHeader(){if(!S.user)return;$('hNm').textContent=S.user.name;const a=$('hAv');a.innerHTML=S.user.picture?`<img class="ahav" src="${U.esc(S.user.picture)}" alt="" referrerpolicy="no-referrer">`:`<span class="ahaf"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>`},
-    toggleSb(){S.sbOpen=!S.sbOpen;$('sb2').classList.toggle('op',S.sbOpen);$('sbOv').classList.toggle('vi',S.sbOpen)},
-    closeSb(){S.sbOpen=false;$('sb2').classList.remove('op');$('sbOv').classList.remove('vi')},
-    updateFbStat(ok){const e=$('fbStat');if(ok){e.textContent='✅ 설정 완료 — Google 로그인 사용 가능';e.style.color='#22c55e'}else{e.textContent='⚙️ Firebase 설정 — 클릭하여 설정';e.style.color='var(--c-s400)'}},
-    showFbModal(){$('fbModal').hidden=false;$('curOrigin').textContent=location.origin||location.href;$('cfgKey').focus()},
-    hideFbModal(){$('fbModal').hidden=true},
-    showErrBox(h){const b=$('errBox');b.innerHTML=h;b.classList.add('show')},
-    hideErrBox(){const b=$('errBox');b.innerHTML='';b.classList.remove('show')},
-    showCfm(m,fn){$('cfmM').textContent=m;$('cfmD').hidden=false;$('cfmY').onclick=()=>{$('cfmD').hidden=true;fn()}},
-    hideCfm(){$('cfmD').hidden=true},
-
-    rDash(){
-        const d=$('dAtt');
-        if(S.today){let h=`출근: <strong>${U.esc(S.today.checkIn)}</strong>`;if(S.today.checkOut)h+=`<br>퇴근: <strong>${U.esc(S.today.checkOut)}</strong>`;d.innerHTML=h}
-        else d.innerHTML='<span style="color:var(--c-s400)">아직 출근 기록이 없습니다</span>';
-        $('dNC').textContent=S.notices.length;
-        $('dMD').textContent=S.att.filter(a=>U.curMonth(a.date)).length+'일';
-        const c=$('dRN'),r=S.notices.slice(0,3);
-        c.innerHTML=r.length?r.map(n=>`<div class="ri" onclick="App.rt.go('notices')"><h4 class="rit">${U.esc(n.title)}</h4><p class="rib">${U.esc(U.trunc(n.content,100))}</p><p class="rid">${U.fmtD(n.createdAt)}</p></div>`).join(''):'<div style="padding:2rem;text-align:center;color:var(--c-s400);font-size:.875rem">등록된 공지사항이 없습니다</div>';
-    },
-    rNot(){
-        const c=$('nList');
-        if(!S.notices.length){c.innerHTML='<div class="cd"><div class="cb"><div class="em"><svg width="64" height="64" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg><p>등록된 공지사항이 없습니다</p><p class="es">새 공지사항을 등록해보세요</p></div></div></div>';return}
-        c.innerHTML=S.notices.map(n=>`<div class="cd hv nc"><div class="cb"><div class="nct"><div class="nci"><h3 class="ncti">${U.esc(n.title)}</h3><p class="ncc">${U.esc(n.content)}</p></div><div class="nca"><button class="ae" onclick="App.nt.open('${n.id}')"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="ad2" onclick="App.nt.del('${n.id}')"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button></div></div><div class="ncm"><span><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>${U.esc(n.author)}</span><span>${U.fmtDT(n.createdAt)}</span></div></div></div>`).join('');
-    },
-    rAtt(){
-        const t=S.today,bi=$('bIn'),bo=$('bOut'),si=$('sIn'),so=$('sOut');
-        if(t){bi.disabled=true;si.textContent='출근: '+t.checkIn;if(t.checkOut){bo.disabled=true;so.textContent='퇴근: '+t.checkOut}else{bo.disabled=false;so.textContent=''}}
-        else{bi.disabled=false;bo.disabled=true;si.textContent='';so.textContent=''}
-        const c=$('aTab');
-        if(!S.att.length){c.innerHTML='<div class="em"><svg width="64" height="64" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><p>근태 기록이 없습니다</p><p class="es">출근 버튼을 눌러 등록하세요</p></div>';return}
-        c.innerHTML=`<div style="overflow-x:auto"><table><thead><tr><th>날짜</th><th>출근</th><th>퇴근</th><th>상태</th></tr></thead><tbody>${S.att.map(r=>`<tr><td>${U.fmtD(r.date)}</td><td>${U.esc(r.checkIn)}</td><td>${r.checkOut?U.esc(r.checkOut):'—'}</td><td><span class="bdg ${r.checkOut?'bok':'bwn'}">${r.checkOut?'퇴근 완료':'근무 중'}</span></td></tr>`).join('')}</tbody></table></div>`;
-    }
-};
-
-function init(){
-    T.init();
-    $('curOrigin').textContent=location.origin||location.href;
-    FB.load();
-    const cfg=LS.get('fb_cfg2');
-    if(cfg){$('cfgKey').value=cfg.apiKey||'';$('cfgDomain').value=cfg.authDomain||'';$('cfgProject').value=cfg.projectId||'';$('cfgClientId').value=cfg.clientId||''}
-    document.addEventListener('keydown',e=>{if(e.key==='Escape'){$('fbModal').hidden=true;$('nModal').hidden=true;$('cfmD').hidden=true}});
-    ['fbModal','nModal','cfmD'].forEach(id=>{$(id).addEventListener('click',e=>{if(e.target===e.currentTarget)e.currentTarget.hidden=true})});
-}
-
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
-return{store:S,ui:UI,auth:AUTH,fb:FB,rt:RT,nt:NT,at:AT};
 })();
 </script>
 </body>
 </html>
+
