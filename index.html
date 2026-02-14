@@ -10,8 +10,8 @@
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
-<script src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
-<script src="https://accounts.google.com/gsi/client" onload="gisLoaded()"></script>
+<script src="https://apis.google.com/js/api.js"></script>
+<script src="https://accounts.google.com/gsi/client"></script>
 <style>
 :root{--bg:#f5f6fa;--bg-card:#fff;--bg-side:#1a1d2e;--bg-input:#f8f9fb;--bd:#e5e7eb;--bd-focus:#6366f1;--t1:#111827;--t2:#6b7280;--t3:#9ca3af;--tw:#fff;--ac:#6366f1;--ac-l:#eef2ff;--ac-d:#4f46e5;--ok:#10b981;--ok-l:#d1fae5;--wn:#f59e0b;--wn-l:#fef3c7;--err:#ef4444;--err-l:#fee2e2;--or:#f97316;--pu:#8b5cf6;--sh:0 1px 3px rgba(0,0,0,.1);--sh-md:0 4px 6px -1px rgba(0,0,0,.1);--sh-lg:0 10px 15px -3px rgba(0,0,0,.1);--sh-xl:0 20px 25px -5px rgba(0,0,0,.1);--r:8px;--rl:12px;--rxl:16px;--ff:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;--hh:60px;--sw:250px;--tr:all .2s cubic-bezier(.4,0,.2,1)}
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}html{-webkit-font-smoothing:antialiased}body{font-family:var(--ff);font-size:.875rem;color:var(--t1);background:var(--bg);line-height:1.6;min-height:100vh;overflow-x:hidden}button{font-family:var(--ff);cursor:pointer;border:none;background:none}input,textarea,select{font-family:var(--ff);border:none;outline:none}[hidden]{display:none!important}
@@ -421,17 +421,45 @@ const cal={
 };
 
 /* ===== GAPI / GIS init ===== */
-window.gapiLoaded=function(){
+function _initGapi(){
+  if(typeof gapi==='undefined')return;
   gapi.load('client',async()=>{
-    await gapi.client.init({apiKey:GCAL_KEY,discoveryDocs:[GCAL_DISC]});
-    _gapiOk=true;_maybeAuto();
+    try{
+      await gapi.client.init({apiKey:GCAL_KEY,discoveryDocs:[GCAL_DISC]});
+      _gapiOk=true;
+      console.log('GAPI ready');
+      _tryAutoLink();
+    }catch(e){console.error('GAPI init error',e)}
   });
-};
-window.gisLoaded=function(){
-  _tokClient=google.accounts.oauth2.initTokenClient({client_id:GCAL_CID,scope:GCAL_SCOPE,callback:resp=>cal._onToken(resp)});
-  _gisOk=true;_maybeAuto();
-};
-function _maybeAuto(){if(_gapiOk&&_gisOk&&gapi.client.getToken()){S.calLinked=true;if(S.pg==='calendar')cal.show()}}
+}
+function _initGis(){
+  if(typeof google==='undefined'||!google.accounts)return;
+  _tokClient=google.accounts.oauth2.initTokenClient({
+    client_id:GCAL_CID,
+    scope:GCAL_SCOPE,
+    callback:resp=>cal._onToken(resp)
+  });
+  _gisOk=true;
+  console.log('GIS ready');
+  _tryAutoLink();
+}
+function _tryAutoLink(){
+  if(_gapiOk&&_gisOk){
+    if(gapi.client.getToken()){S.calLinked=true;if(S.pg==='calendar')cal.show()}
+  }
+}
+
+/* poll until scripts are loaded, then init */
+function _waitAndInit(){
+  let attempts=0;
+  const timer=setInterval(()=>{
+    attempts++;
+    if(!_gapiOk&&typeof gapi!=='undefined'&&gapi.load)_initGapi();
+    if(!_gisOk&&typeof google!=='undefined'&&google.accounts&&google.accounts.oauth2)_initGis();
+    if((_gapiOk&&_gisOk)||attempts>50)clearInterval(timer);
+  },200);
+}
+_waitAndInit();
 
 /* ===== Chatbot ===== */
 const chat={
