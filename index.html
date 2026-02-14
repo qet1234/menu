@@ -96,7 +96,7 @@
       <nav class="sb-nav">
         <button class="sb-lk" data-pg="chatbot" onclick="App.chat.tog()"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg><span>AI 어시스턴트</span></button>
       </nav>
-      <div class="sb-bt"><div class="sb-bt-c" onclick="App.auth.logout()"><div class="sb-bt-av" id="sAv">W</div><div><div class="sb-bt-nm" id="sNm">사용자</div><div class="sb-bt-em" id="sEm">email</div></div></div></div>
+      $('sNm').textContent=nm;$('sEm').textContent=u.email;$('sAv').textContent=nm.charAt(0).toUpperCase();
     </aside>
     <main class="mn">
       <!-- Dashboard -->
